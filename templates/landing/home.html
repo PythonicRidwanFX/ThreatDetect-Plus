@@ -1,0 +1,743 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+ThreatDetect+ | Real-Time Network Threat Detection and Alerting System
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================
+        HERO SECTION
+========================= -->
+
+<section id="home" class="hero-section">
+
+    <!-- Background -->
+    <div class="hero-overlay"></div>
+
+    <div class="container">
+
+        <div class="row align-items-center">
+
+            <!-- Left Content -->
+            <div class="col-lg-6 hero-content" data-aos="fade-right">
+
+                <span class="badge bg-info text-dark px-3 py-2 mb-4">
+                    🛡 Intelligent Cybersecurity Platform
+                </span>
+
+                <h1 class="hero-title">
+                    Real-Time Network
+                    <span>Threat Detection</span>
+                    and Alerting System
+                </h1>
+
+                <p class="hero-description">
+                    A web-based cybersecurity platform developed with Django
+                    to monitor live network traffic, detect malicious
+                    activities, classify threats, and instantly notify
+                    administrators through an intelligent dashboard.
+                </p>
+
+                <div class="mt-4 d-flex flex-wrap gap-3">
+
+                    <a href="#about" class="btn btn-info btn-lg">
+                        Explore System
+                    </a>
+
+                    <button
+                        class="btn btn-outline-light btn-lg"
+                        data-bs-toggle="modal"
+                        data-bs-target="#loginModal">
+
+                        Administrator Login
+
+                    </button>
+
+                </div>
+
+                <!-- Statistics -->
+                <div class="row mt-5 text-center">
+
+                    <div class="col-4">
+
+                        <h2 class="text-info fw-bold">99%</h2>
+
+                        <small>Detection Accuracy</small>
+
+                    </div>
+
+                    <div class="col-4">
+
+                        <h2 class="text-info fw-bold">24/7</h2>
+
+                        <small>Monitoring</small>
+
+                    </div>
+
+                    <div class="col-4">
+
+                        <h2 class="text-info fw-bold">Real-Time</h2>
+
+                        <small>Alerts</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Right Image -->
+            <div class="col-lg-6 text-center hero-content" data-aos="fade-left">
+
+                <img
+                    src="{% static 'images/hero.png' %}"
+                    class="img-fluid hero-image"
+                    alt="ThreatDetect+ Cybersecurity Illustration">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+END HERO
+========================= -->
+
+<!-- ==========================================
+                ABOUT SECTION
+=========================================== -->
+
+<section id="about" class="about-section">
+
+    <div class="container">
+
+        <div class="text-center mb-5" data-aos="fade-up">
+
+            <span class="section-tag">
+
+                ABOUT THE PROJECT
+
+            </span>
+
+            <h2 class="section-title">
+
+                Building a Smarter and Safer Network
+
+            </h2>
+
+            <p class="section-description">
+
+                ThreatDetect+ is a web-based cybersecurity platform designed to
+                monitor network traffic in real time, detect suspicious
+                activities, classify potential cyber threats, and instantly
+                notify system administrators before attacks can cause damage.
+
+            </p>
+
+        </div>
+
+        <div class="row align-items-center">
+
+            <!-- Left -->
+
+            <div class="col-lg-6 mb-4" data-aos="fade-right">
+
+                <img src="{% static 'images/something.png' %}"
+
+                     class="img-fluid">
+
+            </div>
+
+            <!-- Right -->
+
+            <div class="col-lg-6" data-aos="fade-left">
+
+                <h3>
+
+                    Why This System Was Developed
+
+                </h3>
+
+                <p>
+
+                    Traditional network monitoring solutions often rely on
+                    manual inspection or delayed reporting, making it difficult
+                    to respond quickly to cyber threats. ThreatDetect+ provides
+                    continuous monitoring, intelligent threat detection, and
+                    instant alerts to help administrators respond to attacks in
+                    real time.
+
+                </p>
+
+                <div class="row mt-4">
+
+                    <div class="col-md-6 mb-4">
+
+                        <div class="info-card">
+
+                            <i class="bi bi-shield-lock-fill"></i>
+
+                            <h5>
+
+                                Network Security
+
+                            </h5>
+
+                            <p>
+
+                                Protects network infrastructure against
+                                unauthorized access and malicious activities.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+
+                        <div class="info-card">
+
+                            <i class="bi bi-broadcast"></i>
+
+                            <h5>
+
+                                Live Monitoring
+
+                            </h5>
+
+                            <p>
+
+                                Continuously captures packets and monitors
+                                network traffic in real time.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+
+                        <div class="info-card">
+
+                            <i class="bi bi-cpu-fill"></i>
+
+                            <h5>
+
+                                Intelligent Detection
+
+                            </h5>
+
+                            <p>
+
+                                Uses rule-based logic and machine learning to
+                                identify suspicious network behavior.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 mb-4">
+
+                        <div class="info-card">
+
+                            <i class="bi bi-bell-fill"></i>
+
+                            <h5>
+
+                                Instant Alerts
+
+                            </h5>
+
+                            <p>
+
+                                Sends immediate notifications whenever a threat
+                                is detected.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- ==================================================
+                    FEATURES SECTION
+=================================================== -->
+
+<section id="features" class="features-section">
+
+    <div class="container">
+
+        <div class="text-center mb-5" data-aos="fade-up">
+
+            <span class="section-tag">
+                CORE FEATURES
+            </span>
+
+            <h2 class="section-title">
+                Powerful Features of ThreatDetect+
+            </h2>
+
+            <p class="section-description">
+
+                ThreatDetect+ combines intelligent threat detection,
+                real-time monitoring, automated alerting, and detailed
+                reporting to provide complete visibility into network
+                activities.
+
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <!-- Feature 1 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-broadcast"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Live Packet Capture
+
+                    </h4>
+
+                    <p>
+
+                        Continuously captures incoming and outgoing
+                        network packets for analysis.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Feature 2 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-shield-exclamation"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Threat Detection
+
+                    </h4>
+
+                    <p>
+
+                        Detects suspicious traffic including
+                        brute-force attacks, port scans,
+                        and denial-of-service attempts.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Feature 3 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-cpu"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Machine Learning
+
+                    </h4>
+
+                    <p>
+
+                        Uses trained machine learning models
+                        to classify malicious and normal traffic.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Feature 4 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-bell-fill"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Instant Alerts
+
+                    </h4>
+
+                    <p>
+
+                        Sends immediate notifications whenever
+                        a cyber threat is detected.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Feature 5 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-speedometer2"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Live Dashboard
+
+                    </h4>
+
+                    <p>
+
+                        Monitor network activities through
+                        an interactive dashboard with charts.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Feature 6 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-file-earmark-bar-graph"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Reports
+
+                    </h4>
+
+                    <p>
+
+                        Generate downloadable PDF and Excel
+                        reports of detected threats.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Feature 7 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="200">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-lock-fill"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Secure Login
+
+                    </h4>
+
+                    <p>
+
+                        Administrator authentication ensures
+                        secure access to the monitoring dashboard.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Feature 8 -->
+
+            <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="300">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+
+                        <i class="bi bi-graph-up-arrow"></i>
+
+                    </div>
+
+                    <h4>
+
+                        Analytics
+
+                    </h4>
+
+                    <p>
+
+                        View traffic trends, attack statistics,
+                        and network performance analytics.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- ==========================================
+            SYSTEM WORKFLOW
+========================================== -->
+
+<section id="workflow" class="workflow-section">
+
+    <div class="container">
+
+        <div class="text-center mb-5" data-aos="fade-up">
+
+            <span class="section-tag">
+                SYSTEM WORKFLOW
+            </span>
+
+            <h2 class="section-title">
+                How ThreatDetect+ Works
+            </h2>
+
+            <p class="section-description">
+
+                ThreatDetect+ continuously monitors network traffic,
+                analyzes captured packets, detects malicious activities,
+                stores security logs, and immediately alerts the
+                administrator through a real-time dashboard.
+
+            </p>
+
+        </div>
+
+        <div class="row justify-content-center g-4">
+
+            <!-- Step 1 -->
+            <div class="col-lg-2 col-md-4 col-6" data-aos="zoom-in">
+
+                <div class="workflow-card">
+
+                    <div class="workflow-icon">
+
+                        <i class="bi bi-globe2"></i>
+
+                    </div>
+
+                    <h5>Network Traffic</h5>
+
+                    <small>
+                        Incoming and outgoing network packets.
+                    </small>
+
+                </div>
+
+            </div>
+
+            <!-- Arrow -->
+            <div class="col-lg-1 d-none d-lg-flex align-items-center justify-content-center">
+
+                <i class="bi bi-arrow-right workflow-arrow"></i>
+
+            </div>
+
+            <!-- Step 2 -->
+            <div class="col-lg-2 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="100">
+
+                <div class="workflow-card">
+
+                    <div class="workflow-icon">
+
+                        <i class="bi bi-broadcast"></i>
+
+                    </div>
+
+                    <h5>Packet Capture</h5>
+
+                    <small>
+                        Scapy captures packets in real time.
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-1 d-none d-lg-flex align-items-center justify-content-center">
+
+                <i class="bi bi-arrow-right workflow-arrow"></i>
+
+            </div>
+
+            <!-- Step 3 -->
+            <div class="col-lg-2 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="200">
+
+                <div class="workflow-card">
+
+                    <div class="workflow-icon">
+
+                        <i class="bi bi-cpu-fill"></i>
+
+                    </div>
+
+                    <h5>Threat Detection</h5>
+
+                    <small>
+                        Rules and machine learning analyze packets.
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-1 d-none d-lg-flex align-items-center justify-content-center">
+
+                <i class="bi bi-arrow-right workflow-arrow"></i>
+
+            </div>
+
+            <!-- Step 4 -->
+            <div class="col-lg-2 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="300">
+
+                <div class="workflow-card">
+
+                    <div class="workflow-icon">
+
+                        <i class="bi bi-database-fill"></i>
+
+                    </div>
+
+                    <h5>Store Logs</h5>
+
+                    <small>
+                        Events are stored securely in the database.
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-1 d-none d-lg-flex align-items-center justify-content-center">
+
+                <i class="bi bi-arrow-right workflow-arrow"></i>
+
+            </div>
+
+            <!-- Step 5 -->
+            <div class="col-lg-2 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="400">
+
+                <div class="workflow-card">
+
+                    <div class="workflow-icon">
+
+                        <i class="bi bi-bell-fill"></i>
+
+                    </div>
+
+                    <h5>Alerts</h5>
+
+                    <small>
+                        Notifications are generated instantly.
+                    </small>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-1 d-none d-lg-flex align-items-center justify-content-center">
+
+                <i class="bi bi-arrow-right workflow-arrow"></i>
+
+            </div>
+
+            <!-- Step 6 -->
+            <div class="col-lg-2 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="500">
+
+                <div class="workflow-card">
+
+                    <div class="workflow-icon">
+
+                        <i class="bi bi-speedometer2"></i>
+
+                    </div>
+
+                    <h5>Dashboard</h5>
+
+                    <small>
+                        Administrator monitors threats in real time.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

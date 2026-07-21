@@ -1,0 +1,155 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block page_title %}
+Reports
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h3 class="mb-4">
+        📊 Security Reports
+    </h3>
+
+
+    <div class="row">
+
+
+        <!-- Packet Report -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h5>
+                        📡 Network Traffic Report
+                    </h5>
+
+                    <p>
+                        Generate captured packet activity reports.
+                    </p>
+
+
+                    <a href="{% url 'packet_report_pdf' %}"
+                       class="btn btn-primary">
+
+                        Generate PDF
+
+                    </a>
+
+
+                    <a href="{% url 'packet_report_excel' %}"
+                       class="btn btn-success">
+
+                        Excel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Threat Report -->
+
+        <div class="col-md-4">
+
+            <div class="card shadow">
+
+                <div class="card-body">
+
+                    <h5>
+                        🛡️ Threat Detection Report
+                    </h5>
+
+                    <p>
+                        View detected attacks and severity levels.
+                    </p>
+
+
+                    <a href="{% url 'threat_report_pdf' %}"
+                       class="btn btn-danger">
+
+                        Generate PDF
+
+                    </a>
+
+
+                    <a href="{% url 'threat_report_excel' %}"
+                       class="btn btn-success">
+
+                        Excel
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Alert Report -->
+
+        <div class="col-md-4">
+
+
+            <div class="card shadow">
+
+
+                <div class="card-body">
+
+
+                    <h5>
+                        🚨 Alert Report
+                    </h5>
+
+
+                    <p>
+                        Export security alerts and notifications.
+                    </p>
+
+
+                    <a href="{% url 'alert_report_pdf' %}"
+                       class="btn btn-warning">
+
+                        Generate PDF
+
+                    </a>
+
+
+                    <a href="{% url 'alert_report_excel' %}"
+                       class="btn btn-success">
+
+                        Excel
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}

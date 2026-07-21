@@ -1,0 +1,3774 @@
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 1
+      GLOBAL • BACKGROUND • KPI METRIC CARDS
+==========================================================*/
+
+
+/*=========================================================
+                    ROOT COLORS
+==========================================================*/
+
+:root{
+
+    --soc-bg:#07111f;
+    --soc-card:#111c2e;
+    --soc-card2:#16243b;
+    --soc-border:rgba(255,255,255,.06);
+
+    --text:#ffffff;
+    --muted:#93a8c6;
+
+    --cyan:#00d9ff;
+    --blue:#3b82f6;
+    --green:#22c55e;
+    --yellow:#f59e0b;
+    --red:#ef4444;
+    --purple:#8b5cf6;
+
+}
+
+
+/*=========================================================
+                    BODY
+==========================================================*/
+
+body{
+
+    background:
+        linear-gradient(
+            180deg,
+            #06101d 0%,
+            #0a1727 100%
+        );
+
+    color:var(--text);
+
+    font-family:
+        "Inter",
+        "Segoe UI",
+        sans-serif;
+
+}
+
+
+/*=========================================================
+                DASHBOARD CONTAINER
+==========================================================*/
+
+.container-fluid{
+
+    animation:
+        dashboardFade .8s ease;
+
+}
+
+@keyframes dashboardFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                KPI ROW SPACING
+==========================================================*/
+
+.row.g-4{
+
+    --bs-gutter-x:1.5rem;
+    --bs-gutter-y:1.5rem;
+
+}
+
+
+/*=========================================================
+                METRIC CARD
+==========================================================*/
+
+.metric-card{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:22px;
+
+    padding:28px;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    min-height:155px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(18,29,46,.98),
+            rgba(10,18,34,.98)
+        );
+
+    border:1px solid var(--soc-border);
+
+    box-shadow:
+
+        0 12px 35px rgba(0,0,0,.30);
+
+    transition:.35s;
+
+}
+
+
+/*=========================================================
+                CARD HOVER
+==========================================================*/
+
+.metric-card:hover{
+
+    transform:
+
+        translateY(-8px);
+
+    box-shadow:
+
+        0 20px 45px rgba(0,0,0,.35);
+
+}
+
+
+/*=========================================================
+                BACKGROUND GLOW
+==========================================================*/
+
+.metric-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+
+    height:260px;
+
+    right:-140px;
+
+    top:-140px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+            rgba(255,255,255,.05),
+
+            transparent 70%
+
+        );
+
+}
+
+
+/*=========================================================
+                METRIC ICON
+==========================================================*/
+
+.metric-icon{
+
+    width:72px;
+
+    height:72px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:18px;
+
+    color:#fff;
+
+    font-size:1.8rem;
+
+    flex-shrink:0;
+
+    transition:.35s;
+
+}
+
+
+/*=========================================================
+                ICON HOVER
+==========================================================*/
+
+.metric-card:hover .metric-icon{
+
+    transform:
+
+        rotate(-8deg)
+        scale(1.08);
+
+}
+
+
+/*=========================================================
+                PACKETS
+==========================================================*/
+
+.metric-icon.packets{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+        );
+
+    box-shadow:
+
+        0 15px 35px rgba(37,99,235,.35);
+
+}
+
+
+/*=========================================================
+                THREATS
+==========================================================*/
+
+.metric-icon.threats{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #991b1b
+        );
+
+    box-shadow:
+
+        0 15px 35px rgba(239,68,68,.35);
+
+}
+
+
+/*=========================================================
+                ALERTS
+==========================================================*/
+
+.metric-icon.alerts{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #f59e0b,
+            #d97706
+        );
+
+    box-shadow:
+
+        0 15px 35px rgba(245,158,11,.35);
+
+}
+
+
+/*=========================================================
+                STATUS
+==========================================================*/
+
+.metric-icon.status{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #22c55e,
+            #15803d
+        );
+
+    box-shadow:
+
+        0 15px 35px rgba(34,197,94,.35);
+
+}
+
+
+/*=========================================================
+                ICON ANIMATION
+==========================================================*/
+
+.metric-icon i{
+
+    animation:iconPulse 2.5s infinite;
+
+}
+
+@keyframes iconPulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.12);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                METRIC TITLE
+==========================================================*/
+
+.metric-card small{
+
+    display:block;
+
+    color:var(--muted);
+
+    font-size:.80rem;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+}
+
+
+/*=========================================================
+                METRIC VALUE
+==========================================================*/
+
+.metric-card h2{
+
+    margin:10px 0;
+
+    font-size:2.3rem;
+
+    font-weight:800;
+
+    color:#fff;
+
+    line-height:1;
+
+}
+
+
+/*=========================================================
+                SUBTITLE
+==========================================================*/
+
+.metric-card .small{
+
+    font-size:.83rem;
+
+    font-weight:600;
+
+}
+
+
+/*=========================================================
+                VALUE ANIMATION
+==========================================================*/
+
+.metric-card:hover h2{
+
+    color:var(--cyan);
+
+}
+
+
+/*=========================================================
+                BORDER COLORS
+==========================================================*/
+
+.metric-card:nth-child(1){
+
+    border-left:5px solid #3b82f6;
+
+}
+
+.metric-card:nth-child(2){
+
+    border-left:5px solid #ef4444;
+
+}
+
+.metric-card:nth-child(3){
+
+    border-left:5px solid #f59e0b;
+
+}
+
+.metric-card:nth-child(4){
+
+    border-left:5px solid #22c55e;
+
+}
+
+
+/*=========================================================
+                LIVE UPDATE EFFECT
+==========================================================*/
+
+.metric-update{
+
+    animation:updateFlash .7s;
+
+}
+
+@keyframes updateFlash{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.12);
+
+        color:var(--cyan);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:1200px){
+
+.metric-card{
+
+    min-height:145px;
+
+}
+
+}
+
+@media(max-width:992px){
+
+.metric-card{
+
+    padding:24px;
+
+}
+
+.metric-icon{
+
+    width:65px;
+
+    height:65px;
+
+    font-size:1.6rem;
+
+}
+
+.metric-card h2{
+
+    font-size:2rem;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.metric-card{
+
+    flex-direction:column;
+
+    text-align:center;
+
+    gap:18px;
+
+}
+
+.metric-icon{
+
+    margin:auto;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.metric-card{
+
+    padding:20px;
+
+}
+
+.metric-card h2{
+
+    font-size:1.8rem;
+
+}
+
+.metric-icon{
+
+    width:58px;
+
+    height:58px;
+
+    font-size:1.4rem;
+
+}
+
+}
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 2
+      PANEL CARDS • CHARTS • AI INTELLIGENCE
+==========================================================*/
+
+
+/*=========================================================
+                    PANEL CARD
+==========================================================*/
+
+.panel-card{
+
+    position:relative;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,29,46,.98),
+            rgba(10,18,34,.98)
+        );
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.28);
+
+    transition:.35s;
+
+}
+
+.panel-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 22px 50px rgba(0,0,0,.35);
+
+}
+
+
+/*=========================================================
+                TOP GLOW
+==========================================================*/
+
+.panel-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #06b6d4,
+            #3b82f6,
+            #8b5cf6,
+            #06b6d4
+        );
+
+}
+
+
+/*=========================================================
+                PANEL HEADER
+==========================================================*/
+
+.panel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px 24px;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+    background:
+        rgba(255,255,255,.02);
+
+}
+
+
+.panel-header h5{
+
+    margin:0;
+
+    color:#fff;
+
+    font-size:1.08rem;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+
+.panel-header h5 i{
+
+    color:#00d9ff;
+
+    font-size:1.15rem;
+
+}
+
+
+/*=========================================================
+                    PANEL TAG
+==========================================================*/
+
+.panel-tag{
+
+    padding:6px 14px;
+
+    border-radius:30px;
+
+    background:#2563eb;
+
+    color:#fff;
+
+    font-size:.72rem;
+
+    font-weight:700;
+
+    letter-spacing:.8px;
+
+    animation:pulseTag 2s infinite;
+
+}
+
+
+.panel-tag.success{
+
+    background:#16a34a;
+
+}
+
+
+.panel-tag.danger{
+
+    background:#dc2626;
+
+}
+
+
+@keyframes pulseTag{
+
+    0%{
+
+        box-shadow:0 0 0 rgba(37,99,235,.45);
+
+    }
+
+    70%{
+
+        box-shadow:0 0 18px rgba(37,99,235,.45);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 rgba(37,99,235,0);
+
+    }
+
+}
+
+
+/*=========================================================
+                CHART AREA
+==========================================================*/
+
+.chart-wrap{
+
+    position:relative;
+
+    padding:25px;
+
+    height:420px;
+
+}
+
+
+.chart-wrap canvas{
+
+    width:100%!important;
+
+    height:100%!important;
+
+}
+
+
+/*=========================================================
+            AI STATUS LIST
+==========================================================*/
+
+.status-list{
+
+    padding:18px 22px;
+
+}
+
+
+.status-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    transition:.30s;
+
+}
+
+
+.status-item:last-child{
+
+    border-bottom:none;
+
+}
+
+
+.status-item:hover{
+
+    padding-left:10px;
+
+    background:rgba(255,255,255,.02);
+
+}
+
+
+.status-item span:first-child{
+
+    color:#b8c5d9;
+
+    font-size:.93rem;
+
+}
+
+
+.status-item strong{
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                STATUS BADGES
+==========================================================*/
+
+.status-item .badge{
+
+    padding:7px 12px;
+
+    border-radius:30px;
+
+    font-size:.74rem;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                SUCCESS BADGE
+==========================================================*/
+
+.bg-success{
+
+    background:
+        linear-gradient(
+            135deg,
+            #16a34a,
+            #22c55e
+        )!important;
+
+}
+
+
+/*=========================================================
+                INFO BADGE
+==========================================================*/
+
+.bg-info{
+
+    background:
+        linear-gradient(
+            135deg,
+            #0891b2,
+            #06b6d4
+        )!important;
+
+    color:#fff!important;
+
+}
+
+
+/*=========================================================
+                PRIMARY BADGE
+==========================================================*/
+
+.bg-primary{
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        )!important;
+
+}
+
+
+/*=========================================================
+                WARNING BADGE
+==========================================================*/
+
+.bg-warning{
+
+    background:
+        linear-gradient(
+            135deg,
+            #d97706,
+            #f59e0b
+        )!important;
+
+    color:#111!important;
+
+}
+
+
+/*=========================================================
+                DANGER BADGE
+==========================================================*/
+
+.bg-danger{
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ef4444
+        )!important;
+
+}
+
+
+/*=========================================================
+                AI PANEL HOVER
+==========================================================*/
+
+.status-item:hover strong{
+
+    color:#00d9ff;
+
+}
+
+
+/*=========================================================
+                PANEL ANIMATION
+==========================================================*/
+
+.panel-card{
+
+    animation:panelFade .6s ease;
+
+}
+
+
+@keyframes panelFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.panel-header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+}
+
+.chart-wrap{
+
+    height:340px;
+
+}
+
+}
+
+
+@media(max-width:768px){
+
+.chart-wrap{
+
+    height:300px;
+
+}
+
+.panel-header{
+
+    padding:18px;
+
+}
+
+.status-list{
+
+    padding:18px;
+
+}
+
+}
+
+
+@media(max-width:576px){
+
+.panel-header h5{
+
+    font-size:1rem;
+
+}
+
+.panel-tag{
+
+    font-size:.68rem;
+
+}
+
+.status-item{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:6px;
+
+}
+
+.chart-wrap{
+
+    height:260px;
+
+}
+
+}
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 3
+     LIVE TABLES • THREAT TABLE • BADGES
+==========================================================*/
+
+
+/*=========================================================
+                    TABLE AREA
+==========================================================*/
+
+.table-responsive{
+
+    border-radius:0 0 20px 20px;
+
+    overflow:hidden;
+
+}
+
+
+/*=========================================================
+                DASHBOARD TABLE
+==========================================================*/
+
+.dashboard-table{
+
+    margin:0;
+
+    color:#e5eefb;
+
+    background:transparent;
+
+}
+
+
+.dashboard-table thead{
+
+    background:
+        linear-gradient(
+            90deg,
+            #0b1323,
+            #13223a
+        );
+
+}
+
+
+.dashboard-table thead th{
+
+    border:none;
+
+    color:#d7e7ff;
+
+    padding:18px 16px;
+
+    font-size:.84rem;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    white-space:nowrap;
+
+}
+
+
+/*=========================================================
+                    TABLE BODY
+==========================================================*/
+
+.dashboard-table tbody tr{
+
+    background:transparent;
+
+    transition:.30s;
+
+}
+
+
+.dashboard-table tbody td{
+
+    padding:16px;
+
+    vertical-align:middle;
+
+    border-color:rgba(255,255,255,.05);
+
+    color:#d9e6f7;
+
+    font-size:.92rem;
+
+}
+
+
+/*=========================================================
+                ROW HOVER
+==========================================================*/
+
+.dashboard-table tbody tr:hover{
+
+    background:
+
+        rgba(0,217,255,.06);
+
+    transform:scale(1.005);
+
+}
+
+
+/*=========================================================
+                STRONG TEXT
+==========================================================*/
+
+.dashboard-table strong{
+
+    color:#ffffff;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                EMPTY ROW
+==========================================================*/
+
+#packet-empty,
+#threat-empty{
+
+    height:90px;
+
+    font-size:1rem;
+
+    color:#8fa8c7;
+
+}
+
+
+/*=========================================================
+                BADGE
+==========================================================*/
+
+.dashboard-table .badge{
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-size:.74rem;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+}
+
+
+/*=========================================================
+                    TCP
+==========================================================*/
+
+.badge.bg-primary{
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        )!important;
+
+}
+
+
+/*=========================================================
+                    UDP
+==========================================================*/
+
+.badge.bg-success{
+
+    background:
+        linear-gradient(
+            135deg,
+            #16a34a,
+            #22c55e
+        )!important;
+
+}
+
+
+/*=========================================================
+                    ICMP
+==========================================================*/
+
+.badge.bg-warning{
+
+    background:
+        linear-gradient(
+            135deg,
+            #d97706,
+            #f59e0b
+        )!important;
+
+    color:#111!important;
+
+}
+
+
+/*=========================================================
+                    ARP
+==========================================================*/
+
+.badge.bg-info{
+
+    background:
+        linear-gradient(
+            135deg,
+            #0ea5e9,
+            #06b6d4
+        )!important;
+
+    color:#fff!important;
+
+}
+
+
+/*=========================================================
+                    HTTPS
+==========================================================*/
+
+.badge.bg-dark{
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e293b,
+            #0f172a
+        )!important;
+
+}
+
+
+/*=========================================================
+                    DNS
+==========================================================*/
+
+.badge.bg-secondary{
+
+    background:
+        linear-gradient(
+            135deg,
+            #475569,
+            #64748b
+        )!important;
+
+}
+
+
+/*=========================================================
+                LIGHT BADGE
+==========================================================*/
+
+.badge.bg-light{
+
+    background:#eef6ff!important;
+
+    color:#222!important;
+
+}
+
+
+/*=========================================================
+                CRITICAL
+==========================================================*/
+
+.badge.bg-danger{
+
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #ef4444
+        )!important;
+
+}
+
+
+/*=========================================================
+                THREAT ROW
+==========================================================*/
+
+#threat-table-body tr{
+
+    animation:fadeThreat .35s ease;
+
+}
+
+
+@keyframes fadeThreat{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                LIVE PACKET ROW
+==========================================================*/
+
+#packet-table-body tr{
+
+    animation:packetFade .35s ease;
+
+}
+
+
+@keyframes packetFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(-15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+/*=========================================================
+            SCROLLBAR
+==========================================================*/
+
+.table-responsive::-webkit-scrollbar{
+
+    height:8px;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+
+    background:#2b3f5d;
+
+    border-radius:20px;
+
+}
+
+.table-responsive::-webkit-scrollbar-track{
+
+    background:#111b2d;
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.dashboard-table{
+
+    min-width:900px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.dashboard-table thead th{
+
+    font-size:.75rem;
+
+    padding:14px;
+
+}
+
+.dashboard-table tbody td{
+
+    font-size:.82rem;
+
+    padding:14px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.dashboard-table{
+
+    min-width:950px;
+
+}
+
+.dashboard-table .badge{
+
+    font-size:.68rem;
+
+    padding:6px 10px;
+
+}
+
+}
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 4
+     LIVE EVENT FEED • THREAT INTELLIGENCE
+        STATUS PANELS • ANIMATIONS
+==========================================================*/
+
+
+/*=========================================================
+                    EVENT FEED
+==========================================================*/
+
+.event-feed{
+
+    height:420px;
+
+    overflow-y:auto;
+
+    padding:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+
+/*=========================================================
+                    SCROLLBAR
+==========================================================*/
+
+.event-feed::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+.event-feed::-webkit-scrollbar-thumb{
+
+    background:#314766;
+
+    border-radius:20px;
+
+}
+
+.event-feed::-webkit-scrollbar-track{
+
+    background:#121d2f;
+
+}
+
+
+/*=========================================================
+                    EVENT ITEM
+==========================================================*/
+
+.event-item{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:18px;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.03),
+            rgba(255,255,255,.01)
+        );
+
+    border:1px solid rgba(255,255,255,.05);
+
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+.event-item:hover{
+
+    transform:translateX(8px);
+
+    background:
+
+        rgba(0,217,255,.05);
+
+    border-color:
+
+        rgba(0,217,255,.30);
+
+}
+
+
+/*=========================================================
+                LEFT GLOW
+==========================================================*/
+
+.event-item::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:4px;
+
+    height:100%;
+
+    background:#00d9ff;
+
+    opacity:.9;
+
+}
+
+
+/*=========================================================
+                    EVENT DOT
+==========================================================*/
+
+.event-dot{
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:50%;
+
+    margin-top:6px;
+
+    flex-shrink:0;
+
+    animation:eventPulse 2s infinite;
+
+}
+
+
+.event-dot.success{
+
+    background:#22c55e;
+
+    box-shadow:0 0 18px #22c55e;
+
+}
+
+.event-dot.info{
+
+    background:#3b82f6;
+
+    box-shadow:0 0 18px #3b82f6;
+
+}
+
+.event-dot.warning{
+
+    background:#f59e0b;
+
+    box-shadow:0 0 18px #f59e0b;
+
+}
+
+.event-dot.danger{
+
+    background:#ef4444;
+
+    box-shadow:0 0 18px #ef4444;
+
+}
+
+
+@keyframes eventPulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.35);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                EVENT CONTENT
+==========================================================*/
+
+.event-item strong{
+
+    display:block;
+
+    color:#ffffff;
+
+    font-size:.96rem;
+
+    margin-bottom:6px;
+
+}
+
+
+.event-item p{
+
+    color:#b8c7db;
+
+    margin-bottom:6px;
+
+    font-size:.88rem;
+
+}
+
+
+.event-item small{
+
+    color:#7d96b8;
+
+}
+
+
+/*=========================================================
+                THREAT INTELLIGENCE
+==========================================================*/
+
+.status-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+.status-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:15px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    transition:.3s;
+
+}
+
+
+.status-item:last-child{
+
+    border-bottom:none;
+
+}
+
+
+.status-item:hover{
+
+    padding-left:10px;
+
+    background:rgba(255,255,255,.02);
+
+}
+
+
+.status-item span:first-child{
+
+    color:#9eb2cf;
+
+    font-size:.92rem;
+
+}
+
+
+.status-item strong{
+
+    color:#ffffff;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                STATUS BADGES
+==========================================================*/
+
+.status-item .badge{
+
+    border-radius:30px;
+
+    padding:7px 14px;
+
+    font-size:.74rem;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                HOVER VALUES
+==========================================================*/
+
+.status-item:hover strong{
+
+    color:#00d9ff;
+
+}
+
+
+/*=========================================================
+                LIVE EFFECT
+==========================================================*/
+
+.panel-tag.danger{
+
+    animation:dangerPulse 2s infinite;
+
+}
+
+
+@keyframes dangerPulse{
+
+    0%{
+
+        box-shadow:0 0 0 rgba(239,68,68,.40);
+
+    }
+
+    50%{
+
+        box-shadow:0 0 20px rgba(239,68,68,.70);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 rgba(239,68,68,0);
+
+    }
+
+}
+
+
+/*=========================================================
+            EVENT APPEAR ANIMATION
+==========================================================*/
+
+.event-item{
+
+    animation:eventSlide .45s ease;
+
+}
+
+
+@keyframes eventSlide{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.event-feed{
+
+    height:350px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.event-feed{
+
+    height:300px;
+
+    padding:18px;
+
+}
+
+.event-item{
+
+    padding:16px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.event-item{
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+.event-dot{
+
+    margin-top:0;
+
+}
+
+.status-item{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:8px;
+
+}
+
+}
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 5
+        SECURITY SCORE • AI MODEL • SYSTEM MONITOR
+==========================================================*/
+
+
+/*=========================================================
+                SECURITY SCORE CARD
+==========================================================*/
+
+.display-2{
+
+    font-size:4.5rem;
+
+    font-weight:800;
+
+    letter-spacing:-2px;
+
+    text-shadow:
+
+        0 0 20px rgba(34,197,94,.35);
+
+}
+
+
+.panel-card.text-center{
+
+    padding-bottom:25px;
+
+}
+
+
+/*=========================================================
+            SECURITY SCORE ANIMATION
+==========================================================*/
+
+.display-2{
+
+    animation:
+
+        scorePulse 3s infinite;
+
+}
+
+@keyframes scorePulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                PROGRESS BAR
+==========================================================*/
+
+.progress{
+
+    height:10px;
+
+    border-radius:50px;
+
+    overflow:hidden;
+
+    background:
+
+        rgba(255,255,255,.08);
+
+}
+
+
+.progress-bar{
+
+    border-radius:50px;
+
+    transition:width .6s ease;
+
+}
+
+
+/*=========================================================
+                GLOWING PROGRESS
+==========================================================*/
+
+.progress-bar.bg-success{
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #22c55e,
+            #4ade80
+        ) !important;
+
+    box-shadow:
+
+        0 0 18px rgba(34,197,94,.45);
+
+}
+
+
+.progress-bar.bg-info{
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #06b6d4,
+            #38bdf8
+        ) !important;
+
+}
+
+
+.progress-bar.bg-warning{
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #f59e0b,
+            #facc15
+        ) !important;
+
+}
+
+
+.progress-bar.bg-danger{
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #dc2626,
+            #ef4444
+        ) !important;
+
+}
+
+
+/*=========================================================
+                AI MODEL PANEL
+==========================================================*/
+
+.status-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+.status-item{
+
+    transition:.35s;
+
+}
+
+
+.status-item:hover{
+
+    background:
+
+        rgba(255,255,255,.03);
+
+    border-radius:10px;
+
+    padding-left:12px;
+
+}
+
+
+/*=========================================================
+                LABEL
+==========================================================*/
+
+.status-item span{
+
+    color:#9eb1c9;
+
+    font-size:.92rem;
+
+}
+
+
+/*=========================================================
+                VALUE
+==========================================================*/
+
+.status-item strong{
+
+    color:#ffffff;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+            COLOR HIGHLIGHTS
+==========================================================*/
+
+.status-item .text-success{
+
+    color:#22c55e !important;
+
+}
+
+.status-item .text-danger{
+
+    color:#ef4444 !important;
+
+}
+
+.status-item .text-warning{
+
+    color:#f59e0b !important;
+
+}
+
+.status-item .text-info{
+
+    color:#38bdf8 !important;
+
+}
+
+
+/*=========================================================
+                SYSTEM MONITOR
+==========================================================*/
+
+.status-item .badge{
+
+    min-width:90px;
+
+    text-align:center;
+
+    border-radius:30px;
+
+    padding:7px 14px;
+
+    font-size:.74rem;
+
+}
+
+
+/*=========================================================
+            STATUS INDICATOR
+==========================================================*/
+
+.status-item .badge.bg-success{
+
+    animation:
+
+        onlinePulse 2s infinite;
+
+}
+
+@keyframes onlinePulse{
+
+    0%{
+
+        box-shadow:
+
+            0 0 0 rgba(34,197,94,.4);
+
+    }
+
+    50%{
+
+        box-shadow:
+
+            0 0 16px rgba(34,197,94,.7);
+
+    }
+
+    100%{
+
+        box-shadow:
+
+            0 0 0 rgba(34,197,94,0);
+
+    }
+
+}
+
+
+/*=========================================================
+                PANEL HOVER
+==========================================================*/
+
+.panel-card:hover .display-2{
+
+    color:#4ade80;
+
+}
+
+
+.panel-card:hover .status-item strong{
+
+    color:#ffffff;
+
+}
+
+
+/*=========================================================
+            GLASS OVERLAY
+==========================================================*/
+
+.panel-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    height:100%;
+
+    pointer-events:none;
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(255,255,255,.04),
+
+            transparent,
+
+            transparent
+
+        );
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.display-2{
+
+    font-size:3.8rem;
+
+}
+
+}
+
+
+@media(max-width:768px){
+
+.display-2{
+
+    font-size:3rem;
+
+}
+
+.status-item{
+
+    gap:8px;
+
+}
+
+}
+
+
+@media(max-width:576px){
+
+.display-2{
+
+    font-size:2.5rem;
+
+}
+
+.progress{
+
+    height:8px;
+
+}
+
+.status-item{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+}
+
+}
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 6
+      QUICK ACTIONS • WORKFLOW • BUTTONS
+==========================================================*/
+
+
+/*=========================================================
+                QUICK ACTIONS
+==========================================================*/
+
+.btn{
+
+    border-radius:14px;
+
+    padding:14px 18px;
+
+    font-weight:600;
+
+    letter-spacing:.3px;
+
+    transition:.35s;
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+/*=========================================================
+                BUTTON ICON
+==========================================================*/
+
+.btn i{
+
+    margin-right:8px;
+
+    transition:.35s;
+
+}
+
+
+.btn:hover i{
+
+    transform:translateX(4px);
+
+}
+
+
+/*=========================================================
+            OUTLINE BUTTONS
+==========================================================*/
+
+.btn-outline-info{
+
+    color:#38bdf8;
+
+    border:1px solid #38bdf8;
+
+    background:rgba(56,189,248,.05);
+
+}
+
+
+.btn-outline-info:hover{
+
+    color:#fff;
+
+    background:#38bdf8;
+
+    box-shadow:
+
+        0 10px 25px rgba(56,189,248,.35);
+
+}
+
+
+.btn-outline-danger{
+
+    color:#ef4444;
+
+    border:1px solid #ef4444;
+
+    background:rgba(239,68,68,.05);
+
+}
+
+
+.btn-outline-danger:hover{
+
+    color:#fff;
+
+    background:#ef4444;
+
+    box-shadow:
+
+        0 10px 25px rgba(239,68,68,.35);
+
+}
+
+
+.btn-outline-success{
+
+    color:#22c55e;
+
+    border:1px solid #22c55e;
+
+    background:rgba(34,197,94,.05);
+
+}
+
+
+.btn-outline-success:hover{
+
+    color:#fff;
+
+    background:#22c55e;
+
+    box-shadow:
+
+        0 10px 25px rgba(34,197,94,.35);
+
+}
+
+
+.btn-outline-warning{
+
+    color:#f59e0b;
+
+    border:1px solid #f59e0b;
+
+    background:rgba(245,158,11,.05);
+
+}
+
+
+.btn-outline-warning:hover{
+
+    color:#fff;
+
+    background:#f59e0b;
+
+    box-shadow:
+
+        0 10px 25px rgba(245,158,11,.35);
+
+}
+
+
+/*=========================================================
+                RIPPLE EFFECT
+==========================================================*/
+
+.btn::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:100%;
+
+    height:100%;
+
+    background:
+
+        linear-gradient(
+
+            90deg,
+
+            transparent,
+
+            rgba(255,255,255,.18),
+
+            transparent
+
+        );
+
+    transition:.6s;
+
+}
+
+
+.btn:hover::before{
+
+    left:120%;
+
+}
+
+
+/*=========================================================
+            DETECTION WORKFLOW
+==========================================================*/
+
+.panel-card .col{
+
+    position:relative;
+
+    padding:30px 15px;
+
+    transition:.35s;
+
+}
+
+
+/*=========================================================
+            CONNECTOR LINE
+==========================================================*/
+
+.panel-card .col:not(:last-child)::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:42px;
+
+    right:-50%;
+
+    width:100%;
+
+    height:2px;
+
+    background:
+
+        linear-gradient(
+
+            90deg,
+
+            #00d9ff,
+
+            rgba(0,217,255,.15)
+
+        );
+
+}
+
+
+/*=========================================================
+                WORKFLOW ICON
+==========================================================*/
+
+.panel-card .col i{
+
+    width:78px;
+
+    height:78px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    font-size:2rem;
+
+    background:
+
+        rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.35s;
+
+}
+
+
+/*=========================================================
+            WORKFLOW HOVER
+==========================================================*/
+
+.panel-card .col:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+.panel-card .col:hover i{
+
+    transform:scale(1.12);
+
+    box-shadow:
+
+        0 0 25px rgba(0,217,255,.35);
+
+}
+
+
+/*=========================================================
+                STEP TITLE
+==========================================================*/
+
+.panel-card .col h6{
+
+    color:#ffffff;
+
+    font-weight:600;
+
+    margin-top:18px;
+
+}
+
+
+/*=========================================================
+                ICON COLORS
+==========================================================*/
+
+.bi-router-fill{
+
+    color:#38bdf8;
+
+}
+
+.bi-funnel-fill{
+
+    color:#f59e0b;
+
+}
+
+.bi-cpu-fill{
+
+    color:#22c55e;
+
+}
+
+.bi-shield-fill-exclamation{
+
+    color:#ef4444;
+
+}
+
+.bi-bell-fill{
+
+    color:#facc15;
+
+}
+
+.bi-database-fill-check{
+
+    color:#3b82f6;
+
+}
+
+
+/*=========================================================
+            FLOATING ICON EFFECT
+==========================================================*/
+
+.panel-card .col i{
+
+    animation:
+
+        workflowFloat 3s ease-in-out infinite;
+
+}
+
+
+@keyframes workflowFloat{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-8px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+            RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.panel-card .col{
+
+    margin-bottom:25px;
+
+}
+
+.panel-card .col::after{
+
+    display:none;
+
+}
+
+}
+
+
+@media(max-width:768px){
+
+.panel-card .col i{
+
+    width:64px;
+
+    height:64px;
+
+    font-size:1.7rem;
+
+}
+
+}
+
+
+@media(max-width:576px){
+
+.panel-card .col{
+
+    padding:20px 10px;
+
+}
+
+.panel-card .col h6{
+
+    font-size:.9rem;
+
+}
+
+.btn{
+
+    padding:12px 14px;
+
+    font-size:.9rem;
+
+}
+
+}
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 7
+        FOOTER • SCROLLBAR • GLOW EFFECTS
+        ANIMATIONS • LOADING • POLISH
+==========================================================*/
+
+
+/*=========================================================
+                    FOOTER
+==========================================================*/
+
+hr{
+
+    border-color:rgba(255,255,255,.08);
+
+    margin:2rem 0;
+
+}
+
+.text-center.text-muted{
+
+    color:#8ea7c8!important;
+
+}
+
+.text-center.text-muted p{
+
+    color:#d7e7ff;
+
+    font-weight:600;
+
+    letter-spacing:.6px;
+
+    margin-bottom:8px;
+
+}
+
+.text-center.text-muted small{
+
+    color:#7f94b3;
+
+    font-size:.85rem;
+
+}
+
+
+/*=========================================================
+                CUSTOM SCROLLBAR
+==========================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#0b1627;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            #1d4ed8,
+
+            #06b6d4
+
+        );
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            #2563eb,
+
+            #22d3ee
+
+        );
+
+}
+
+
+/*=========================================================
+                CARD GLOW
+==========================================================*/
+
+.metric-card,
+.panel-card{
+
+    position:relative;
+
+}
+
+.metric-card::after,
+.panel-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:22px;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transition:.4s;
+
+    box-shadow:
+
+        inset 0 0 35px rgba(0,217,255,.06),
+
+        0 0 25px rgba(0,217,255,.08);
+
+}
+
+.metric-card:hover::after,
+.panel-card:hover::after{
+
+    opacity:1;
+
+}
+
+
+/*=========================================================
+                HOVER BORDER
+==========================================================*/
+
+.metric-card:hover,
+.panel-card:hover{
+
+    border-color:
+
+        rgba(0,217,255,.28);
+
+}
+
+
+/*=========================================================
+                LIVE GLOW
+==========================================================*/
+
+.panel-tag{
+
+    position:relative;
+
+}
+
+.panel-tag::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-10px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    animation:liveBlink 1.2s infinite;
+
+}
+
+@keyframes liveBlink{
+
+    0%{
+
+        opacity:1;
+
+        transform:translateY(-50%) scale(1);
+
+    }
+
+    50%{
+
+        opacity:.2;
+
+        transform:translateY(-50%) scale(1.7);
+
+    }
+
+    100%{
+
+        opacity:1;
+
+        transform:translateY(-50%) scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                FADE IN
+==========================================================*/
+
+.metric-card,
+.panel-card{
+
+    animation:fadeCard .6s ease;
+
+}
+
+@keyframes fadeCard{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                TABLE FLASH
+==========================================================*/
+
+.flash-row{
+
+    animation:flashRow .8s ease;
+
+}
+
+@keyframes flashRow{
+
+    0%{
+
+        background:
+
+            rgba(0,217,255,.30);
+
+    }
+
+    100%{
+
+        background:transparent;
+
+    }
+
+}
+
+
+/*=========================================================
+                LOADING SHIMMER
+==========================================================*/
+
+.loading{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.loading::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-150%;
+
+    width:80%;
+
+    height:100%;
+
+    background:
+
+        linear-gradient(
+
+            90deg,
+
+            transparent,
+
+            rgba(255,255,255,.08),
+
+            transparent
+
+        );
+
+    animation:loadingMove 1.8s infinite;
+
+}
+
+@keyframes loadingMove{
+
+    from{
+
+        left:-150%;
+
+    }
+
+    to{
+
+        left:150%;
+
+    }
+
+}
+
+
+/*=========================================================
+                SHADOWS
+==========================================================*/
+
+.metric-card{
+
+    box-shadow:
+
+        0 12px 35px rgba(0,0,0,.35);
+
+}
+
+.panel-card{
+
+    box-shadow:
+
+        0 14px 40px rgba(0,0,0,.30);
+
+}
+
+
+/*=========================================================
+                SMOOTH TRANSITIONS
+==========================================================*/
+
+*{
+
+    transition:
+
+        background-color .25s,
+
+        color .25s,
+
+        border-color .25s,
+
+        box-shadow .25s,
+
+        transform .25s;
+
+}
+
+
+/*=========================================================
+                SELECTION
+==========================================================*/
+
+::selection{
+
+    background:#06b6d4;
+
+    color:#fff;
+
+}
+
+
+/*=========================================================
+                FOCUS
+==========================================================*/
+
+button:focus,
+input:focus,
+select:focus{
+
+    outline:none;
+
+    box-shadow:
+
+        0 0 0 .2rem rgba(6,182,212,.25);
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.panel-card,
+.metric-card{
+
+    border-radius:18px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.text-center.text-muted p{
+
+    font-size:.95rem;
+
+}
+
+.text-center.text-muted small{
+
+    font-size:.78rem;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.metric-card,
+.panel-card{
+
+    border-radius:15px;
+
+}
+
+hr{
+
+    margin:1.2rem 0;
+
+}
+
+}
+/*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                    PART 8
+      MOBILE RESPONSIVE • FINAL POLISH • SOC EFFECTS
+==========================================================*/
+
+
+/*=========================================================
+                LIVE STATUS EFFECT
+==========================================================*/
+
+.panel-tag{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.panel-tag::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-120%;
+
+    width:45%;
+
+    height:100%;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.45),
+            transparent
+        );
+
+    animation:tagShine 3s linear infinite;
+
+}
+
+@keyframes tagShine{
+
+    from{
+
+        left:-120%;
+
+    }
+
+    to{
+
+        left:150%;
+
+    }
+
+}
+
+
+/*=========================================================
+                KPI CARD FLOAT
+==========================================================*/
+
+.metric-card{
+
+    animation:
+
+        metricFloat 5s ease-in-out infinite;
+
+}
+
+.metric-card:nth-child(2){
+
+    animation-delay:.3s;
+
+}
+
+.metric-card:nth-child(3){
+
+    animation-delay:.6s;
+
+}
+
+.metric-card:nth-child(4){
+
+    animation-delay:.9s;
+
+}
+
+@keyframes metricFloat{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-4px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                PANEL SHINE
+==========================================================*/
+
+.panel-card{
+
+    overflow:hidden;
+
+}
+
+.panel-card::before{
+
+    animation:borderGlow 5s linear infinite;
+
+}
+
+@keyframes borderGlow{
+
+    0%{
+
+        filter:hue-rotate(0deg);
+
+    }
+
+    100%{
+
+        filter:hue-rotate(360deg);
+
+    }
+
+}
+
+
+/*=========================================================
+                TABLE HOVER
+==========================================================*/
+
+.dashboard-table tbody tr:hover td{
+
+    color:#ffffff;
+
+}
+
+.dashboard-table tbody tr:hover strong{
+
+    color:#00d9ff;
+
+}
+
+
+/*=========================================================
+                STATUS ITEM
+==========================================================*/
+
+.status-item{
+
+    position:relative;
+
+}
+
+.status-item::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-20px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:8px;
+
+    height:8px;
+
+    border-radius:50%;
+
+    background:#00d9ff;
+
+    opacity:0;
+
+    transition:.35s;
+
+}
+
+.status-item:hover::before{
+
+    opacity:1;
+
+    left:0;
+
+}
+
+
+/*=========================================================
+                PANEL TITLE
+==========================================================*/
+
+.panel-header h5{
+
+    transition:.35s;
+
+}
+
+.panel-card:hover .panel-header h5{
+
+    color:#00d9ff;
+
+}
+
+
+/*=========================================================
+                GLASS EFFECT
+==========================================================*/
+
+.metric-card,
+.panel-card{
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+}
+
+
+/*=========================================================
+                LIVE FEED GLOW
+==========================================================*/
+
+.event-item{
+
+    box-shadow:
+
+        inset 0 0 0 rgba(0,217,255,0);
+
+}
+
+.event-item:hover{
+
+    box-shadow:
+
+        inset 0 0 20px rgba(0,217,255,.08);
+
+}
+
+
+/*=========================================================
+                BUTTON EFFECT
+==========================================================*/
+
+.btn{
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.6px;
+
+}
+
+.btn:hover{
+
+    transform:
+
+        translateY(-3px);
+
+}
+
+
+/*=========================================================
+                CHART CONTAINER
+==========================================================*/
+
+.chart-wrap{
+
+    position:relative;
+
+}
+
+.chart-wrap::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:18px;
+
+    border-radius:18px;
+
+    border:1px solid rgba(255,255,255,.04);
+
+    pointer-events:none;
+
+}
+
+
+/*=========================================================
+                SOFT SHADOWS
+==========================================================*/
+
+.metric-card:hover{
+
+    box-shadow:
+
+        0 20px 45px rgba(0,0,0,.40),
+
+        0 0 25px rgba(0,217,255,.10);
+
+}
+
+.panel-card:hover{
+
+    box-shadow:
+
+        0 22px 50px rgba(0,0,0,.38),
+
+        0 0 25px rgba(0,217,255,.08);
+
+}
+
+
+/*=========================================================
+                MOBILE
+==========================================================*/
+
+@media(max-width:992px){
+
+.panel-header{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+}
+
+.metric-card{
+
+    margin-bottom:10px;
+
+}
+
+}
+
+
+@media(max-width:768px){
+
+.dashboard-table{
+
+    font-size:.85rem;
+
+}
+
+.chart-wrap{
+
+    height:300px;
+
+}
+
+.event-feed{
+
+    height:300px;
+
+}
+
+.panel-header h5{
+
+    font-size:1rem;
+
+}
+
+.metric-card{
+
+    padding:20px;
+
+}
+
+}
+
+
+@media(max-width:576px){
+
+.container-fluid{
+
+    padding-left:12px;
+
+    padding-right:12px;
+
+}
+
+.metric-card{
+
+    flex-direction:column;
+
+    text-align:center;
+
+    gap:15px;
+
+}
+
+.metric-icon{
+
+    margin:auto;
+
+}
+
+.metric-card h2{
+
+    font-size:2rem;
+
+}
+
+.panel-header{
+
+    padding:16px;
+
+}
+
+.chart-wrap{
+
+    height:250px;
+
+}
+
+.dashboard-table{
+
+    min-width:900px;
+
+}
+
+.status-item{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:8px;
+
+}
+
+.btn{
+
+    font-size:.85rem;
+
+}
+
+}
+
+
+/*=========================================================
+                PRINT
+==========================================================*/
+
+@media print{
+
+.panel-tag,
+.btn,
+.event-feed{
+
+    display:none !important;
+
+}
+
+.metric-card,
+.panel-card{
+
+    box-shadow:none !important;
+
+    border:1px solid #ddd;
+
+    background:#fff;
+
+    color:#000;
+
+}
+
+body{
+
+    background:#fff;
+
+}
+
+}
+
+
+/*=========================================================
+                END OF MONITORING CSS
+==========================================================*/

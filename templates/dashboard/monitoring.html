@@ -1,0 +1,3834 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block page_title %}
+Live Monitoring
+{% endblock %}
+
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /*=========================================================
+                THREATDETECT+ SOC DASHBOARD
+                Monitoring Page CSS
+                PART 1
+==========================================================*/
+
+/*=========================================================
+                    GOOGLE FONT
+==========================================================*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+
+/*=========================================================
+                    ROOT VARIABLES
+==========================================================*/
+
+:root{
+
+    --bg:#07111f;
+
+    --bg-secondary:#0d1728;
+
+    --card:#101d32;
+
+    --card-light:#16243d;
+
+    --border:rgba(255,255,255,.08);
+
+    --text:#f8fafc;
+
+    --muted:#93a4c3;
+
+    --primary:#4da3ff;
+
+    --primary-dark:#2563eb;
+
+    --success:#16c784;
+
+    --warning:#f59e0b;
+
+    --danger:#ff4d6d;
+
+    --purple:#8b5cf6;
+
+    --cyan:#00d9ff;
+
+    --orange:#fb923c;
+
+    --shadow:
+        0 20px 40px rgba(0,0,0,.35);
+
+}
+
+
+/*=========================================================
+                    BODY
+==========================================================*/
+
+body{
+
+    font-family:'Inter',sans-serif;
+
+    background:
+        radial-gradient(circle at top left,#183a66 0%,transparent 45%),
+
+        radial-gradient(circle at top right,#132743 0%,transparent 35%),
+
+        radial-gradient(circle at bottom,#09121f 0%,#040912 100%);
+
+    color:var(--text);
+
+    min-height:100vh;
+
+}
+
+
+/*=========================================================
+                CONTAINER
+==========================================================*/
+
+.container-fluid{
+
+    padding:30px;
+
+}
+
+
+/*=========================================================
+                    PAGE TITLE
+==========================================================*/
+
+h2{
+
+    font-weight:800;
+
+    letter-spacing:.4px;
+
+    color:#fff;
+
+}
+
+
+h2 i{
+
+    color:var(--cyan);
+
+    margin-right:10px;
+
+    text-shadow:0 0 18px rgba(0,217,255,.6);
+
+}
+
+
+.text-muted{
+
+    color:#8ea3bf!important;
+
+}
+
+
+/*=========================================================
+                LIVE CLOCK
+==========================================================*/
+
+#liveClock{
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+}
+
+
+#lastUpdate{
+
+    color:var(--cyan);
+
+    font-weight:600;
+
+}
+
+
+/*=========================================================
+                STATUS CARD
+==========================================================*/
+
+.card{
+
+    background:
+
+        linear-gradient(145deg,
+
+        rgba(18,31,52,.96),
+
+        rgba(10,20,36,.98));
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow);
+
+}
+
+
+.card:hover{
+
+    transform:translateY(-3px);
+
+    transition:.35s;
+
+}
+
+
+.card-body{
+
+    padding:28px;
+
+}
+
+
+#status{
+
+    border-radius:30px;
+
+    font-size:.82rem;
+
+    font-weight:700;
+
+    padding:10px 20px;
+
+    background:rgba(22,199,132,.15)!important;
+
+    color:var(--success);
+
+    border:1px solid rgba(22,199,132,.4);
+
+    animation:pulseGreen 2s infinite;
+
+}
+
+
+#interfaceName{
+
+    color:var(--cyan);
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                LIVE STATUS CARD
+==========================================================*/
+
+.shadow-sm{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+
+.shadow-sm::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:250px;
+
+    height:250px;
+
+    right:-90px;
+
+    top:-120px;
+
+    background:
+
+        radial-gradient(circle,
+
+        rgba(77,163,255,.18),
+
+        transparent 70%);
+
+}
+
+
+/*=========================================================
+                KPI CARDS
+==========================================================*/
+
+.stat-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    transition:.35s;
+
+    cursor:pointer;
+
+    min-height:175px;
+
+}
+
+
+.stat-card:hover{
+
+    transform:
+
+        translateY(-10px)
+
+        scale(1.02);
+
+}
+
+
+.stat-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+
+    height:220px;
+
+    top:-120px;
+
+    right:-110px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.04);
+
+}
+
+
+.stat-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:20px;
+
+    padding:1px;
+
+    background:linear-gradient(
+
+        145deg,
+
+        rgba(255,255,255,.12),
+
+        transparent);
+
+    -webkit-mask:
+
+        linear-gradient(#fff 0 0)
+
+        content-box,
+
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+            mask-composite:exclude;
+
+}
+
+
+/*=========================================================
+                    ICON
+==========================================================*/
+
+.stat-icon{
+
+    width:64px;
+
+    height:64px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:18px;
+
+    margin-bottom:20px;
+
+    font-size:1.7rem;
+
+    background:rgba(255,255,255,.05);
+
+    backdrop-filter:blur(12px);
+
+}
+
+
+/*=========================================================
+                TITLE
+==========================================================*/
+
+.stat-title{
+
+    display:block;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.3px;
+
+    font-size:.74rem;
+
+    color:#91a4c2;
+
+    margin-bottom:12px;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                NUMBER
+==========================================================*/
+
+.stat-number{
+
+    font-size:2.2rem;
+
+    font-weight:800;
+
+    margin-bottom:15px;
+
+    color:white;
+
+    line-height:1;
+
+}
+
+
+/*=========================================================
+                FOOTER
+==========================================================*/
+
+.stat-footer{
+
+    font-size:.82rem;
+
+    color:#95a5c2;
+
+}
+
+
+/*=========================================================
+            CARD COLORS
+==========================================================*/
+
+.total-card{
+
+    border-left:4px solid var(--primary);
+
+}
+
+.total-card .stat-icon{
+
+    background:rgba(77,163,255,.12);
+
+    color:var(--primary);
+
+}
+
+
+.tcp-card{
+
+    border-left:4px solid #3498db;
+
+}
+
+.tcp-card .stat-icon{
+
+    background:rgba(52,152,219,.12);
+
+    color:#3498db;
+
+}
+
+
+.udp-card{
+
+    border-left:4px solid var(--success);
+
+}
+
+.udp-card .stat-icon{
+
+    background:rgba(22,199,132,.15);
+
+    color:var(--success);
+
+}
+
+
+.icmp-card{
+
+    border-left:4px solid var(--warning);
+
+}
+
+.icmp-card .stat-icon{
+
+    background:rgba(245,158,11,.12);
+
+    color:var(--warning);
+
+}
+
+
+.other-card{
+
+    border-left:4px solid #8b5cf6;
+
+}
+
+.other-card .stat-icon{
+
+    background:rgba(139,92,246,.15);
+
+    color:#8b5cf6;
+
+}
+
+
+.rate-card{
+
+    border-left:4px solid var(--danger);
+
+}
+
+.rate-card .stat-icon{
+
+    background:rgba(255,77,109,.15);
+
+    color:var(--danger);
+
+}
+
+
+/*=========================================================
+            GLOW ON HOVER
+==========================================================*/
+
+.total-card:hover{
+
+    box-shadow:
+
+        0 0 35px rgba(77,163,255,.25);
+
+}
+
+.tcp-card:hover{
+
+    box-shadow:
+
+        0 0 35px rgba(52,152,219,.25);
+
+}
+
+.udp-card:hover{
+
+    box-shadow:
+
+        0 0 35px rgba(22,199,132,.25);
+
+}
+
+.icmp-card:hover{
+
+    box-shadow:
+
+        0 0 35px rgba(245,158,11,.25);
+
+}
+
+.other-card:hover{
+
+    box-shadow:
+
+        0 0 35px rgba(139,92,246,.25);
+
+}
+
+.rate-card:hover{
+
+    box-shadow:
+
+        0 0 35px rgba(255,77,109,.25);
+
+}
+
+
+/*=========================================================
+                BADGES
+==========================================================*/
+
+.badge{
+
+    border-radius:30px;
+
+    padding:8px 16px;
+
+    font-weight:600;
+
+    letter-spacing:.5px;
+
+}
+
+
+/*=========================================================
+                    ANIMATIONS
+==========================================================*/
+
+@keyframes pulseGreen{
+
+    0%{
+
+        box-shadow:0 0 0 0 rgba(22,199,132,.55);
+
+    }
+
+    70%{
+
+        box-shadow:0 0 0 15px rgba(22,199,132,0);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 0 rgba(22,199,132,0);
+
+    }
+
+}
+
+
+@keyframes floatCard{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-4px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+.stat-card{
+
+    animation:floatCard 6s ease-in-out infinite;
+
+}
+
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+.card{
+
+    animation:fadeIn .6s ease;
+
+}
+
+
+/*=========================================================
+                SCROLLBAR
+==========================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#09111f;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#27466e;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#3d6aa8;
+
+}
+/*=========================================================
+                PART 2
+        TABLE • FILTERS • BUTTONS
+==========================================================*/
+
+
+/*=========================================================
+                    TABLE CARD
+==========================================================*/
+
+.table-responsive{
+
+    border-radius:0 0 18px 18px;
+
+    overflow:auto;
+
+}
+
+
+.card-header{
+
+    background:linear-gradient(
+        180deg,
+        rgba(22,35,56,.98),
+        rgba(15,26,43,.98)
+    ) !important;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+    padding:22px 26px;
+
+}
+
+
+.card-header h5{
+
+    color:#fff;
+
+    font-weight:700;
+
+    margin:0;
+
+}
+
+
+.card-header i{
+
+    color:var(--cyan);
+
+    margin-right:8px;
+
+}
+
+
+/*=========================================================
+                SEARCH INPUT
+==========================================================*/
+
+.form-control{
+
+    background:#162338;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#fff;
+
+    height:48px;
+
+    border-radius:12px;
+
+    transition:.3s;
+
+    box-shadow:none;
+
+}
+
+
+.form-control::placeholder{
+
+    color:#7f95b3;
+
+}
+
+
+.form-control:focus{
+
+    background:#182944;
+
+    color:#fff;
+
+    border-color:var(--primary);
+
+    box-shadow:
+
+        0 0 0 3px rgba(77,163,255,.15),
+
+        0 0 25px rgba(77,163,255,.15);
+
+}
+
+
+/*=========================================================
+                SELECT BOX
+==========================================================*/
+
+.form-select{
+
+    background:#162338;
+
+    color:#fff;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:12px;
+
+    height:48px;
+
+    transition:.3s;
+
+}
+
+
+.form-select:focus{
+
+    border-color:var(--cyan);
+
+    box-shadow:
+
+        0 0 0 3px rgba(0,217,255,.15);
+
+    background:#182944;
+
+    color:#fff;
+
+}
+
+
+.form-select option{
+
+    background:#0f1c2f;
+
+    color:#fff;
+
+}
+
+
+/*=========================================================
+                    BUTTONS
+==========================================================*/
+
+.btn{
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:.35s;
+
+    letter-spacing:.3px;
+
+}
+
+
+.btn-outline-danger{
+
+    border:1px solid rgba(255,77,109,.45);
+
+    color:#ff6b87;
+
+    background:transparent;
+
+}
+
+
+.btn-outline-danger:hover{
+
+    background:var(--danger);
+
+    color:#fff;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+
+        0 10px 25px rgba(255,77,109,.30);
+
+}
+
+
+/*=========================================================
+                    TABLE
+==========================================================*/
+
+.table{
+
+    color:#d9e6ff;
+
+    margin-bottom:0;
+
+}
+
+
+.table thead{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+
+}
+
+
+.table thead th{
+
+    background:#14233b !important;
+
+    color:#dbe8ff;
+
+    border:none;
+
+    padding:18px;
+
+    font-size:.82rem;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-weight:700;
+
+}
+
+
+.table tbody td{
+
+    border-color:rgba(255,255,255,.05);
+
+    padding:18px;
+
+    vertical-align:middle;
+
+    font-size:.92rem;
+
+}
+
+
+.table-hover tbody tr{
+
+    transition:.25s;
+
+}
+
+
+.table-hover tbody tr:hover{
+
+    background:rgba(77,163,255,.08);
+
+    transform:scale(1.003);
+
+}
+
+
+.table tbody tr:nth-child(even){
+
+    background:rgba(255,255,255,.015);
+
+}
+
+
+.table tbody tr:nth-child(odd){
+
+    background:transparent;
+
+}
+
+
+/*=========================================================
+                PACKET ROW ANIMATION
+==========================================================*/
+
+#packet-table tr{
+
+    animation:packetFade .45s ease;
+
+}
+
+
+@keyframes packetFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(-25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+/*=========================================================
+            EMPTY TABLE
+==========================================================*/
+
+#packet-empty{
+
+    background:transparent;
+
+}
+
+
+#packet-empty td{
+
+    padding:70px;
+
+    color:#8098b7;
+
+}
+
+
+#packet-empty i{
+
+    color:var(--primary);
+
+    font-size:3rem;
+
+}
+
+
+/*=========================================================
+                PROTOCOL BADGES
+==========================================================*/
+
+.badge.bg-primary{
+
+    background:rgba(52,152,219,.18)!important;
+
+    color:#5fb7ff;
+
+    border:1px solid rgba(52,152,219,.45);
+
+}
+
+
+.badge.bg-success{
+
+    background:rgba(22,199,132,.18)!important;
+
+    color:#44e39b;
+
+    border:1px solid rgba(22,199,132,.40);
+
+}
+
+
+.badge.bg-warning{
+
+    background:rgba(245,158,11,.18)!important;
+
+    color:#ffc65d;
+
+    border:1px solid rgba(245,158,11,.40);
+
+}
+
+
+.badge.bg-info{
+
+    background:rgba(0,217,255,.18)!important;
+
+    color:#61eaff;
+
+    border:1px solid rgba(0,217,255,.35);
+
+}
+
+
+.badge.bg-secondary{
+
+    background:rgba(130,145,170,.18)!important;
+
+    color:#d3dce9;
+
+    border:1px solid rgba(130,145,170,.35);
+
+}
+
+
+.badge.bg-dark{
+
+    background:#000!important;
+
+    color:#fff;
+
+}
+
+
+.bg-purple{
+
+    background:rgba(139,92,246,.18)!important;
+
+    color:#b89cff!important;
+
+    border:1px solid rgba(139,92,246,.40);
+
+}
+
+
+/*=========================================================
+            DIRECTION BADGES
+==========================================================*/
+
+.badge.bg-danger{
+
+    background:rgba(255,77,109,.18)!important;
+
+    color:#ff7f99;
+
+    border:1px solid rgba(255,77,109,.35);
+
+}
+
+
+/*=========================================================
+                STATUS BADGE
+==========================================================*/
+
+.badge i{
+
+    margin-right:4px;
+
+}
+
+
+/*=========================================================
+                SEARCH BAR ICON EFFECT
+==========================================================*/
+
+#packetSearch{
+
+    transition:.35s;
+
+}
+
+
+#packetSearch:hover{
+
+    border-color:rgba(77,163,255,.4);
+
+}
+
+
+/*=========================================================
+                FILTER ROW
+==========================================================*/
+
+.card-header .row{
+
+    align-items:center;
+
+}
+
+
+/*=========================================================
+                INPUT GROUP SPACING
+==========================================================*/
+
+.card-header .form-control,
+
+.card-header .form-select,
+
+.card-header .btn{
+
+    margin-top:6px;
+
+}
+
+
+/*=========================================================
+                RESPONSIVE TABLE
+==========================================================*/
+
+@media(max-width:992px){
+
+.table thead{
+
+    display:none;
+
+}
+
+.table tbody tr{
+
+    display:block;
+
+    margin:18px;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    background:#122039;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+
+}
+
+.table tbody td{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    border:none;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+.table tbody td:last-child{
+
+    border-bottom:none;
+
+}
+
+}
+/*=========================================================
+                PART 3
+        CHARTS • NETWORK HEALTH
+        THREAT LEVEL • EVENT FEED
+        RESPONSIVE • ANIMATIONS
+==========================================================*/
+
+
+/*=========================================================
+                    CHART CARD
+==========================================================*/
+
+.chart-card{
+
+    background:linear-gradient(
+        145deg,
+        rgba(17,30,50,.98),
+        rgba(10,20,36,.98)
+    );
+
+    border-radius:20px;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    overflow:hidden;
+
+    transition:.35s;
+
+    position:relative;
+
+}
+
+.chart-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.35);
+
+}
+
+.chart-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-140px;
+
+    right:-120px;
+
+    width:260px;
+
+    height:260px;
+
+    border-radius:50%;
+
+    background:radial-gradient(
+        rgba(77,163,255,.12),
+        transparent 70%
+    );
+
+}
+
+
+/*=========================================================
+                    CHART HEADER
+==========================================================*/
+
+.chart-header{
+
+    padding:22px 25px;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+}
+
+.chart-header h5{
+
+    margin:0;
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+.chart-header i{
+
+    color:var(--cyan);
+
+    margin-right:8px;
+
+}
+
+.chart-body{
+
+    padding:25px;
+
+    height:420px;
+
+}
+
+
+/*=========================================================
+                    CHART CANVAS
+==========================================================*/
+
+.chart-body canvas{
+
+    width:100%!important;
+
+    height:100%!important;
+
+}
+
+
+/*=========================================================
+                    LIVE BADGE
+==========================================================*/
+
+.live-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    background:rgba(22,199,132,.15);
+
+    color:var(--success);
+
+    border:1px solid rgba(22,199,132,.4);
+
+    font-size:.8rem;
+
+    font-weight:700;
+
+    animation:pulseGreen 2s infinite;
+
+}
+
+
+/*=========================================================
+                NETWORK HEALTH
+==========================================================*/
+
+.progress{
+
+    background:#0b1628;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    height:10px;
+
+}
+
+.progress-bar{
+
+    border-radius:30px;
+
+    transition:width .5s ease;
+
+}
+
+.card-body strong{
+
+    color:#fff;
+
+}
+
+
+/*=========================================================
+                HEALTH ITEMS
+==========================================================*/
+
+.card-body .mb-4{
+
+    padding-bottom:18px;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+}
+
+.card-body .mb-4:last-child{
+
+    border-bottom:none;
+
+}
+
+
+/*=========================================================
+                THREAT LEVEL
+==========================================================*/
+
+#threatIndicator{
+
+    font-size:5rem;
+
+    animation:threatPulse 2s infinite;
+
+}
+
+#threatText{
+
+    font-weight:800;
+
+    letter-spacing:2px;
+
+}
+
+@keyframes threatPulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.12);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                EVENT FEED
+==========================================================*/
+
+#eventFeed{
+
+    padding:20px;
+
+    overflow-y:auto;
+
+}
+
+.event-item{
+
+    position:relative;
+
+    padding-left:28px;
+
+    padding-bottom:22px;
+
+    border-left:2px solid rgba(77,163,255,.2);
+
+}
+
+.event-item:last-child{
+
+    border-left:none;
+
+}
+
+.event-item::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:-7px;
+
+    top:4px;
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    box-shadow:0 0 15px rgba(77,163,255,.6);
+
+}
+
+.event-title{
+
+    color:#fff;
+
+    font-weight:600;
+
+    margin-bottom:4px;
+
+}
+
+.event-time{
+
+    color:#8da2c0;
+
+    font-size:.8rem;
+
+}
+
+.event-success::before{
+
+    background:var(--success);
+
+    box-shadow:0 0 15px rgba(22,199,132,.5);
+
+}
+
+.event-danger::before{
+
+    background:var(--danger);
+
+    box-shadow:0 0 15px rgba(255,77,109,.5);
+
+}
+
+.event-warning::before{
+
+    background:var(--warning);
+
+    box-shadow:0 0 15px rgba(245,158,11,.5);
+
+}
+
+
+/*=========================================================
+                GLOW BORDER
+==========================================================*/
+
+.card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:20px;
+
+    padding:1px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(255,255,255,.08),
+        transparent
+    );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+    mask-composite:exclude;
+
+}
+
+
+/*=========================================================
+                HOVER EFFECTS
+==========================================================*/
+
+.card:hover h5{
+
+    color:var(--cyan);
+
+}
+
+.card:hover .live-badge{
+
+    transform:scale(1.05);
+
+}
+
+
+/*=========================================================
+                FADE ANIMATION
+==========================================================*/
+
+@keyframes slideUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(30px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.row>.col-lg-4,
+.row>.col-lg-8{
+
+    animation:slideUp .7s ease;
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:1200px){
+
+.chart-body{
+
+    height:360px;
+
+}
+
+}
+
+@media(max-width:992px){
+
+.container-fluid{
+
+    padding:20px;
+
+}
+
+.chart-body{
+
+    height:320px;
+
+}
+
+#liveClock{
+
+    font-size:22px;
+
+}
+
+.stat-number{
+
+    font-size:1.8rem;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.chart-header{
+
+    padding:18px;
+
+}
+
+.chart-body{
+
+    padding:18px;
+
+    height:300px;
+
+}
+
+.card-body{
+
+    padding:20px;
+
+}
+
+#threatIndicator{
+
+    font-size:4rem;
+
+}
+
+h2{
+
+    font-size:1.5rem;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.container-fluid{
+
+    padding:15px;
+
+}
+
+.chart-body{
+
+    height:260px;
+
+}
+
+.live-badge{
+
+    font-size:.7rem;
+
+    padding:6px 12px;
+
+}
+
+#liveClock{
+
+    font-size:18px;
+
+}
+
+.stat-number{
+
+    font-size:1.5rem;
+
+}
+
+}
+
+
+/*=========================================================
+                CUSTOM SCROLLBAR
+==========================================================*/
+
+#eventFeed::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+#eventFeed::-webkit-scrollbar-track{
+
+    background:#0b1628;
+
+    border-radius:20px;
+
+}
+
+#eventFeed::-webkit-scrollbar-thumb{
+
+    background:var(--primary);
+
+    border-radius:20px;
+
+}
+
+
+/*=========================================================
+                LOADING SHIMMER
+==========================================================*/
+
+.loading{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.loading::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-150%;
+
+    width:60%;
+
+    height:100%;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.08),
+        transparent
+    );
+
+    animation:shimmer 2s infinite;
+
+}
+
+@keyframes shimmer{
+
+    100%{
+
+        left:150%;
+
+    }
+
+}
+
+
+/*=========================================================
+                CARD ENTRY DELAY
+==========================================================*/
+
+.stat-card:nth-child(1){animation-delay:.05s;}
+.stat-card:nth-child(2){animation-delay:.10s;}
+.stat-card:nth-child(3){animation-delay:.15s;}
+.stat-card:nth-child(4){animation-delay:.20s;}
+.stat-card:nth-child(5){animation-delay:.25s;}
+.stat-card:nth-child(6){animation-delay:.30s;}
+
+
+/*=========================================================
+                END OF FILE
+==========================================================*/
+</style>
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+
+                <i class="bi bi-broadcast"></i>
+
+                Live Network Monitoring
+
+            </h2>
+
+            <small class="text-muted">
+
+                Real-time packet capture and network traffic monitoring
+
+            </small>
+
+        </div>
+
+        <div class="text-end">
+
+            <div id="liveClock"
+                 class="fw-bold fs-5">
+
+            </div>
+
+            <small class="text-muted">
+
+                Last Update:
+                <span id="lastUpdate">
+                    --
+                </span>
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+            LIVE STATUS
+    ========================== -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-8">
+
+                    <h5 class="mb-2">
+
+                        Sniffer Status
+
+                    </h5>
+
+                    <span
+                        id="status"
+                        class="badge bg-success px-3 py-2">
+
+                        LIVE
+
+                    </span>
+
+                    <span
+                        class="ms-3 text-muted">
+
+                        Monitoring all incoming and outgoing packets
+
+                    </span>
+
+                </div>
+
+                <div class="col-md-4 text-end">
+
+                    <span
+                        class="badge bg-primary">
+
+                        Interface
+
+                    </span>
+
+                    <strong
+                        id="interfaceName">
+
+                        Default
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<div class="row g-4 mb-4">
+
+    <!-- Total Packets -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card total-card border-0 h-100">
+            <div class="card-body">
+
+                <div class="stat-icon bg-primary-subtle">
+                    <i class="bi bi-diagram-3-fill"></i>
+                </div>
+
+                <small class="stat-title">
+                    Total Packets
+                </small>
+
+                <h2 id="totalPackets" class="stat-number">
+                    {{ total_packets }}
+                </h2>
+
+                <small class="stat-footer text-success">
+                    <i class="bi bi-arrow-up"></i>
+                    Live Capture
+                </small>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TCP -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card tcp-card border-0 h-100">
+            <div class="card-body">
+
+                <div class="stat-icon bg-primary-subtle">
+                    <i class="bi bi-hdd-network-fill"></i>
+                </div>
+
+                <small class="stat-title">
+                    TCP Packets
+                </small>
+
+                <h2 id="tcpPackets" class="stat-number text-primary">
+                    {{ tcp_packets }}
+                </h2>
+
+                <small class="stat-footer">
+                    Transmission Control
+                </small>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- UDP -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card udp-card border-0 h-100">
+            <div class="card-body">
+
+                <div class="stat-icon bg-success-subtle">
+                    <i class="bi bi-wifi"></i>
+                </div>
+
+                <small class="stat-title">
+                    UDP Packets
+                </small>
+
+                <h2 id="udpPackets" class="stat-number text-success">
+                    {{ udp_packets }}
+                </h2>
+
+                <small class="stat-footer">
+                    User Datagram
+                </small>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ICMP -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card icmp-card border-0 h-100">
+            <div class="card-body">
+
+                <div class="stat-icon bg-warning-subtle">
+                    <i class="bi bi-broadcast-pin"></i>
+                </div>
+
+                <small class="stat-title">
+                    ICMP
+                </small>
+
+                <h2 id="icmpPackets" class="stat-number text-warning">
+                    {{ icmp_packets }}
+                </h2>
+
+                <small class="stat-footer">
+                    Network Control
+                </small>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Other -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card other-card border-0 h-100">
+            <div class="card-body">
+
+                <div class="stat-icon bg-secondary-subtle">
+                    <i class="bi bi-boxes"></i>
+                </div>
+
+                <small class="stat-title">
+                    Other Protocols
+                </small>
+
+                <h2 id="otherPackets" class="stat-number text-secondary">
+                    {{ other_packets }}
+                </h2>
+
+                <small class="stat-footer">
+                    ARP • DNS • HTTP
+                </small>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Capture Rate -->
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-2">
+        <div class="card stat-card rate-card border-0 h-100">
+            <div class="card-body">
+
+                <div class="stat-icon bg-danger-subtle">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+
+                <small class="stat-title">
+                    Capture Rate
+                </small>
+
+                <h2 id="packetRate" class="stat-number text-danger">
+                    0/s
+                </h2>
+
+                <small class="stat-footer">
+                    Packets / Second
+                </small>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <!-- =========================
+            LIVE TABLE
+    ========================== -->
+
+    <div class="card shadow border-0">
+
+        <div class="card-header bg-white">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-4">
+
+                    <h5 class="mb-0">
+
+                        Recent Network Packets
+
+                    </h5>
+
+                </div>
+
+                <div class="col-md-8">
+
+                <div class="row g-2">
+
+                    <div class="col-md-6">
+
+                        <input
+                            id="packetSearch"
+                            class="form-control"
+                            placeholder="Search IP Address...">
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <select
+                            id="protocolFilter"
+                            class="form-select">
+
+                            <option value="">
+                                All Protocols
+                            </option>
+
+                            <option value="TCP">
+                                TCP
+                            </option>
+
+                            <option value="UDP">
+                                UDP
+                            </option>
+
+                            <option value="ICMP">
+                                ICMP
+                            </option>
+
+                            <option value="ARP">
+                                ARP
+                            </option>
+
+                            <option value="DNS">
+                                DNS
+                            </option>
+
+                            <option value="HTTP">
+                                HTTP
+                            </option>
+
+                            <option value="HTTPS">
+                                HTTPS
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button
+                            id="clearPackets"
+                            class="btn btn-outline-danger w-100">
+
+                            Clear Table
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            </div>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table
+                class="table table-hover align-middle mb-0">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th width="120">
+
+                            Time
+
+                        </th>
+
+                        <th>
+
+                            Source IP
+
+                        </th>
+
+                        <th>
+
+                            Destination IP
+
+                        </th>
+
+                        <th width="120">
+
+                            Protocol
+
+                        </th>
+
+                        <th width="120">
+
+                            Size
+
+                        </th>
+
+                        <th width="120">
+
+                            Direction
+
+                        </th>
+
+                        <th width="100">
+
+                            Status
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="packet-table">
+
+                {% if packets %}
+
+                    {% for packet in packets %}
+
+                    <tr>
+
+                        <!-- Time -->
+                        <td>
+                            {{ packet.captured_at|time:"H:i:s" }}
+                        </td>
+
+                        <!-- Source -->
+                        <td>
+                            {{ packet.source_ip }}
+                        </td>
+
+                        <!-- Destination -->
+                        <td>
+                            {{ packet.destination_ip }}
+                        </td>
+
+                        <!-- Protocol -->
+                        <td>
+
+                            {% if packet.protocol == "TCP" %}
+
+                                <span class="badge bg-primary">
+                                    TCP
+                                </span>
+
+                            {% elif packet.protocol == "UDP" %}
+
+                                <span class="badge bg-success">
+                                    UDP
+                                </span>
+
+                            {% elif packet.protocol == "ICMP" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    ICMP
+                                </span>
+
+                            {% elif packet.protocol == "ARP" %}
+
+                                <span class="badge bg-info text-dark">
+                                    ARP
+                                </span>
+
+                            {% elif packet.protocol == "DNS" %}
+
+                                <span class="badge bg-purple">
+                                    DNS
+                                </span>
+
+                            {% elif packet.protocol == "HTTP" %}
+
+                                <span class="badge bg-secondary">
+                                    HTTP
+                                </span>
+
+                            {% elif packet.protocol == "HTTPS" %}
+
+                                <span class="badge bg-dark">
+                                    HTTPS
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-light text-dark">
+                                    {{ packet.protocol }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Packet Size -->
+                        <td>
+                            {{ packet.packet_length }} Bytes
+                        </td>
+
+                        <!-- Direction -->
+                        <td>
+
+                            {% if packet.direction == "Incoming" %}
+
+                                <span class="badge bg-danger">
+                                    ↓ Incoming
+                                </span>
+
+                            {% elif packet.direction == "Outgoing" %}
+
+                                <span class="badge bg-success">
+                                    ↑ Outgoing
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    Unknown
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- Status -->
+                        <td>
+
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                Stored
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr id="packet-empty">
+
+                        <td colspan="7" class="text-center text-muted py-5">
+
+                            <i class="bi bi-broadcast fs-2 d-block mb-2"></i>
+
+                            Waiting for network packets...
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- ==========================================
+        LIVE ANALYTICS
+=========================================== -->
+{{ traffic_labels|json_script:"traffic-labels" }}
+{{ traffic_data|json_script:"traffic-data" }}
+<div class="row g-4 mb-4" style="padding-top:40px;">
+
+    <!-- Live Traffic -->
+
+    <div class="col-lg-8">
+
+        <div class="card chart-card h-100">
+
+            <div class="chart-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5>
+
+                        <i class="bi bi-graph-up-arrow"></i>
+
+                        Live Network Traffic
+
+                    </h5>
+
+                    <span class="live-badge">
+
+                        <i class="bi bi-broadcast"></i>
+
+                        LIVE
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="chart-body">
+
+                <canvas id="trafficChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Protocol Distribution -->
+
+    <div class="col-lg-4">
+
+        <div class="card chart-card h-100">
+
+            <div class="chart-header">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5>
+
+                        <i class="bi bi-pie-chart-fill"></i>
+
+                        Protocol Distribution
+
+                    </h5>
+
+                    <span class="live-badge">
+
+                        LIVE
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="chart-body">
+
+                <canvas id="protocolChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ==========================================
+        NETWORK HEALTH
+=========================================== -->
+
+<div class="row mb-4">
+
+    <!-- Health -->
+
+    <div class="col-lg-4">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-cpu-fill text-success"></i>
+
+                    Network Health
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+
+                            Sniffer
+
+                        </span>
+
+                        <strong
+                            class="text-success">
+
+                            ONLINE
+
+                        </strong>
+
+                    </div>
+
+                    <div class="progress mt-2">
+
+                        <div
+                            class="progress-bar bg-success"
+                            style="width:100%">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+
+                            Packet Capture
+
+                        </span>
+
+                        <strong id="captureRate">
+
+                            100%
+
+                        </strong>
+
+                    </div>
+
+                    <div class="progress mt-2">
+
+                        <div
+                            id="captureBar"
+                            class="progress-bar bg-primary"
+                            style="width:100%">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div>
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+
+                            Connection
+
+                        </span>
+
+                        <strong
+                            id="connectionStatus"
+                            class="text-success">
+
+                            Connected
+
+                        </strong>
+
+                    </div>
+
+                    <div class="progress mt-2">
+
+                        <div
+                            id="connectionBar"
+                            class="progress-bar bg-success"
+                            style="width:100%">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Threat Level -->
+
+    <div class="col-lg-4">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-shield-fill-exclamation text-danger"></i>
+
+                    Threat Level
+
+                </h5>
+
+            </div>
+
+            <div class="card-body text-center">
+
+                <div
+                    id="threatIndicator"
+                    class="display-3">
+
+                    🟢
+
+                </div>
+
+                <h3
+                    id="threatText"
+                    class="mt-3 text-success">
+
+                    LOW
+
+                </h3>
+
+                <p class="text-muted">
+
+                    Current Network Risk
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Event Feed -->
+
+    <div class="col-lg-4">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-activity text-danger"></i>
+
+                    Live Event Feed
+
+                </h5>
+
+            </div>
+
+            <div
+                id="eventFeed"
+                class="card-body"
+                style="height:300px;overflow-y:auto;">
+
+                <div class="text-center text-muted mt-5">
+
+                    Waiting for events...
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+const trafficLabelsData =
+JSON.parse(
+    document.getElementById("traffic-labels").textContent
+);
+
+const trafficDataValues =
+JSON.parse(
+    document.getElementById("traffic-data").textContent
+);
+// ======================================================
+// SOC NETWORK MONITORING
+// PART 1 - CONFIGURATION & DASHBOARD
+// ======================================================
+
+"use strict";
+
+
+// ======================================================
+// DOM ELEMENTS
+// ======================================================
+
+const packetTable = document.getElementById("packet-table");
+
+const packetSearch = document.getElementById("packetSearch");
+
+const protocolFilter = document.getElementById("protocolFilter");
+
+const clearButton = document.getElementById("clearPackets");
+
+const lastUpdate = document.getElementById("lastUpdate");
+
+const connectionStatus = document.getElementById("status");
+
+
+// ======================================================
+// DASHBOARD CARDS
+// ======================================================
+
+const totalPacketsCard = document.getElementById("totalPackets");
+
+const tcpPacketsCard = document.getElementById("tcpPackets");
+
+const udpPacketsCard = document.getElementById("udpPackets");
+
+const icmpPacketsCard = document.getElementById("icmpPackets");
+
+const otherPacketsCard = document.getElementById("otherPackets");
+
+const packetRateCard = document.getElementById("packetRate");
+
+
+// ======================================================
+// INITIAL VALUES FROM DJANGO
+// ======================================================
+
+let totalPackets = Number(totalPacketsCard?.textContent) || 0;
+
+let tcpPackets = Number(tcpPacketsCard?.textContent) || 0;
+
+let udpPackets = Number(udpPacketsCard?.textContent) || 0;
+
+let icmpPackets = Number(icmpPacketsCard?.textContent) || 0;
+
+let otherPackets = Number(otherPacketsCard?.textContent) || 0;
+
+
+// ======================================================
+// WEBSOCKET
+// ======================================================
+
+let packetSocket = null;
+
+
+// ======================================================
+// CHART CONFIGURATION
+// ======================================================
+
+const MAX_POINTS = 30;
+
+let trafficLabels = [...trafficLabelsData];
+
+let trafficValues = [...trafficDataValues];
+
+let trafficChart = null;
+
+let protocolChart = null;
+
+
+// ======================================================
+// PACKET RATE
+// ======================================================
+
+let packetCounter = 0;
+
+
+// ======================================================
+// UPDATE DASHBOARD CARDS
+// ======================================================
+
+function updateCards() {
+
+    totalPacketsCard.textContent = totalPackets;
+
+    tcpPacketsCard.textContent = tcpPackets;
+
+    udpPacketsCard.textContent = udpPackets;
+
+    icmpPacketsCard.textContent = icmpPackets;
+
+    otherPacketsCard.textContent = otherPackets;
+
+}
+
+
+// ======================================================
+// PACKET RATE
+// ======================================================
+
+setInterval(function(){
+
+    if(packetRateCard){
+
+        packetRateCard.textContent = packetCounter + "/s";
+
+    }
+
+    packetCounter = 0;
+
+},1000);
+
+
+// ======================================================
+// UPDATE LAST UPDATE TIME
+// ======================================================
+
+function updateLastUpdate(){
+
+    if(lastUpdate){
+
+        lastUpdate.textContent =
+        new Date().toLocaleTimeString();
+
+    }
+
+}
+
+
+// ======================================================
+// PROTOCOL COLORS
+// ======================================================
+
+function getProtocolColor(protocol){
+
+    switch(protocol){
+
+        case "TCP":
+            return "#0d6efd";
+
+        case "UDP":
+            return "#198754";
+
+        case "ICMP":
+            return "#ffc107";
+
+        case "ARP":
+            return "#0dcaf0";
+
+        default:
+            return "#6c757d";
+
+    }
+
+}
+
+
+// ======================================================
+// INITIALIZE TRAFFIC CHART
+// ======================================================
+
+function initializeTrafficChart(){
+
+    const canvas =
+    document.getElementById("trafficChart");
+
+    if(!canvas){
+        return;
+    }
+
+    trafficChart =
+    new Chart(
+        canvas.getContext("2d"),
+        {
+
+            type:"line",
+
+            data:{
+
+                labels:trafficLabels,
+
+                datasets:[{
+
+                    label:"Packet Size",
+
+                    data:trafficValues,
+
+                    borderColor:"#0d6efd",
+
+                    backgroundColor:"rgba(13,110,253,.15)",
+
+                    fill:true,
+
+                    tension:.35
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                maintainAspectRatio:false,
+
+                animation:false,
+
+                plugins:{
+                    legend:{
+                        display:false
+                    }
+                },
+
+                scales:{
+
+                    y:{
+                        beginAtZero:true
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+}
+
+
+// ======================================================
+// INITIALIZE PROTOCOL CHART
+// ======================================================
+
+function initializeProtocolChart(){
+
+    const canvas =
+    document.getElementById("protocolChart");
+
+    if(!canvas){
+        return;
+    }
+
+    protocolChart =
+    new Chart(
+        canvas.getContext("2d"),
+        {
+
+            type:"doughnut",
+
+            data:{
+
+                labels:[
+                    "TCP",
+                    "UDP",
+                    "ICMP",
+                    "OTHER"
+                ],
+
+                datasets:[{
+
+                    data:[
+                        tcpPackets,
+                        udpPackets,
+                        icmpPackets,
+                        otherPackets
+                    ],
+
+                    backgroundColor:[
+                        "#0d6efd",
+                        "#198754",
+                        "#ffc107",
+                        "#6c757d"
+                    ]
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                maintainAspectRatio:false,
+
+                plugins:{
+
+                    legend:{
+
+                        position:"bottom"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+}
+
+
+// ======================================================
+// UPDATE CHARTS
+// ======================================================
+
+function updateCharts(packetSize){
+
+    if(trafficChart){
+
+        trafficLabels.push(
+            new Date().toLocaleTimeString()
+        );
+
+        trafficValues.push(packetSize);
+
+        if(
+            trafficLabels.length >
+            MAX_POINTS
+        ){
+
+            trafficLabels.shift();
+
+            trafficValues.shift();
+
+        }
+
+        trafficChart.data.labels =
+        trafficLabels;
+
+        trafficChart.data.datasets[0].data =
+        trafficValues;
+
+        trafficChart.update("none");
+
+    }
+
+    if(protocolChart){
+
+        protocolChart.data.datasets[0].data=[
+
+            tcpPackets,
+
+            udpPackets,
+
+            icmpPackets,
+
+            otherPackets
+
+        ];
+
+        protocolChart.update("none");
+
+    }
+
+}
+// ======================================================
+// PART 2
+// WEBSOCKET & LIVE PACKETS
+// ======================================================
+
+
+// =========================================
+// CONNECT TO DJANGO CHANNELS
+// =========================================
+
+function connectPacketSocket(){
+
+    const protocol =
+        window.location.protocol === "https:"
+        ? "wss://"
+        : "ws://";
+
+    packetSocket = new WebSocket(
+
+        protocol +
+
+        window.location.host +
+
+        "/ws/dashboard/"
+
+    );
+
+
+    // =====================================
+    // CONNECTED
+    // =====================================
+
+    packetSocket.onopen = function(){
+
+        console.log("Dashboard Connected");
+
+        if(connectionStatus){
+
+            connectionStatus.innerHTML = "LIVE";
+
+            connectionStatus.className =
+            "badge bg-success px-3 py-2";
+
+        }
+
+    };
+
+
+    // =====================================
+    // CONNECTION CLOSED
+    // =====================================
+
+    packetSocket.onclose = function(){
+
+        console.log("Disconnected");
+
+        if(connectionStatus){
+
+            connectionStatus.innerHTML = "OFFLINE";
+
+            connectionStatus.className =
+            "badge bg-danger px-3 py-2";
+
+        }
+
+        // Auto reconnect after 3 seconds
+        setTimeout(function(){
+
+            connectPacketSocket();
+
+        },3000);
+
+    };
+
+
+    // =====================================
+    // CONNECTION ERROR
+    // =====================================
+
+    packetSocket.onerror = function(error){
+
+        console.error(error);
+
+    };
+
+
+    // =====================================
+    // RECEIVE LIVE DATA
+    // =====================================
+
+    packetSocket.onmessage = function(event){
+
+        const data =
+        JSON.parse(event.data);
+
+        console.log(data);
+
+
+        if(data.event !== "packet"){
+            return;
+        }
+
+
+        // ===============================
+        // Increase Counters
+        // ===============================
+
+        packetCounter++;
+
+        totalPackets++;
+
+        switch(data.protocol){
+
+            case "TCP":
+
+                tcpPackets++;
+
+                break;
+
+            case "UDP":
+
+                udpPackets++;
+
+                break;
+
+            case "ICMP":
+
+                icmpPackets++;
+
+                break;
+
+            default:
+
+                otherPackets++;
+
+        }
+
+
+        // ===============================
+        // Refresh UI
+        // ===============================
+
+        updateCards();
+
+        updateCharts(data.packet_length);
+
+        updateLastUpdate();
+
+        addPacketRow(data);
+
+    };
+
+}
+
+
+
+// ======================================================
+// ADD LIVE PACKET TO TABLE
+// ======================================================
+
+function addPacketRow(data){
+
+    if(!packetTable){
+
+        return;
+
+    }
+
+
+    // Remove waiting row
+
+    const empty =
+    document.getElementById("packet-empty");
+
+    if(empty){
+
+        empty.remove();
+
+    }
+
+
+    // Create row
+
+    const row =
+    document.createElement("tr");
+
+
+    // -------------------------
+    // Protocol Badge
+    // -------------------------
+
+    let protocolBadge = "";
+
+    switch(data.protocol){
+
+        case "TCP":
+
+            protocolBadge =
+            '<span class="badge bg-primary">TCP</span>';
+
+            break;
+
+        case "UDP":
+
+            protocolBadge =
+            '<span class="badge bg-success">UDP</span>';
+
+            break;
+
+        case "ICMP":
+
+            protocolBadge =
+            '<span class="badge bg-warning text-dark">ICMP</span>';
+
+            break;
+
+        case "ARP":
+
+            protocolBadge =
+            '<span class="badge bg-info text-dark">ARP</span>';
+
+            break;
+
+        case "DNS":
+
+            protocolBadge =
+            '<span class="badge bg-secondary">DNS</span>';
+
+            break;
+
+        case "HTTP":
+
+            protocolBadge =
+            '<span class="badge bg-dark">HTTP</span>';
+
+            break;
+
+        case "HTTPS":
+
+            protocolBadge =
+            '<span class="badge bg-dark">HTTPS</span>';
+
+            break;
+
+        default:
+
+            protocolBadge =
+            '<span class="badge bg-secondary">'+
+            data.protocol+
+            '</span>';
+
+    }
+
+
+    // -------------------------
+    // Direction Badge
+    // -------------------------
+
+    let directionBadge = "";
+
+    if(data.direction==="Incoming"){
+
+        directionBadge =
+        '<span class="badge bg-danger">↓ Incoming</span>';
+
+    }
+
+    else if(data.direction==="Outgoing"){
+
+        directionBadge =
+        '<span class="badge bg-success">↑ Outgoing</span>';
+
+    }
+
+    else{
+
+        directionBadge =
+        '<span class="badge bg-secondary">Unknown</span>';
+
+    }
+
+
+    // -------------------------
+    // Build Row
+    // -------------------------
+
+    row.innerHTML = `
+
+        <td>${data.time}</td>
+
+        <td>${data.source_ip}</td>
+
+        <td>${data.destination_ip}</td>
+
+        <td>${protocolBadge}</td>
+
+        <td>${data.packet_length} Bytes</td>
+
+        <td>${directionBadge}</td>
+
+        <td>
+
+            <span class="badge bg-success">
+
+                <i class="bi bi-check-circle-fill me-1"></i>
+
+                Stored
+
+            </span>
+
+        </td>
+
+    `;
+
+
+    // Add to top
+
+    packetTable.prepend(row);
+
+
+    // Keep only latest 30 rows
+
+    while(packetTable.rows.length > 30){
+
+        packetTable.deleteRow(30);
+
+    }
+
+
+    // Apply current filter immediately
+
+    filterPackets();
+
+}
+// ======================================================
+// PART 3
+// SEARCH • FILTER • CLEAR • EXPORT
+// ======================================================
+
+
+// =====================================
+// FILTER PACKETS
+// =====================================
+
+function filterPackets(){
+
+    if(!packetTable) return;
+
+    const search =
+    packetSearch.value
+    .toLowerCase()
+    .trim();
+
+    const protocol =
+    protocolFilter.value;
+
+    const rows =
+    packetTable.querySelectorAll("tr");
+
+    rows.forEach(function(row){
+
+        if(row.id==="packet-empty"){
+            return;
+        }
+
+        if(row.cells.length<4){
+            return;
+        }
+
+        const source =
+        row.cells[1]
+        .textContent
+        .toLowerCase();
+
+        const destination =
+        row.cells[2]
+        .textContent
+        .toLowerCase();
+
+        const rowProtocol =
+        row.cells[3]
+        .innerText
+        .trim();
+
+        const matchSearch =
+
+            source.includes(search) ||
+
+            destination.includes(search);
+
+        const matchProtocol =
+
+            protocol === "" ||
+
+            rowProtocol === protocol;
+
+        row.style.display =
+
+            (matchSearch && matchProtocol)
+
+            ? ""
+
+            : "none";
+
+    });
+
+}
+
+
+
+// =====================================
+// SEARCH EVENT
+// =====================================
+
+if(packetSearch){
+
+    packetSearch.addEventListener(
+
+        "keyup",
+
+        filterPackets
+
+    );
+
+}
+
+
+
+// =====================================
+// PROTOCOL FILTER
+// =====================================
+
+if(protocolFilter){
+
+    protocolFilter.addEventListener(
+
+        "change",
+
+        filterPackets
+
+    );
+
+}
+
+
+
+// =====================================
+// CLEAR TABLE
+// (Frontend only)
+// =====================================
+
+if(clearButton){
+
+    clearButton.addEventListener(
+
+        "click",
+
+        function(){
+
+            if(
+
+                !confirm(
+
+                    "Clear packet table?"
+
+                )
+
+            ){
+
+                return;
+
+            }
+
+            packetTable.innerHTML =
+
+            `
+
+            <tr id="packet-empty">
+
+                <td
+                    colspan="7"
+                    class="text-center py-5">
+
+                    <i class="bi bi-trash3 fs-1 text-danger"></i>
+
+                    <h5 class="mt-3">
+
+                        Packet Table Cleared
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Waiting for new packets...
+
+                    </small>
+
+                </td>
+
+            </tr>
+
+            `;
+
+        }
+
+    );
+
+}
+
+
+
+// =====================================
+// EXPORT TABLE TO CSV
+// =====================================
+
+function exportPacketsCSV(){
+
+    let csv=[];
+
+    csv.push(
+
+        "Time,Source IP,Destination IP,Protocol,Size,Direction"
+
+    );
+
+    packetTable
+
+    .querySelectorAll("tr")
+
+    .forEach(function(row){
+
+        if(
+
+            row.id==="packet-empty"
+
+        ){
+
+            return;
+
+        }
+
+        if(
+
+            row.style.display==="none"
+
+        ){
+
+            return;
+
+        }
+
+        const cols=[];
+
+        for(
+
+            let i=0;
+
+            i<6;
+
+            i++
+
+        ){
+
+            cols.push(
+
+                '"' +
+
+                row.cells[i]
+
+                .innerText
+
+                .trim()
+
+                .replace(/\n/g," ")
+
+                +
+
+                '"'
+
+            );
+
+        }
+
+        csv.push(
+
+            cols.join(",")
+
+        );
+
+    });
+
+    const blob =
+
+    new Blob(
+
+        [
+
+            csv.join("\n")
+
+        ],
+
+        {
+
+            type:"text/csv"
+
+        }
+
+    );
+
+    const url=
+
+    URL.createObjectURL(blob);
+
+    const link=
+
+    document.createElement("a");
+
+    link.href=url;
+
+    link.download=
+
+    "network_packets.csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+
+// =====================================
+// CTRL + F
+// Focus Search
+// =====================================
+
+document.addEventListener(
+
+    "keydown",
+
+    function(e){
+
+        if(
+
+            e.ctrlKey &&
+
+            e.key==="f"
+
+        ){
+
+            e.preventDefault();
+
+            packetSearch.focus();
+
+        }
+
+    }
+
+);
+
+
+
+
+// =====================================
+// CTRL + E
+// Export CSV
+// =====================================
+
+document.addEventListener(
+
+    "keydown",
+
+    function(e){
+
+        if(
+
+            e.ctrlKey &&
+
+            e.key==="e"
+
+        ){
+
+            e.preventDefault();
+
+            exportPacketsCSV();
+
+        }
+
+    }
+
+);
+
+
+
+
+// =====================================
+// INITIALIZE PAGE
+// =====================================
+
+window.addEventListener(
+
+    "load",
+
+    function(){
+
+        initializeTrafficChart();
+
+        initializeProtocolChart();
+
+        updateCards();
+
+        connectPacketSocket();
+
+        console.log(
+
+            "SOC Monitoring Ready"
+
+        );
+
+    }
+
+);
+</script>
+{% endblock %}

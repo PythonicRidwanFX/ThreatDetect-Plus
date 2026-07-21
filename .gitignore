@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Django
+db.sqlite3
+media/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# Static collected
+staticfiles/
+
+# macOS
+.DS_Store
+
+# ML datasets
+monitoring/ml/dataset/
+
+# Model training files
+*.csv
+*.pcap
+
+# Database
+db.sqlite3
+
+# Media
+media/
+
+# Static
+staticfiles/
+
+# Virtual environment
+venv/
+.venv/
+env/

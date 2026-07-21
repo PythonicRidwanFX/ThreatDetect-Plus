@@ -1,0 +1,1587 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block title %}ThreatDetect+ | Overview{% endblock %}
+
+{% block page_title %}Dashboard Overview{% endblock %}
+
+
+{% block page_data %}
+
+{{ chart_labels|json_script:"packet-labels" }}
+{{ chart_values|json_script:"packet-values" }}
+
+{{ attack_labels|json_script:"attack-labels" }}
+{{ attack_values|json_script:"attack-values" }}
+
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="row g-4 mb-4">
+
+    <!-- Total Packets -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon packets">
+
+                <i class="bi bi-router-fill"></i>
+
+            </div>
+
+            <div>
+
+                <small>Total Packets</small>
+
+                <h2 id="totalPackets">
+
+                    {{ total_packets }}
+
+                </h2>
+
+                <div class="text-success small mt-2">
+
+                    <i class="bi bi-arrow-repeat"></i>
+
+                    {{ today_packets }} Today
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Threats -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon threats">
+
+                <i class="bi bi-shield-fill-exclamation"></i>
+
+            </div>
+
+            <div>
+
+                <small>Total Threats</small>
+
+                <h2 id="totalThreats">
+
+                    {{ total_threats }}
+
+                </h2>
+
+                <div class="text-danger small mt-2">
+
+                    <i class="bi bi-radar"></i>
+
+                    {{ today_threats }} Today
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Alerts -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon alerts">
+
+                <i class="bi bi-bell-fill"></i>
+
+            </div>
+
+            <div>
+
+                <small>Security Alerts</small>
+
+                <h2 id="totalAlerts">
+
+                    {{ total_alerts }}
+
+                </h2>
+
+                <div class="text-warning small mt-2">
+
+                    {{ critical_alerts }} Critical
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Security Score -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon status">
+
+                <i class="bi bi-shield-check"></i>
+
+            </div>
+
+            <div>
+
+                <small>Security Score</small>
+
+                <h2>
+
+                    {{ security_score }}%
+
+                </h2>
+
+                {% if security_level == "Excellent" %}
+
+                <div class="text-success small mt-2">
+
+                    {{ security_level }}
+
+                </div>
+
+                {% elif security_level == "Good" %}
+
+                <div class="text-info small mt-2">
+
+                    {{ security_level }}
+
+                </div>
+
+                {% elif security_level == "Warning" %}
+
+                <div class="text-warning small mt-2">
+
+                    {{ security_level }}
+
+                </div>
+
+                {% else %}
+
+                <div class="text-danger small mt-2">
+
+                    {{ security_level }}
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ===================================
+        SECOND ROW KPI
+==================================== -->
+
+<div class="row g-4 mb-4">
+
+    <!-- Last Hour Packets -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon packets">
+
+                <i class="bi bi-activity"></i>
+
+            </div>
+
+            <div>
+
+                <small>Last Hour Packets</small>
+
+                <h2>
+
+                    {{ last_hour_packets }}
+
+                </h2>
+
+                <small class="text-success">
+
+                    Live Capture
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Last Hour Threats -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon threats">
+
+                <i class="bi bi-broadcast-pin"></i>
+
+            </div>
+
+            <div>
+
+                <small>Last Hour Threats</small>
+
+                <h2 class="text-danger">
+
+                    {{ last_hour_threats }}
+
+                </h2>
+
+                <small>
+
+                    AI Detection
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Critical Alerts -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon alerts">
+
+                <i class="bi bi-exclamation-octagon-fill"></i>
+
+            </div>
+
+            <div>
+
+                <small>Critical Alerts</small>
+
+                <h2 class="text-danger">
+
+                    {{ critical_alerts }}
+
+                </h2>
+
+                <small>
+
+                    Highest Priority
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Investigating -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="metric-card">
+
+            <div class="metric-icon status">
+
+                <i class="bi bi-search"></i>
+
+            </div>
+
+            <div>
+
+                <small>Investigating</small>
+
+                <h2>
+
+                    {{ investigating_threats }}
+
+                </h2>
+
+                <small class="text-warning">
+
+                    SOC Team
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+            MAIN CHARTS
+====================================== -->
+
+<div class="row g-4">
+
+    <!-- LIVE NETWORK TRAFFIC CHART -->
+    <div class="col-lg-8">
+
+        <div class="panel-card">
+
+            <div class="panel-header">
+
+                <h5>
+                    <i class="bi bi-activity"></i>
+                    Live Network Traffic
+                </h5>
+
+                <span class="panel-tag">
+                    LIVE
+                </span>
+
+            </div>
+
+
+            <div class="chart-wrap">
+
+                <canvas id="trafficChart"></canvas>
+
+
+                <!-- Chart Data From Django -->
+
+                <script id="packet-labels" type="application/json">
+                {{ traffic_hour_labels|safe }}
+                </script>
+
+
+                <script id="packet-values" type="application/json">
+                {{ traffic_hour_values|safe }}
+                </script>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+
+
+    <!-- AI THREAT INTELLIGENCE PANEL -->
+    <div class="col-lg-4">
+
+    <div class="panel-card h-100">
+
+        <div class="panel-header">
+
+            <h5>
+                <i class="bi bi-cpu-fill"></i>
+                AI Threat Intelligence
+            </h5>
+
+            <span class="panel-tag success">
+                ONLINE
+            </span>
+
+        </div>
+
+        <div class="status-list">
+
+            <div class="status-item">
+                <span>Machine Learning</span>
+                <span class="badge bg-success">
+                    {{ ml_status }}
+                </span>
+            </div>
+
+            <div class="status-item">
+                <span>Detection Engine</span>
+                <span class="badge bg-success">
+                    Active
+                </span>
+            </div>
+
+            <div class="status-item">
+                <span>Packet Capture</span>
+                <span class="badge bg-success">
+                    {{ capture_status }}
+                </span>
+            </div>
+
+            <div class="status-item">
+                <span>Database</span>
+                <span class="badge bg-success">
+                    Connected
+                </span>
+            </div>
+
+            <div class="status-item">
+                <span>Alert Engine</span>
+                <span class="badge bg-success">
+                    Running
+                </span>
+            </div>
+
+            <div class="status-item">
+                <span>AI Predictions</span>
+                <strong>
+                    {{ total_predictions }}
+                </strong>
+            </div>
+
+            <div class="status-item">
+                <span>Attack Predictions</span>
+                <strong class="text-danger">
+                    {{ attack_predictions }}
+                </strong>
+            </div>
+
+            <div class="status-item">
+                <span>Normal Predictions</span>
+                <strong class="text-success">
+                    {{ normal_predictions }}
+                </strong>
+            </div>
+
+            <div class="status-item">
+                <span>Average Confidence</span>
+                <strong class="text-info">
+                    {{ average_confidence }}%
+                </strong>
+            </div>
+
+            <div class="status-item">
+                <span>Highest Confidence</span>
+                <strong class="text-success">
+                    {{ highest_confidence }}%
+                </strong>
+            </div>
+
+            <div class="status-item">
+                <span>AI Detection Rate</span>
+                <strong class="text-warning">
+                    {{ ai_success }}%
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+<!-- =====================================================
+            PART 1B
+      LIVE MONITORING & THREAT ANALYSIS
+====================================================== -->
+
+<div class="row g-4 mt-4">
+
+    <div class="col-xl-8">
+
+        <div class="panel-card">
+
+            <div class="panel-header">
+
+                <h5>
+                    <i class="bi bi-broadcast-pin"></i>
+                    Live Packet Monitor
+                </h5>
+
+                <span class="panel-tag">
+                    REAL TIME
+                </span>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-dark table-hover dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Time</th>
+
+                            <th>Source IP</th>
+
+                            <th>Destination</th>
+
+                            <th>Protocol</th>
+
+                            <th>Size</th>
+
+                            <th>Direction</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="packet-table-body">
+
+                    {% for packet in recent_packets %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ packet.captured_at|date:"H:i:s" }}
+
+                        </td>
+
+                        <td>
+
+                            {{ packet.source_ip }}
+
+                        </td>
+
+                        <td>
+
+                            {{ packet.destination_ip }}
+
+                        </td>
+
+                        <td>
+
+                            {% if packet.protocol == "TCP" %}
+
+                                <span class="badge bg-primary">
+                                    TCP
+                                </span>
+
+                            {% elif packet.protocol == "UDP" %}
+
+                                <span class="badge bg-success">
+                                    UDP
+                                </span>
+
+                            {% elif packet.protocol == "ICMP" %}
+
+                                <span class="badge bg-warning text-dark">
+                                    ICMP
+                                </span>
+
+                            {% elif packet.protocol == "ARP" %}
+
+                                <span class="badge bg-info text-dark">
+                                    ARP
+                                </span>
+
+                            {% elif packet.protocol == "DNS" %}
+
+                                <span class="badge bg-secondary">
+                                    DNS
+                                </span>
+
+                            {% elif packet.protocol == "HTTP" %}
+
+                                <span class="badge bg-danger">
+                                    HTTP
+                                </span>
+
+                            {% elif packet.protocol == "HTTPS" %}
+
+                                <span class="badge bg-dark">
+                                    HTTPS
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-light text-dark">
+                                    {{ packet.protocol }}
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {{ packet.packet_length }} Bytes
+
+                        </td>
+
+                        <td>
+
+                            {% if packet.direction == "Incoming" %}
+
+                                <span class="badge bg-success">
+
+                                    <i class="bi bi-arrow-down-circle"></i>
+
+                                    Incoming
+
+                                </span>
+
+                            {% elif packet.direction == "Outgoing" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    <i class="bi bi-arrow-up-circle"></i>
+
+                                    Outgoing
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    Unknown
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr id="packet-empty">
+
+                        <td colspan="6" class="text-center text-muted">
+
+                            Waiting for live packet capture...
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ===========================
+         THREAT INTELLIGENCE
+    ============================ -->
+
+    <div class="col-xl-4">
+
+    <div class="panel-card h-100">
+
+        <div class="panel-header">
+
+            <h5>
+                <i class="bi bi-shield-lock-fill"></i>
+                Threat Intelligence
+            </h5>
+
+            <span class="panel-tag danger">
+                LIVE AI
+            </span>
+
+        </div>
+
+        <div class="status-list">
+
+            <div class="status-item">
+                <span>Most Common Attack</span>
+
+                <strong id="mostCommonAttack">
+                    {{ most_common_attack }}
+                </strong>
+            </div>
+
+            <div class="status-item">
+                <span>Highest Severity</span>
+
+                {% if highest_severity == "Critical" %}
+                    <span class="badge bg-danger">
+                        {{ highest_severity }}
+                    </span>
+
+                {% elif highest_severity == "High" %}
+                    <span class="badge bg-warning">
+                        {{ highest_severity }}
+                    </span>
+
+                {% elif highest_severity == "Medium" %}
+                    <span class="badge bg-info">
+                        {{ highest_severity }}
+                    </span>
+
+                {% else %}
+                    <span class="badge bg-success">
+                        {{ highest_severity }}
+                    </span>
+                {% endif %}
+
+            </div>
+
+            <div class="status-item">
+
+                <span>Top Protocol</span>
+
+                <span class="badge bg-primary"
+                      id="topProtocol">
+
+                    {{ top_protocol }}
+
+                </span>
+
+            </div>
+
+            <div class="status-item">
+
+                <span>Detection Speed</span>
+
+                <strong>
+
+                    {{ detection_speed }}
+
+                </strong>
+
+            </div>
+
+            <div class="status-item">
+
+                <span>Average Confidence</span>
+
+                <strong class="text-success">
+
+                    {{ average_confidence }}%
+
+                </strong>
+
+            </div>
+
+            <div class="status-item">
+
+                <span>Security Score</span>
+
+                <strong class="text-info">
+
+                    {{ security_score }}%
+
+                </strong>
+
+            </div>
+
+            <div class="status-item">
+
+                <span>Threat Level</span>
+
+                {% if threat_level == "Critical" %}
+
+                    <span class="badge bg-danger">
+
+                        {{ threat_level }}
+
+                    </span>
+
+                {% elif threat_level == "High" %}
+
+                    <span class="badge bg-warning">
+
+                        {{ threat_level }}
+
+                    </span>
+
+                {% elif threat_level == "Medium" %}
+
+                    <span class="badge bg-info">
+
+                        {{ threat_level }}
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-success">
+
+                        {{ threat_level }}
+
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================
+            THREAT TABLE
+====================================== -->
+
+<div class="row g-4 mt-4">
+
+<div class="col-lg-12">
+
+<div class="panel-card">
+
+<div class="panel-header">
+
+<h5>
+
+<i class="bi bi-shield-fill-exclamation"></i>
+
+Recent Threat Detection
+
+</h5>
+
+<span class="panel-tag danger">
+
+LIVE
+
+</span>
+
+</div>
+
+<div class="table-responsive">
+
+<table class="table table-dark table-hover dashboard-table">
+
+<thead>
+
+<tr>
+
+<th>Time</th>
+
+<th>Threat</th>
+
+<th>Severity</th>
+
+<th>Status</th>
+
+<th>Description</th>
+
+</tr>
+
+</thead>
+
+<tbody id="threat-table-body">
+
+{% for threat in recent_threats %}
+
+<tr>
+
+    <td>
+
+        {{ threat.detected_at|date:"H:i:s" }}
+
+    </td>
+
+    <td>
+
+        <strong>
+
+            {{ threat.threat_name }}
+
+        </strong>
+
+    </td>
+
+    <td>
+
+        {% if threat.severity == "Critical" %}
+
+            <span class="badge bg-danger">
+
+                Critical
+
+            </span>
+
+        {% elif threat.severity == "High" %}
+
+            <span class="badge bg-warning text-dark">
+
+                High
+
+            </span>
+
+        {% elif threat.severity == "Medium" %}
+
+            <span class="badge bg-info">
+
+                Medium
+
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-success">
+
+                Low
+
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {% if threat.status == "Resolved" %}
+
+            <span class="badge bg-success">
+
+                Resolved
+
+            </span>
+
+        {% elif threat.status == "Investigating" %}
+
+            <span class="badge bg-warning text-dark">
+
+                Investigating
+
+            </span>
+
+        {% else %}
+
+            <span class="badge bg-danger">
+
+                New
+
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {{ threat.description|truncatechars:60 }}
+
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr id="threat-empty">
+
+<td colspan="5" class="text-center text-muted">
+
+Waiting for threat detection...
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================
+            LIVE EVENT FEED
+====================================== -->
+
+<div class="row mt-4">
+
+<div class="col-lg-12">
+
+<div class="panel-card">
+
+<div class="panel-header">
+
+<h5>
+
+<i class="bi bi-activity"></i>
+
+Security Operations Live Feed
+
+</h5>
+
+<span class="panel-tag">
+
+STREAMING
+
+</span>
+
+</div>
+
+<div id="eventFeed" class="event-feed">
+
+<div class="event-item">
+
+<span class="event-dot success"></span>
+
+<div>
+
+<strong>
+
+ThreatDetect+ Started
+
+</strong>
+
+<p>
+
+Security Operations Center initialized successfully.
+
+</p>
+
+<small class="text-muted">
+
+System Ready
+
+</small>
+
+</div>
+
+</div>
+
+<div class="event-item">
+
+<span class="event-dot info"></span>
+
+<div>
+
+<strong>
+
+Packet Sniffer Ready
+
+</strong>
+
+<p>
+
+Waiting for incoming network traffic...
+
+</p>
+
+<small class="text-muted">
+
+Monitoring Active
+
+</small>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="row g-4 mt-4">
+
+    <!-- ==============================
+        SECURITY SCORE
+    =============================== -->
+
+    <div class="col-lg-4">
+
+        <div class="panel-card text-center h-100">
+
+            <div class="panel-header">
+
+                <h5>
+                    <i class="bi bi-shield-check"></i>
+                    Network Security Score
+                </h5>
+
+                <span class="panel-tag success">
+                    HEALTHY
+                </span>
+
+            </div>
+
+            <div class="py-3">
+
+                <h1 class="display-2 fw-bold text-success">
+
+                    98%
+
+                </h1>
+
+                <p class="text-muted">
+
+                    Your network is operating normally.
+
+                </p>
+
+            </div>
+
+            <div class="progress" style="height:10px;">
+
+                <div
+                    class="progress-bar bg-success"
+                    style="width:98%;">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==============================
+        AI MODEL ANALYTICS
+    =============================== -->
+
+    <div class="col-lg-4">
+
+        <div class="panel-card h-100">
+
+            <div class="panel-header">
+
+                <h5>
+
+                    <i class="bi bi-cpu-fill"></i>
+
+                    AI Model Statistics
+
+                </h5>
+
+            </div>
+
+            <div class="status-list">
+
+                <div class="status-item">
+
+                    <span>Algorithm</span>
+
+                    <strong>
+
+                        Random Forest
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Dataset</span>
+
+                    <strong>
+
+                        CIC IDS 2017
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Accuracy</span>
+
+                    <strong class="text-success">
+
+                        99.84%
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Precision</span>
+
+                    <strong>
+
+                        99.80%
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Recall</span>
+
+                    <strong>
+
+                        99.79%
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>F1 Score</span>
+
+                    <strong>
+
+                        99.81%
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==============================
+        RESOURCE MONITOR
+    =============================== -->
+
+    <div class="col-lg-4">
+
+        <div class="panel-card h-100">
+
+            <div class="panel-header">
+
+                <h5>
+
+                    <i class="bi bi-speedometer2"></i>
+
+                    System Monitor
+
+                </h5>
+
+            </div>
+
+            <div class="status-list">
+
+                <div class="status-item">
+
+                    <span>CPU Usage</span>
+
+                    <strong>
+
+                        18%
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Memory</span>
+
+                    <strong>
+
+                        42%
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Storage</span>
+
+                    <strong>
+
+                        63%
+
+                    </strong>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>Database</span>
+
+                    <span class="badge bg-success">
+
+                        Online
+
+                    </span>
+
+                </div>
+
+                <div class="status-item">
+
+                    <span>WebSocket</span>
+
+                    <span class="badge bg-success">
+
+                        Connected
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ===================================
+        QUICK ACTIONS
+=================================== -->
+
+<div class="row mt-4">
+
+<div class="col-lg-12">
+
+<div class="panel-card">
+
+<div class="panel-header">
+
+<h5>
+
+<i class="bi bi-lightning-fill"></i>
+
+Quick Actions
+
+</h5>
+
+</div>
+
+<div class="row g-3">
+
+<div class="col-md-3">
+
+<a href="{% url 'packet_report_pdf' %}" class="btn btn-outline-info w-100">
+
+<i class="bi bi-file-earmark-pdf-fill"></i>
+
+Packet Report
+
+</a>
+
+</div>
+
+<div class="col-md-3">
+
+<a href="{% url 'threat_report_pdf' %}" class="btn btn-outline-danger w-100">
+
+<i class="bi bi-file-earmark-pdf-fill"></i>
+
+Threat Report
+
+</a>
+
+</div>
+
+<div class="col-md-3">
+
+<a href="{% url 'packet_report_excel' %}" class="btn btn-outline-success w-100">
+
+<i class="bi bi-file-earmark-excel-fill"></i>
+
+Export Packets
+
+</a>
+
+</div>
+
+<div class="col-md-3">
+
+<a href="{% url 'alert_report_excel' %}" class="btn btn-outline-warning w-100">
+
+<i class="bi bi-file-earmark-spreadsheet-fill"></i>
+
+Export Alerts
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ===================================
+        DETECTION TIMELINE
+=================================== -->
+
+<div class="row mt-4">
+
+<div class="col-lg-12">
+
+<div class="panel-card">
+
+<div class="panel-header">
+
+<h5>
+
+<i class="bi bi-clock-history"></i>
+
+Detection Workflow
+
+</h5>
+
+</div>
+
+<div class="row text-center">
+
+<div class="col">
+
+<i class="bi bi-router-fill fs-2 text-info"></i>
+
+<h6 class="mt-2">
+
+Packet Captured
+
+</h6>
+
+</div>
+
+<div class="col">
+
+<i class="bi bi-funnel-fill fs-2 text-warning"></i>
+
+<h6 class="mt-2">
+
+Feature Extraction
+
+</h6>
+
+</div>
+
+<div class="col">
+
+<i class="bi bi-cpu-fill fs-2 text-success"></i>
+
+<h6 class="mt-2">
+
+AI Prediction
+
+</h6>
+
+</div>
+
+<div class="col">
+
+<i class="bi bi-shield-fill-exclamation fs-2 text-danger"></i>
+
+<h6 class="mt-2">
+
+Threat Detected
+
+</h6>
+
+</div>
+
+<div class="col">
+
+<i class="bi bi-bell-fill fs-2 text-warning"></i>
+
+<h6 class="mt-2">
+
+Alert Generated
+
+</h6>
+
+</div>
+
+<div class="col">
+
+<i class="bi bi-database-fill-check fs-2 text-primary"></i>
+
+<h6 class="mt-2">
+
+Logged
+
+</h6>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- ===================================
+        FOOTER
+=================================== -->
+
+<div class="text-center text-muted mt-5">
+
+<hr>
+
+<p>
+
+ThreatDetect+ |
+Real-Time Network Threat Detection and Alerting System
+
+</p>
+
+<small>
+
+Powered by Django • Scapy • Machine Learning • WebSocket • Chart.js
+
+</small>
+
+</div>
+
+
+
+{% endblock %}

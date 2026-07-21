@@ -1,0 +1,4812 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block page_title %}
+Alerts
+{% endblock %}
+
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /*=========================================================
+                    ALERTS DASHBOARD
+                        PART 1
+            GLOBAL • HEADER • KPI CARDS
+==========================================================*/
+
+
+/*=========================================================
+                    ROOT COLORS
+==========================================================*/
+
+:root{
+
+    --soc-bg:#08111f;
+    --soc-card:#111d2f;
+    --soc-card-light:#16253d;
+    --soc-border:rgba(255,255,255,.06);
+
+    --critical:#ef4444;
+    --high:#f59e0b;
+    --medium:#3b82f6;
+    --low:#22c55e;
+
+    --cyan:#00d9ff;
+    --text:#ffffff;
+    --muted:#8ea7c6;
+
+}
+
+
+/*=========================================================
+                    BODY
+==========================================================*/
+
+body{
+
+    background:
+        linear-gradient(
+            180deg,
+            #07111f 0%,
+            #0b1728 100%
+        );
+
+    color:var(--text);
+
+    font-family:
+        "Inter",
+        "Segoe UI",
+        sans-serif;
+
+}
+
+
+/*=========================================================
+                PAGE CONTAINER
+==========================================================*/
+
+.container-fluid{
+
+    animation:fadeDashboard .7s ease;
+
+}
+
+@keyframes fadeDashboard{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                    PAGE HEADER
+==========================================================*/
+
+.soc-icon{
+
+    width:75px;
+
+    height:75px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:20px;
+
+    color:#fff;
+
+    font-size:2rem;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--critical),
+            #991b1b
+        );
+
+    box-shadow:
+        0 15px 40px rgba(239,68,68,.35);
+
+}
+
+.soc-icon i{
+
+    animation:shieldPulse 2s infinite;
+
+}
+
+@keyframes shieldPulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.08);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                HEADER TEXT
+==========================================================*/
+
+h2{
+
+    color:#fff!important;
+
+    font-weight:800;
+
+    letter-spacing:.4px;
+
+}
+
+.text-muted{
+
+    color:var(--muted)!important;
+
+}
+
+
+/*=========================================================
+                CONNECTION STATUS
+==========================================================*/
+
+#connectionStatus{
+
+    border-radius:30px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    padding:14px 28px;
+
+    animation:livePulse 2s infinite;
+
+}
+
+@keyframes livePulse{
+
+    0%{
+
+        box-shadow:
+        0 0 0 0 rgba(34,197,94,.45);
+
+    }
+
+    70%{
+
+        box-shadow:
+        0 0 0 14px rgba(34,197,94,0);
+
+    }
+
+    100%{
+
+        box-shadow:
+        0 0 0 0 rgba(34,197,94,0);
+
+    }
+
+}
+
+
+/*=========================================================
+                    CARDS
+==========================================================*/
+
+.card{
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(17,29,47,.97),
+            rgba(12,20,36,.97)
+        );
+
+    border:1px solid var(--soc-border)!important;
+
+    border-radius:20px;
+
+    color:white;
+
+    overflow:hidden;
+
+    transition:.35s;
+
+}
+
+.card:hover{
+
+    transform:
+        translateY(-8px);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.35);
+
+}
+
+
+/*=========================================================
+                CARD GLOW
+==========================================================*/
+
+.card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+
+    height:260px;
+
+    right:-120px;
+
+    top:-120px;
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+            rgba(255,255,255,.05),
+
+            transparent 70%
+
+        );
+
+}
+
+
+/*=========================================================
+                CARD HEADER
+==========================================================*/
+
+.card-header{
+
+    background:
+
+        linear-gradient(
+            180deg,
+            #17263f,
+            #101a2d
+        )!important;
+
+    color:white;
+
+    border-bottom:
+        1px solid var(--soc-border);
+
+}
+
+
+/*=========================================================
+                KPI CARDS
+==========================================================*/
+
+.stat-card{
+
+    position:relative;
+
+    min-height:150px;
+
+}
+
+.stat-card .card-body{
+
+    padding:28px;
+
+}
+
+
+/*=========================================================
+                STAT ICON
+==========================================================*/
+
+.stat-icon{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-size:1.8rem;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.25);
+
+}
+
+
+/*=========================================================
+                KPI VALUE
+==========================================================*/
+
+.stat-card h1{
+
+    font-size:2.5rem;
+
+    font-weight:800;
+
+    margin-top:12px;
+
+}
+
+.stat-card small{
+
+    color:var(--muted)!important;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+}
+
+
+/*=========================================================
+            CRITICAL CARD
+==========================================================*/
+
+.critical-card{
+
+    border-left:5px solid var(--critical)!important;
+
+}
+
+.critical-card:hover{
+
+    box-shadow:
+        0 0 35px rgba(239,68,68,.28);
+
+}
+
+
+/*=========================================================
+                HIGH CARD
+==========================================================*/
+
+.high-card{
+
+    border-left:5px solid var(--high)!important;
+
+}
+
+.high-card:hover{
+
+    box-shadow:
+        0 0 35px rgba(245,158,11,.25);
+
+}
+
+
+/*=========================================================
+                MEDIUM CARD
+==========================================================*/
+
+.medium-card{
+
+    border-left:5px solid var(--medium)!important;
+
+}
+
+.medium-card:hover{
+
+    box-shadow:
+        0 0 35px rgba(59,130,246,.25);
+
+}
+
+
+/*=========================================================
+                TOTAL CARD
+==========================================================*/
+
+.total-card{
+
+    border-left:5px solid var(--low)!important;
+
+}
+
+.total-card:hover{
+
+    box-shadow:
+        0 0 35px rgba(34,197,94,.25);
+
+}
+
+
+/*=========================================================
+            LIVE COUNTER UPDATE
+==========================================================*/
+
+.stat-update{
+
+    animation:counterFlash .6s;
+
+}
+
+@keyframes counterFlash{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.18);
+
+        color:var(--cyan);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.stat-card{
+
+    min-height:130px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.soc-icon{
+
+    width:60px;
+
+    height:60px;
+
+    font-size:1.6rem;
+
+}
+
+.stat-card h1{
+
+    font-size:2rem;
+
+}
+
+#connectionStatus{
+
+    width:100%;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.card-body{
+
+    padding:20px;
+
+}
+
+.stat-icon{
+
+    width:55px;
+
+    height:55px;
+
+    font-size:1.4rem;
+
+}
+
+.stat-card h1{
+
+    font-size:1.8rem;
+
+}
+
+}
+    /*=========================================================
+                    ALERTS DASHBOARD
+                        PART 2
+        SEARCH • FILTERS • EXPORT BUTTONS
+==========================================================*/
+
+
+/*=========================================================
+                    FILTER CARD
+==========================================================*/
+
+.filter-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.filter-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:320px;
+
+    height:320px;
+
+    top:-160px;
+
+    right:-160px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(0,217,255,.10),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                FILTER HEADER
+==========================================================*/
+
+.filter-card .card-header{
+
+    padding:22px 25px;
+
+}
+
+.filter-card .card-header h5{
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+.filter-card .card-header i{
+
+    color:#00d9ff!important;
+
+}
+
+
+/*=========================================================
+                    INPUT GROUP
+==========================================================*/
+
+.input-group{
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+}
+
+
+/*=========================================================
+                INPUT ICON
+==========================================================*/
+
+.input-group-text{
+
+    background:#15243c!important;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#00d9ff;
+
+    font-size:1rem;
+
+}
+
+
+/*=========================================================
+                    SEARCH BOX
+==========================================================*/
+
+.form-control{
+
+    height:52px;
+
+    background:#15243c;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#fff;
+
+    border-left:none;
+
+    transition:.35s;
+
+}
+
+.form-control::placeholder{
+
+    color:#8ea7c6;
+
+}
+
+.form-control:focus{
+
+    background:#1a2d49;
+
+    color:#fff;
+
+    border-color:#00d9ff;
+
+    box-shadow:
+
+        0 0 0 4px rgba(0,217,255,.15);
+
+}
+
+
+/*=========================================================
+                    SELECT
+==========================================================*/
+
+.form-select{
+
+    height:52px;
+
+    background:#15243c;
+
+    color:#fff;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:14px;
+
+    transition:.3s;
+
+}
+
+.form-select option{
+
+    background:#0f1a2d;
+
+    color:#fff;
+
+}
+
+.form-select:focus{
+
+    border-color:#3b82f6;
+
+    box-shadow:
+
+        0 0 0 4px rgba(59,130,246,.15);
+
+}
+
+
+/*=========================================================
+                EXPORT BUTTONS
+==========================================================*/
+
+.btn{
+
+    height:52px;
+
+    border-radius:14px;
+
+    font-weight:700;
+
+    transition:.3s;
+
+    letter-spacing:.3px;
+
+}
+
+
+/*=========================================================
+                    PDF
+==========================================================*/
+
+.btn-danger{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #b91c1c
+        );
+
+    border:none;
+
+}
+
+.btn-danger:hover{
+
+    transform:
+
+        translateY(-3px);
+
+    box-shadow:
+
+        0 15px 30px rgba(239,68,68,.35);
+
+}
+
+
+/*=========================================================
+                    EXCEL
+==========================================================*/
+
+.btn-success{
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #22c55e,
+            #15803d
+        );
+
+    border:none;
+
+}
+
+.btn-success:hover{
+
+    transform:
+
+        translateY(-3px);
+
+    box-shadow:
+
+        0 15px 30px rgba(34,197,94,.35);
+
+}
+
+
+/*=========================================================
+                BUTTON ICONS
+==========================================================*/
+
+.btn i{
+
+    font-size:1rem;
+
+}
+
+
+/*=========================================================
+                SEARCH ANIMATION
+==========================================================*/
+
+.form-control:focus,
+
+.form-select:focus{
+
+    animation:focusGlow .4s ease;
+
+}
+
+@keyframes focusGlow{
+
+    from{
+
+        transform:scale(.98);
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+            FILTER ROW
+==========================================================*/
+
+.filter-card .row{
+
+    row-gap:18px;
+
+}
+
+
+/*=========================================================
+                FILTER BADGE
+==========================================================*/
+
+.filter-card .badge{
+
+    border-radius:30px;
+
+    padding:8px 16px;
+
+}
+
+
+/*=========================================================
+            INPUT HOVER
+==========================================================*/
+
+.form-control:hover,
+
+.form-select:hover{
+
+    border-color:#3b82f6;
+
+}
+
+
+/*=========================================================
+            RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.btn{
+
+    width:100%;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.form-control,
+
+.form-select,
+
+.btn{
+
+    height:48px;
+
+}
+
+.filter-card .card-header{
+
+    padding:18px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.input-group{
+
+    margin-bottom:10px;
+
+}
+
+.btn{
+
+    font-size:.9rem;
+
+}
+
+}
+    /*=========================================================
+                    ALERTS DASHBOARD
+                        PART 3
+        LIVE ALERT TABLE • THREAT INCIDENTS
+==========================================================*/
+
+
+/*=========================================================
+                    TABLE CARD
+==========================================================*/
+
+.table-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.table-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:350px;
+
+    height:350px;
+
+    right:-170px;
+
+    top:-170px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(239,68,68,.08),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                    TABLE
+==========================================================*/
+
+.table{
+
+    color:#dbe8ff;
+
+    margin-bottom:0;
+
+    border-collapse:separate;
+
+    border-spacing:0;
+
+}
+
+
+/*=========================================================
+                    TABLE HEADER
+==========================================================*/
+
+.table thead{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+
+}
+
+.table thead th{
+
+    background:#17263f!important;
+
+    color:#fff;
+
+    font-size:.78rem;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    border:none;
+
+    padding:18px;
+
+    white-space:nowrap;
+
+}
+
+
+/*=========================================================
+                    TABLE BODY
+==========================================================*/
+
+.table tbody td{
+
+    padding:18px;
+
+    border-top:1px solid rgba(255,255,255,.05);
+
+    vertical-align:middle;
+
+    transition:.3s;
+
+}
+
+.table-hover tbody tr{
+
+    transition:.3s;
+
+}
+
+.table-hover tbody tr:hover{
+
+    background:rgba(59,130,246,.06);
+
+    transform:scale(1.002);
+
+}
+
+
+/*=========================================================
+                ALTERNATE ROWS
+==========================================================*/
+
+.table tbody tr:nth-child(even){
+
+    background:rgba(255,255,255,.015);
+
+}
+
+
+/*=========================================================
+                THREAT NAME
+==========================================================*/
+
+.table tbody td .fw-bold{
+
+    color:white;
+
+    font-size:.95rem;
+
+}
+
+
+/*=========================================================
+                    DATE
+==========================================================*/
+
+.table tbody td .fw-semibold{
+
+    color:#fff;
+
+}
+
+.table tbody td small{
+
+    color:#8ea7c6;
+
+}
+
+
+/*=========================================================
+                CONFIDENCE BAR
+==========================================================*/
+
+.progress{
+
+    height:12px;
+
+    background:#0d1828;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+}
+
+.progress-bar{
+
+    border-radius:30px;
+
+    font-weight:700;
+
+    font-size:.70rem;
+
+    transition:width .5s ease;
+
+}
+
+
+/*=========================================================
+                IP ADDRESS
+==========================================================*/
+
+.table td .badge.bg-light{
+
+    background:#182742!important;
+
+    color:#9fd6ff!important;
+
+    border:1px solid rgba(59,130,246,.25);
+
+    font-family:Consolas,monospace;
+
+    font-size:.78rem;
+
+}
+
+
+/*=========================================================
+                PROTOCOL BADGES
+==========================================================*/
+
+.badge.bg-primary{
+
+    background:rgba(59,130,246,.18)!important;
+
+    color:#7ec2ff;
+
+    border:1px solid rgba(59,130,246,.35);
+
+}
+
+.badge.bg-success{
+
+    background:rgba(34,197,94,.18)!important;
+
+    color:#69f0a8;
+
+    border:1px solid rgba(34,197,94,.35);
+
+}
+
+.badge.bg-warning{
+
+    background:rgba(245,158,11,.18)!important;
+
+    color:#ffd27d;
+
+    border:1px solid rgba(245,158,11,.35);
+
+}
+
+.badge.bg-secondary{
+
+    background:rgba(107,114,128,.18)!important;
+
+    color:#d1d5db;
+
+}
+
+
+/*=========================================================
+                SEVERITY BADGES
+==========================================================*/
+
+.badge.bg-danger{
+
+    background:rgba(239,68,68,.18)!important;
+
+    color:#ff8b8b;
+
+    border:1px solid rgba(239,68,68,.45);
+
+}
+
+.badge.text-dark{
+
+    color:#fff!important;
+
+}
+
+
+/*=========================================================
+                STATUS PILLS
+==========================================================*/
+
+.rounded-pill{
+
+    border-radius:30px!important;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+}
+
+
+/*=========================================================
+                MESSAGE COLUMN
+==========================================================*/
+
+.table td small{
+
+    line-height:1.5;
+
+}
+
+
+/*=========================================================
+                LIVE FLASH
+==========================================================*/
+
+.flash-row{
+
+    animation:newAlert .8s ease;
+
+}
+
+@keyframes newAlert{
+
+    0%{
+
+        background:rgba(239,68,68,.35);
+
+    }
+
+    100%{
+
+        background:transparent;
+
+    }
+
+}
+
+
+/*=========================================================
+                TABLE FOOTER
+==========================================================*/
+
+.card-footer{
+
+    background:#121f34!important;
+
+    border-top:1px solid rgba(255,255,255,.05);
+
+    color:#8ea7c6;
+
+}
+
+
+/*=========================================================
+                SCROLLBAR
+==========================================================*/
+
+.table-responsive::-webkit-scrollbar{
+
+    height:10px;
+
+}
+
+.table-responsive::-webkit-scrollbar-track{
+
+    background:#08111f;
+
+}
+
+.table-responsive::-webkit-scrollbar-thumb{
+
+    background:#315d9a;
+
+    border-radius:30px;
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.table thead{
+
+    display:none;
+
+}
+
+.table tbody tr{
+
+    display:block;
+
+    margin-bottom:18px;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.06);
+
+}
+
+.table tbody td{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    border:none;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+.table tbody td:last-child{
+
+    border-bottom:none;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.table tbody td{
+
+    padding:14px;
+
+    font-size:.9rem;
+
+}
+
+.progress{
+
+    width:120px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.table tbody td{
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:8px;
+
+}
+
+}
+    /*=========================================================
+                    ALERTS DASHBOARD
+                        PART 4
+        LIVE ACTIVITY • SIDEBAR • SECURITY STATUS
+==========================================================*/
+
+
+/*=========================================================
+                    LIVE ACTIVITY CARD
+==========================================================*/
+
+.activity-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.activity-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+
+    height:300px;
+
+    right:-140px;
+
+    top:-140px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(239,68,68,.10),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                    ACTIVITY FEED
+==========================================================*/
+
+#activityFeed{
+
+    overflow-y:auto;
+
+    scrollbar-width:thin;
+
+    scrollbar-color:#315d9a #08111f;
+
+}
+
+#activityFeed::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+#activityFeed::-webkit-scrollbar-track{
+
+    background:#08111f;
+
+}
+
+#activityFeed::-webkit-scrollbar-thumb{
+
+    background:#315d9a;
+
+    border-radius:30px;
+
+}
+
+
+/*=========================================================
+                    ACTIVITY ITEM
+==========================================================*/
+
+.activity-item{
+
+    transition:.35s;
+
+    border-bottom:1px solid rgba(255,255,255,.05)!important;
+
+}
+
+.activity-item:hover{
+
+    background:rgba(59,130,246,.05);
+
+    transform:translateX(6px);
+
+}
+
+
+/*=========================================================
+                    ACTIVITY ICON
+==========================================================*/
+
+.activity-icon span{
+
+    width:46px;
+
+    height:46px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:14px;
+
+    font-size:1.1rem;
+
+    box-shadow:
+        0 10px 20px rgba(0,0,0,.25);
+
+}
+
+
+/*=========================================================
+                    ACTIVITY TEXT
+==========================================================*/
+
+.activity-item .fw-bold{
+
+    color:#fff;
+
+}
+
+.activity-item small{
+
+    color:#8ea7c6;
+
+}
+
+
+/*=========================================================
+                    NEW ALERT
+==========================================================*/
+
+.activity-item:first-child{
+
+    animation:newActivity .8s ease;
+
+}
+
+@keyframes newActivity{
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(-20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                    ATTACK SOURCES
+==========================================================*/
+
+.attack-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.attack-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+
+    height:260px;
+
+    left:-120px;
+
+    bottom:-120px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(245,158,11,.10),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                ATTACKER LIST
+==========================================================*/
+
+.list-group-item{
+
+    background:transparent;
+
+    color:#fff;
+
+    border-color:rgba(255,255,255,.05);
+
+    transition:.35s;
+
+}
+
+.list-group-item:hover{
+
+    background:rgba(239,68,68,.06);
+
+    padding-left:24px;
+
+}
+
+.list-group-item .fw-bold{
+
+    color:#fff;
+
+}
+
+
+/*=========================================================
+                    ROUTER ICON
+==========================================================*/
+
+.list-group-item i{
+
+    color:#ef4444;
+
+}
+
+
+/*=========================================================
+                    BADGES
+==========================================================*/
+
+.list-group-item .badge{
+
+    min-width:40px;
+
+    text-align:center;
+
+}
+
+
+/*=========================================================
+                SECURITY STATUS CARD
+==========================================================*/
+
+.security-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.security-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:280px;
+
+    height:280px;
+
+    right:-130px;
+
+    bottom:-130px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(34,197,94,.10),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                SECURITY ROW
+==========================================================*/
+
+.security-card .mb-4{
+
+    margin-bottom:24px!important;
+
+}
+
+.security-card span{
+
+    color:#dbe8ff;
+
+}
+
+.security-card strong{
+
+    color:#fff;
+
+}
+
+
+/*=========================================================
+                PROGRESS BAR
+==========================================================*/
+
+.security-card .progress{
+
+    height:10px;
+
+    background:#091522;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+.security-card .progress-bar{
+
+    border-radius:20px;
+
+    transition:width .5s ease;
+
+}
+
+
+/*=========================================================
+                LIVE BADGE
+==========================================================*/
+
+.card-header .badge{
+
+    border-radius:20px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+}
+
+
+/*=========================================================
+                EMPTY STATE
+==========================================================*/
+
+.text-center i.display-6,
+
+.text-center i.display-4{
+
+    opacity:.8;
+
+}
+
+.text-center h6{
+
+    color:#fff;
+
+}
+
+.text-center small{
+
+    color:#8ea7c6;
+
+}
+
+
+/*=========================================================
+                CARD HOVER
+==========================================================*/
+
+.activity-card:hover,
+
+.attack-card:hover,
+
+.security-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.30);
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:1200px){
+
+#activityFeed{
+
+    height:320px!important;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.activity-icon span{
+
+    width:40px;
+
+    height:40px;
+
+    font-size:1rem;
+
+}
+
+.list-group-item{
+
+    padding:14px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+#activityFeed{
+
+    height:260px!important;
+
+}
+
+.security-card .mb-4{
+
+    margin-bottom:18px!important;
+
+}
+
+}
+    /*=========================================================
+                    ALERTS DASHBOARD
+                        PART 5
+        CHARTS • FOOTER • FINAL EFFECTS
+==========================================================*/
+
+
+/*=========================================================
+                    CHART CARDS
+==========================================================*/
+
+.chart-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.chart-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:320px;
+
+    height:320px;
+
+    right:-150px;
+
+    top:-150px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(59,130,246,.10),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                    CHART HEADER
+==========================================================*/
+
+.chart-card .card-header{
+
+    padding:22px 24px;
+
+}
+
+.chart-card h5{
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+.chart-card small{
+
+    color:#8ea7c6;
+
+}
+
+
+/*=========================================================
+                    CHART BODY
+==========================================================*/
+
+.chart-card .card-body{
+
+    padding:25px;
+
+}
+
+
+/*=========================================================
+                    CANVAS
+==========================================================*/
+
+.chart-card canvas{
+
+    width:100%!important;
+
+    height:100%!important;
+
+}
+
+
+/*=========================================================
+                    CHART FOOTER
+==========================================================*/
+
+.chart-card .card-footer{
+
+    background:#121f34!important;
+
+    border-top:1px solid rgba(255,255,255,.05);
+
+}
+
+
+/*=========================================================
+                FOOTER STATS
+==========================================================*/
+
+.chart-card .card-footer strong{
+
+    font-size:1.05rem;
+
+}
+
+.chart-card .card-footer small{
+
+    color:#8ea7c6;
+
+}
+
+
+/*=========================================================
+                DASHBOARD FOOTER
+==========================================================*/
+
+.dashboard-footer{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.dashboard-footer::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:350px;
+
+    height:350px;
+
+    left:-180px;
+
+    bottom:-180px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(34,197,94,.08),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                FOOTER ITEMS
+==========================================================*/
+
+.dashboard-footer h6{
+
+    color:#8ea7c6;
+
+    font-size:.85rem;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+}
+
+.dashboard-footer .badge{
+
+    padding:10px 18px;
+
+    border-radius:30px;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                FOOTER ICONS
+==========================================================*/
+
+.dashboard-footer .bi{
+
+    margin-right:6px;
+
+}
+
+
+/*=========================================================
+                CURRENT TIME
+==========================================================*/
+
+#currentTime{
+
+    font-family:Consolas,monospace;
+
+    letter-spacing:1px;
+
+}
+
+
+/*=========================================================
+                LIVE CHART ANIMATION
+==========================================================*/
+
+.chart-card{
+
+    animation:chartFade .7s ease;
+
+}
+
+@keyframes chartFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                BADGE ANIMATION
+==========================================================*/
+
+.dashboard-footer .badge{
+
+    animation:badgeGlow 2.5s infinite;
+
+}
+
+@keyframes badgeGlow{
+
+    0%{
+
+        box-shadow:0 0 0 rgba(255,255,255,0);
+
+    }
+
+    50%{
+
+        box-shadow:0 0 18px rgba(255,255,255,.12);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 rgba(255,255,255,0);
+
+    }
+
+}
+
+
+/*=========================================================
+                HOVER EFFECTS
+==========================================================*/
+
+.chart-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 18px 40px rgba(0,0,0,.30);
+
+}
+
+.dashboard-footer:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+
+}
+
+
+/*=========================================================
+                EMPTY CHART STATE
+==========================================================*/
+
+.chart-empty{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-direction:column;
+
+    height:100%;
+
+    color:#8ea7c6;
+
+}
+
+.chart-empty i{
+
+    font-size:4rem;
+
+    margin-bottom:15px;
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:1200px){
+
+.chart-card .card-body{
+
+    height:320px!important;
+
+}
+
+}
+
+@media(max-width:992px){
+
+.dashboard-footer .row>div{
+
+    margin-bottom:20px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.chart-card .card-body{
+
+    height:280px!important;
+
+}
+
+.dashboard-footer{
+
+    text-align:center;
+
+}
+
+.dashboard-footer .badge{
+
+    display:inline-block;
+
+    margin-top:10px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.chart-card .card-body{
+
+    height:240px!important;
+
+}
+
+.dashboard-footer h6{
+
+    font-size:.8rem;
+
+}
+
+}
+
+
+/*=========================================================
+                SMOOTH SCROLLBAR
+==========================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+    height:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#08111f;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#315d9a;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#3b82f6;
+
+}
+
+
+/*=========================================================
+                TEXT SELECTION
+==========================================================*/
+
+::selection{
+
+    background:#3b82f6;
+
+    color:#fff;
+
+}
+
+
+/*=========================================================
+                END OF FILE
+==========================================================*/
+</style>
+
+<div class="container-fluid px-4 py-3">
+
+    <!-- =======================================================
+                    PAGE HEADER
+    ======================================================== -->
+
+    <div class="row align-items-center mb-4">
+
+        <div class="col-lg-8">
+
+            <div class="d-flex align-items-center">
+
+                <div class="soc-icon me-3">
+
+                    <i class="bi bi-shield-lock-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="fw-bold mb-1 text-dark">
+
+                        Security Operations Center
+
+                    </h2>
+
+                    <p class="text-muted mb-0">
+
+                        Real-Time AI Threat Detection & Incident Monitoring Dashboard
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+
+            <span
+                id="connectionStatus"
+                class="badge bg-success fs-6 px-4 py-3 shadow-sm">
+
+                <i class="bi bi-broadcast-pin me-2"></i>
+
+                LIVE
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =======================================================
+                    KPI CARDS
+    ======================================================== -->
+
+    <div class="row g-4 mb-5">
+
+        <!-- Critical -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow-lg stat-card critical-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-uppercase text-muted fw-semibold">
+
+                                Critical Alerts
+
+                            </small>
+
+                            <h1
+                                id="criticalCount"
+                                class="fw-bold mt-2 mb-0">
+
+                                {{ critical_count|default:"0" }}
+
+                            </h1>
+
+                        </div>
+
+                        <div class="stat-icon bg-danger">
+
+                            <i class="bi bi-exclamation-octagon-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- High -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow-lg stat-card high-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-uppercase text-muted fw-semibold">
+
+                                High Alerts
+
+                            </small>
+
+                            <h1
+                                id="highCount"
+                                class="fw-bold mt-2 mb-0">
+
+                                {{ high_count|default:"0" }}
+
+                            </h1>
+
+                        </div>
+
+                        <div class="stat-icon bg-warning">
+
+                            <i class="bi bi-shield-fill-exclamation"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Medium -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow-lg stat-card medium-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-uppercase text-muted fw-semibold">
+
+                                Medium Alerts
+
+                            </small>
+
+                            <h1
+                                id="mediumCount"
+                                class="fw-bold mt-2 mb-0">
+
+                                {{ medium_count|default:"0" }}
+
+                            </h1>
+
+                        </div>
+
+                        <div class="stat-icon bg-primary">
+
+                            <i class="bi bi-activity"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="card border-0 shadow-lg stat-card total-card h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+
+                            <small class="text-uppercase text-muted fw-semibold">
+
+                                Total Alerts
+
+                            </small>
+
+                            <h1
+                                id="totalCount"
+                                class="fw-bold mt-2 mb-0">
+
+                                {{ total_alerts|default:"0" }}
+
+                            </h1>
+
+                        </div>
+
+                        <div class="stat-icon bg-success">
+
+                            <i class="bi bi-bell-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =======================================================
+                        SEARCH & FILTERS
+    ======================================================== -->
+
+    <div class="card border-0 shadow-lg mb-5">
+
+        <div class="card-header bg-white border-bottom">
+
+            <div class="d-flex align-items-center">
+
+                <i class="bi bi-funnel-fill text-primary me-2 fs-5"></i>
+
+                <h5 class="mb-0 fw-bold">
+
+                    Alert Filters & Search
+
+                </h5>
+
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3 align-items-center">
+
+                <!-- Search -->
+
+                <div class="col-lg-4">
+
+                    <div class="input-group">
+
+                        <span class="input-group-text bg-light">
+
+                            <i class="bi bi-search"></i>
+
+                        </span>
+
+                        <input
+                            type="text"
+                            id="searchAlert"
+                            class="form-control"
+                            placeholder="Search Threat, Source IP, Destination IP..."
+                            autocomplete="off">
+
+                    </div>
+
+                </div>
+
+
+                <!-- Severity -->
+
+                <div class="col-lg-2">
+
+                    <select
+                        id="severityFilter"
+                        class="form-select">
+
+                        <option value="">All Severity</option>
+
+                        <option>Critical</option>
+
+                        <option>High</option>
+
+                        <option>Medium</option>
+
+                        <option>Low</option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Date -->
+
+                <div class="col-lg-2">
+
+                    <select
+                        id="dateFilter"
+                        class="form-select">
+
+                        <option>Today</option>
+
+                        <option>Last Hour</option>
+
+                        <option>24 Hours</option>
+
+                        <option>7 Days</option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- PDF -->
+
+                <div class="col-lg-2">
+
+                    <a
+                        href="{% url 'alert_report_pdf' %}"
+                        class="btn btn-danger w-100">
+
+                        <i class="bi bi-file-earmark-pdf-fill me-2"></i>
+
+                        PDF
+
+                    </a>
+
+                </div>
+
+
+                <!-- Excel -->
+
+                <div class="col-lg-2">
+
+                    <a
+                        href="{% url 'alert_report_excel' %}"
+                        class="btn btn-success w-100">
+
+                        <i class="bi bi-file-earmark-excel-fill me-2"></i>
+
+                        Excel
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =======================================================
+                    LIVE THREAT ALERTS
+======================================================= -->
+
+<div class="row g-4">
+
+    <!-- ==========================================
+                ALERT TABLE
+    =========================================== -->
+
+    <div class="col-xl-9">
+
+        <div class="card shadow-lg border-0">
+
+            <!-- Header -->
+
+            <div class="card-header bg-white">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <h5 class="fw-bold mb-0">
+
+                            <i class="bi bi-shield-exclamation text-danger me-2"></i>
+
+                            Live Threat Alerts
+
+                        </h5>
+
+                        <small class="text-muted">
+
+                            AI Detected Security Events
+
+                        </small>
+
+                    </div>
+
+                    <span class="badge bg-danger rounded-pill px-3 py-2">
+
+                        {{ total_alerts }} Alerts
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Table -->
+
+            <div class="table-responsive">
+
+                <table
+                    class="table table-hover table-striped align-middle mb-0"
+                    id="alertsTable">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th width="150">Time</th>
+
+                            <th>Threat</th>
+
+                            <th width="120">Severity</th>
+
+                            <th width="180">Confidence</th>
+
+                            <th>Source IP</th>
+
+                            <th>Destination IP</th>
+
+                            <th width="110">Protocol</th>
+
+                            <th>Message</th>
+
+                            <th width="130">Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="alert-table">
+
+                        {% for alert in alerts %}
+
+                        <tr>
+
+                            <!-- TIME -->
+
+                            <td>
+
+                                <div class="fw-semibold">
+
+                                    {{ alert.created_at|date:"d M Y" }}
+
+                                </div>
+
+                                <small class="text-muted">
+
+                                    {{ alert.created_at|date:"H:i:s" }}
+
+                                </small>
+
+                            </td>
+
+
+                            <!-- THREAT -->
+
+                            <td>
+
+                                <div class="fw-bold text-dark">
+
+                                    {{ alert.threat.threat_name }}
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- SEVERITY -->
+
+                            <td>
+
+                                {% if alert.threat.severity == "Critical" %}
+
+                                <span class="badge bg-danger px-3 py-2">
+
+                                    <i class="bi bi-exclamation-octagon-fill me-1"></i>
+
+                                    Critical
+
+                                </span>
+
+                                {% elif alert.threat.severity == "High" %}
+
+                                <span class="badge bg-warning text-dark px-3 py-2">
+
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+
+                                    High
+
+                                </span>
+
+                                {% elif alert.threat.severity == "Medium" %}
+
+                                <span class="badge bg-primary px-3 py-2">
+
+                                    <i class="bi bi-shield-fill me-1"></i>
+
+                                    Medium
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-success px-3 py-2">
+
+                                    <i class="bi bi-check-circle-fill me-1"></i>
+
+                                    Low
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- CONFIDENCE -->
+
+                            <td>
+
+                                {% if alert.threat.confidence %}
+
+                                <div class="d-flex align-items-center">
+
+                                    <div
+                                        class="progress flex-grow-1"
+                                        style="height:12px;">
+
+                                        <div
+                                            class="progress-bar
+
+                                            {% if alert.threat.confidence >= 90 %}
+
+                                                bg-danger
+
+                                            {% elif alert.threat.confidence >= 70 %}
+
+                                                bg-warning
+
+                                            {% else %}
+
+                                                bg-success
+
+                                            {% endif %}"
+
+                                            role="progressbar"
+
+                                            style="width: {{ alert.threat.confidence }}%;">
+
+                                        </div>
+
+                                    </div>
+
+                                    <small class="ms-2 fw-bold">
+
+                                        {{ alert.threat.confidence|floatformat:0 }}%
+
+                                    </small>
+
+                                </div>
+
+                                {% else %}
+
+                                <span class="text-muted">
+
+                                    N/A
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- SOURCE -->
+
+                            <td>
+
+                                <span class="badge bg-light text-dark border">
+
+                                    {{ alert.threat.packet.source_ip|default:"-" }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- DESTINATION -->
+
+                            <td>
+
+                                <span class="badge bg-light text-dark border">
+
+                                    {{ alert.threat.packet.destination_ip|default:"-" }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- PROTOCOL -->
+
+                            <td>
+
+                                {% if alert.threat.packet.protocol == "TCP" %}
+
+                                <span class="badge bg-primary">
+
+                                    TCP
+
+                                </span>
+
+                                {% elif alert.threat.packet.protocol == "UDP" %}
+
+                                <span class="badge bg-success">
+
+                                    UDP
+
+                                </span>
+
+                                {% elif alert.threat.packet.protocol == "ICMP" %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    ICMP
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-secondary">
+
+                                    {{ alert.threat.packet.protocol|default:"Unknown" }}
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- MESSAGE -->
+
+                            <td>
+
+                                <small>
+
+                                    {{ alert.message }}
+
+                                </small>
+
+                            </td>
+
+
+                            <!-- STATUS -->
+
+                            <td>
+
+                                {% if alert.threat.status == "New" %}
+
+                                <span class="badge bg-danger rounded-pill px-3">
+
+                                    ● New
+
+                                </span>
+
+                                {% elif alert.threat.status == "Investigating" %}
+
+                                <span class="badge bg-warning text-dark rounded-pill px-3">
+
+                                    ● Investigating
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-success rounded-pill px-3">
+
+                                    ● Resolved
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td colspan="9">
+
+                                <div class="text-center py-5">
+
+                                    <i
+                                        class="bi bi-shield-check display-1 text-success">
+                                    </i>
+
+                                    <h4 class="mt-4">
+
+                                        No Security Alerts
+
+                                    </h4>
+
+                                    <p class="text-muted mb-0">
+
+                                        Your network is currently secure.
+
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div class="card-footer bg-white">
+
+                <div class="d-flex justify-content-between">
+
+                    <small class="text-muted">
+
+                        Showing {{ alerts|length }} alerts
+
+                    </small>
+
+                    <small class="text-muted">
+
+                        Last Updated:
+                        <span id="lastUpdated">
+
+                            {% now "H:i:s" %}
+
+                        </span>
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- =======================================================
+                    RIGHT SIDEBAR
+    ======================================================== -->
+
+    <div class="col-xl-3">
+
+        <!-- ==========================================
+                    LIVE ACTIVITY FEED
+        =========================================== -->
+
+        <div class="card border-0 shadow-lg mb-4">
+
+            <div class="card-header bg-white">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5 class="fw-bold mb-0">
+
+                        <i class="bi bi-activity text-danger me-2"></i>
+
+                        Live Activity
+
+                    </h5>
+
+                    <span class="badge bg-success">
+
+                        LIVE
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div
+                class="card-body p-0"
+                id="activityFeed"
+                style="height:420px; overflow-y:auto;">
+
+                {% for alert in alerts|slice:":15" %}
+
+                <div class="activity-item p-3 border-bottom">
+
+                    <div class="d-flex">
+
+                        <!-- Icon -->
+
+                        <div class="activity-icon me-3">
+
+                            {% if alert.threat.severity == "Critical" %}
+
+                                <span class="bg-danger text-white">
+
+                                    <i class="bi bi-exclamation-octagon-fill"></i>
+
+                                </span>
+
+                            {% elif alert.threat.severity == "High" %}
+
+                                <span class="bg-warning text-dark">
+
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                                </span>
+
+                            {% elif alert.threat.severity == "Medium" %}
+
+                                <span class="bg-primary text-white">
+
+                                    <i class="bi bi-shield-fill"></i>
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="bg-success text-white">
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Content -->
+
+                        <div class="flex-grow-1">
+
+                            <div class="fw-bold">
+
+                                {{ alert.threat.threat_name }}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                {{ alert.created_at|date:"d M Y H:i:s" }}
+
+                            </small>
+
+                            <div class="small mt-2">
+
+                                {{ alert.message }}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% empty %}
+
+                <div class="text-center py-5">
+
+                    <i class="bi bi-broadcast display-4 text-muted"></i>
+
+                    <h6 class="mt-3">
+
+                        Waiting for Alerts...
+
+                    </h6>
+
+                    <small class="text-muted">
+
+                        No activity has been detected yet.
+
+                    </small>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+                TOP ATTACK SOURCES
+        =========================================== -->
+
+        <div class="card border-0 shadow-lg mb-4">
+
+            <div class="card-header bg-white">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <h5 class="fw-bold mb-0">
+
+                        <i class="bi bi-hdd-network-fill text-danger me-2"></i>
+
+                        Top Attack Sources
+
+                    </h5>
+
+                    <span class="badge bg-danger">
+
+                        {{ top_attackers|length }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="card-body p-0">
+
+                <ul
+                    class="list-group list-group-flush"
+                    id="topAttackers">
+
+                    {% for attacker in top_attackers %}
+
+                    <li class="list-group-item">
+
+                        <div class="d-flex justify-content-between align-items-center">
+
+                            <div>
+
+                                <div class="fw-bold">
+
+                                    <i class="bi bi-router-fill text-danger me-2"></i>
+
+                                    {{ attacker.threat__packet__source_ip }}
+
+                                </div>
+
+                            </div>
+
+                            <span class="badge bg-danger rounded-pill">
+
+                                {{ attacker.total }}
+
+                            </span>
+
+                        </div>
+
+                    </li>
+
+                    {% empty %}
+
+                    <li class="list-group-item text-center p-4">
+
+                        <i class="bi bi-shield-check display-6 text-success"></i>
+
+                        <div class="mt-2">
+
+                            No Attack Sources
+
+                        </div>
+
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==========================================
+                SECURITY STATUS
+        =========================================== -->
+
+        <div class="card border-0 shadow-lg">
+
+            <div class="card-header bg-white">
+
+                <h5 class="fw-bold mb-0">
+
+                    <i class="bi bi-shield-lock-fill text-primary me-2"></i>
+
+                    Security Status
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <!-- Critical -->
+
+                <div class="mb-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+
+                            Critical
+
+                        </span>
+
+                        <strong>
+
+                            {{ critical_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="progress mt-2" style="height:8px;">
+
+                        <div
+                            class="progress-bar bg-danger"
+                            style="width:100%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- High -->
+
+                <div class="mb-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+
+                            High
+
+                        </span>
+
+                        <strong>
+
+                            {{ high_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="progress mt-2" style="height:8px;">
+
+                        <div
+                            class="progress-bar bg-warning"
+                            style="width:75%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Medium -->
+
+                <div class="mb-4">
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+
+                            Medium
+
+                        </span>
+
+                        <strong>
+
+                            {{ medium_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="progress mt-2" style="height:8px;">
+
+                        <div
+                            class="progress-bar bg-primary"
+                            style="width:55%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Total -->
+
+                <div>
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+
+                            Total Alerts
+
+                        </span>
+
+                        <strong>
+
+                            {{ total_alerts }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="progress mt-2" style="height:8px;">
+
+                        <div
+                            class="progress-bar bg-success"
+                            style="width:100%;">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+    <!-- =======================================================
+                CHART DATA
+======================================================= -->
+
+{{ severity_labels|json_script:"severity-labels" }}
+{{ severity_data|json_script:"severity-data" }}
+
+{{ timeline_labels|json_script:"timeline-labels" }}
+{{ timeline_data|json_script:"timeline-data" }}
+
+<!-- =======================================================
+                SECURITY ANALYTICS
+======================================================= -->
+
+<div class="row g-4 mt-2">
+
+    <!-- ===================================================
+                    SEVERITY DISTRIBUTION
+    ==================================================== -->
+
+    <div class="col-lg-6">
+
+        <div class="card border-0 shadow-lg h-100">
+
+            <div class="card-header bg-white">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <h5 class="fw-bold mb-0">
+
+                            <i class="bi bi-pie-chart-fill text-danger me-2"></i>
+
+                            Threat Severity Distribution
+
+                        </h5>
+
+                        <small class="text-muted">
+
+                            AI Classification Summary
+
+                        </small>
+
+                    </div>
+
+                    <span class="badge bg-danger rounded-pill">
+
+                        {{ total_alerts }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div
+                    class="d-flex justify-content-center align-items-center"
+                    style="height:360px;">
+
+                    <canvas id="severityChart"></canvas>
+
+                </div>
+
+            </div>
+
+            <div class="card-footer bg-light">
+
+                <div class="row text-center">
+
+                    <div class="col-3">
+
+                        <small class="text-muted d-block">
+
+                            Critical
+
+                        </small>
+
+                        <strong class="text-danger">
+
+                            {{ critical_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="col-3">
+
+                        <small class="text-muted d-block">
+
+                            High
+
+                        </small>
+
+                        <strong class="text-warning">
+
+                            {{ high_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="col-3">
+
+                        <small class="text-muted d-block">
+
+                            Medium
+
+                        </small>
+
+                        <strong class="text-primary">
+
+                            {{ medium_count }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="col-3">
+
+                        <small class="text-muted d-block">
+
+                            Total
+
+                        </small>
+
+                        <strong class="text-success">
+
+                            {{ total_alerts }}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================
+                    ALERT TIMELINE
+    ==================================================== -->
+
+    <div class="col-lg-6">
+
+        <div class="card border-0 shadow-lg h-100">
+
+            <div class="card-header bg-white">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <h5 class="fw-bold mb-0">
+
+                            <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+
+                            Alert Timeline
+
+                        </h5>
+
+                        <small class="text-muted">
+
+                            Threat Detection Trend
+
+                        </small>
+
+                    </div>
+
+                    <span class="badge bg-primary rounded-pill">
+
+                        Today {{ today_alerts }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="card-body">
+
+                <div
+                    class="d-flex justify-content-center align-items-center"
+                    style="height:360px;">
+
+                    <canvas id="timelineChart"></canvas>
+
+                </div>
+
+            </div>
+
+            <div class="card-footer bg-light">
+
+                <div class="d-flex justify-content-between">
+
+                    <small>
+
+                        <i class="bi bi-circle-fill text-danger"></i>
+
+                        Live Detection
+
+                    </small>
+
+                    <small class="text-muted">
+
+                        Updated Automatically
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+                DASHBOARD FOOTER
+======================================================= -->
+
+<div class="row mt-5">
+
+    <div class="col-12">
+
+        <div class="card border-0 shadow">
+
+            <div class="card-body">
+
+                <div class="row text-center">
+
+                    <div class="col-lg-3">
+
+                        <h6 class="text-muted">
+
+                            System Status
+
+                        </h6>
+
+                        <span class="badge bg-success px-4 py-2">
+
+                            <i class="bi bi-check-circle-fill me-1"></i>
+
+                            Operational
+
+                        </span>
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <h6 class="text-muted">
+
+                            Monitoring
+
+                        </h6>
+
+                        <span class="badge bg-primary px-4 py-2">
+
+                            <i class="bi bi-broadcast-pin me-1"></i>
+
+                            Live
+
+                        </span>
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <h6 class="text-muted">
+
+                            AI Engine
+
+                        </h6>
+
+                        <span class="badge bg-info px-4 py-2">
+
+                            <i class="bi bi-cpu-fill me-1"></i>
+
+                            Active
+
+                        </span>
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <h6 class="text-muted">
+
+                            Last Refresh
+
+                        </h6>
+
+                        <span
+                            class="badge bg-dark px-4 py-2"
+                            id="currentTime">
+
+                            {% now "H:i:s" %}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+// ======================================================
+// ALERT VARIABLES
+// ======================================================
+
+let alertSocket = null;
+
+const reconnectDelay = 3000;
+
+const attackers = {};
+
+// ======================================================
+// COUNTERS
+// ======================================================
+
+let totalAlerts = Number("{{ total_alerts|default:'0' }}");
+let criticalAlerts = Number("{{ critical_count|default:'0' }}");
+let highAlerts = Number("{{ high_count|default:'0' }}");
+let mediumAlerts = Number("{{ medium_count|default:'0' }}");
+let lowAlerts = Number("{{ low_count|default:'0' }}");
+
+// ======================================================
+// AUDIO
+// ======================================================
+
+const notificationAudio = new Audio(
+    "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+);
+
+// ======================================================
+// LOAD DJANGO JSON DATA
+// ======================================================
+
+
+document.addEventListener("DOMContentLoaded", function(){
+
+
+console.log("Alerts Dashboard Loaded");
+
+
+// ===============================
+// SAFE JSON LOADER
+// ===============================
+
+function getJSON(id){
+
+    let element=document.getElementById(id);
+
+    if(!element){
+
+        console.error(
+            "Missing:",
+            id
+        );
+
+        return [];
+
+    }
+
+
+    try{
+
+        return JSON.parse(
+            element.textContent
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            error
+        );
+
+        return [];
+
+    }
+
+}
+
+
+
+// ===============================
+// LOAD DATA
+// ===============================
+
+
+const severityLabels =
+getJSON("severity-labels");
+
+
+const severityData =
+getJSON("severity-data");
+
+
+const timelineLabels =
+getJSON("timeline-labels");
+
+
+const timelineData =
+getJSON("timeline-data");
+
+
+
+console.log(
+severityLabels,
+severityData
+);
+
+
+
+if(typeof Chart === "undefined"){
+
+console.error(
+"Chart.js missing"
+);
+
+return;
+
+}
+
+
+
+// ===============================
+// SEVERITY CHART
+// ===============================
+
+
+let severityCanvas =
+document.getElementById(
+"severityChart"
+);
+
+
+if(severityCanvas){
+
+
+window.severityChart =
+new Chart(
+
+severityCanvas,
+
+{
+
+
+type:"doughnut",
+
+
+data:{
+
+
+labels:severityLabels,
+
+
+datasets:[{
+
+
+label:"Alerts",
+
+
+data:severityData,
+
+
+borderWidth:2
+
+
+}]
+
+
+},
+
+
+
+options:{
+
+
+responsive:true,
+
+
+maintainAspectRatio:false,
+
+
+plugins:{
+
+
+legend:{
+
+
+position:"bottom"
+
+
+}
+
+
+}
+
+
+}
+
+
+}
+
+
+);
+
+
+}
+
+
+
+// ===============================
+// TIMELINE CHART
+// ===============================
+
+
+let timelineCanvas =
+document.getElementById(
+"timelineChart"
+);
+
+
+
+if(timelineCanvas){
+
+
+window.timelineChart =
+new Chart(
+
+timelineCanvas,
+
+{
+
+
+type:"line",
+
+
+data:{
+
+
+labels:timelineLabels,
+
+
+datasets:[{
+
+
+label:"Alert Timeline",
+
+
+data:timelineData,
+
+
+borderWidth:3,
+
+
+tension:.4,
+
+
+fill:true
+
+
+}]
+
+
+},
+
+
+options:{
+
+
+responsive:true,
+
+
+maintainAspectRatio:false
+
+
+}
+
+
+}
+
+
+);
+
+
+}
+
+
+
+connectAlertSocket();
+
+
+});
+// ======================================================
+// CONNECT SOCKET
+// ======================================================
+
+function connectAlertSocket(){
+
+    const protocol =
+    window.location.protocol === "https:"
+    ? "wss://"
+    : "ws://";
+
+    alertSocket = new WebSocket(
+
+        protocol +
+        window.location.host +
+        "/ws/dashboard/"
+
+    );
+
+    // ===========================
+    // CONNECTED
+    // ===========================
+
+    alertSocket.onopen = function(){
+
+        console.log("Alert Socket Connected");
+
+        const status =
+        document.getElementById("connectionStatus");
+
+        if(status){
+
+            status.className =
+            "badge bg-success p-2";
+
+            status.innerHTML =
+            "🟢 LIVE";
+
+        }
+
+    };
+
+    // ===========================
+    // RECEIVE ALERT
+    // ===========================
+
+    alertSocket.onmessage = function(event){
+
+        const data =
+        JSON.parse(event.data);
+
+        console.log(data);
+
+        if(data.event !== "security_alert")
+            return;
+
+        addAlertRow(data);
+
+        updateCounters(data);
+
+        updateTimelineChart();
+
+        updateActivity(data);
+
+        updateAttackSources(data.source_ip);
+
+        playSound(data.severity);
+
+    };
+
+    // ===========================
+    // ERROR
+    // ===========================
+
+    alertSocket.onerror = function(){
+
+        const status =
+        document.getElementById("connectionStatus");
+
+        if(status){
+
+            status.className =
+            "badge bg-warning text-dark p-2";
+
+            status.innerHTML =
+            "⚠ ERROR";
+
+        }
+
+    };
+
+    // ===========================
+    // CLOSED
+    // ===========================
+
+    alertSocket.onclose = function(){
+
+        const status =
+        document.getElementById("connectionStatus");
+
+        if(status){
+
+            status.className =
+            "badge bg-danger p-2";
+
+            status.innerHTML =
+            "🔴 OFFLINE";
+
+        }
+
+        setTimeout(
+
+            connectAlertSocket,
+
+            reconnectDelay
+
+        );
+
+    };
+
+}
+
+
+
+// ======================================================
+// ADD ALERT ROW
+// ======================================================
+
+function addAlertRow(data){
+
+    let badge = "secondary";
+
+    if(data.severity === "Critical")
+        badge = "danger";
+
+    else if(data.severity === "High")
+        badge = "warning";
+
+    else if(data.severity === "Medium")
+        badge = "primary";
+
+    else
+        badge = "success";
+
+    const row = `
+
+<tr class="flash-row">
+
+<td>${data.time}</td>
+
+<td>
+
+<strong>${data.name}</strong>
+
+</td>
+
+<td>
+
+<span class="badge bg-${badge}">
+
+${data.severity}
+
+</span>
+
+</td>
+
+<td>
+
+<div class="progress">
+
+<div
+class="progress-bar bg-success"
+style="width:${data.confidence || 95}%">
+
+${data.confidence || 95}%
+
+</div>
+
+</div>
+
+</td>
+
+<td>${data.source_ip}</td>
+
+<td>${data.destination_ip || "-"}</td>
+
+<td>${data.protocol || "-"}</td>
+
+<td>${data.message}</td>
+
+<td>
+
+<span class="badge bg-danger">
+
+NEW
+
+</span>
+
+</td>
+
+</tr>
+
+`;
+
+    const table =
+    document.getElementById("alert-table");
+
+    if(!table)
+        return;
+
+    table.insertAdjacentHTML(
+        "afterbegin",
+        row
+    );
+
+    while(table.rows.length > 100){
+
+        table.deleteRow(
+            table.rows.length - 1
+        );
+
+    }
+
+}
+
+
+
+// ======================================================
+// UPDATE COUNTERS
+// ======================================================
+
+function updateCounters(data){
+
+    totalAlerts++;
+
+    switch(data.severity){
+
+        case "Critical":
+
+            criticalAlerts++;
+            break;
+
+        case "High":
+
+            highAlerts++;
+            break;
+
+        case "Medium":
+
+            mediumAlerts++;
+            break;
+
+        default:
+
+            lowAlerts++;
+
+    }
+
+    const total =
+    document.getElementById("totalCount");
+
+    if(total)
+        total.innerHTML = totalAlerts;
+
+    const critical =
+    document.getElementById("criticalCount");
+
+    if(critical)
+        critical.innerHTML = criticalAlerts;
+
+    const high =
+    document.getElementById("highCount");
+
+    if(high)
+        high.innerHTML = highAlerts;
+
+    const medium =
+    document.getElementById("mediumCount");
+
+    if(medium)
+        medium.innerHTML = mediumAlerts;
+
+    if(severityChart){
+
+        severityChart.data.datasets[0].data = [
+
+            criticalAlerts,
+            highAlerts,
+            mediumAlerts,
+            lowAlerts
+
+        ];
+
+        severityChart.update();
+
+    }
+
+}
+
+
+
+// ======================================================
+// UPDATE TIMELINE
+// ======================================================
+
+function updateTimelineChart(){
+
+    if(!timelineChart)
+        return;
+
+    timelineChart.data.labels.push(
+
+        new Date().toLocaleTimeString()
+
+    );
+
+    timelineChart.data.datasets[0].data.push(
+
+        totalAlerts
+
+    );
+
+    if(timelineChart.data.labels.length > 20){
+
+        timelineChart.data.labels.shift();
+
+        timelineChart.data.datasets[0].data.shift();
+
+    }
+
+    timelineChart.update();
+
+}
+
+
+
+// ======================================================
+// ACTIVITY FEED
+// ======================================================
+
+function updateActivity(data){
+
+    const feed =
+    document.getElementById("activityFeed");
+
+    if(!feed)
+        return;
+
+    feed.insertAdjacentHTML(
+
+        "afterbegin",
+
+        `
+
+<div class="activity-item">
+
+<strong class="text-danger">
+
+${data.name}
+
+</strong>
+
+<small>
+
+${data.time}
+
+</small>
+
+<div>
+
+${data.message}
+
+</div>
+
+</div>
+
+`
+
+    );
+
+    while(feed.children.length > 30){
+
+        feed.removeChild(
+            feed.lastChild
+        );
+
+    }
+
+}
+
+
+
+// ======================================================
+// ATTACK SOURCES
+// ======================================================
+
+function updateAttackSources(ip){
+
+    attackers[ip] =
+
+    (attackers[ip] || 0) + 1;
+
+    const list =
+    document.getElementById("topAttackers");
+
+    if(!list)
+        return;
+
+    list.innerHTML = "";
+
+    Object.entries(attackers)
+
+    .sort((a,b)=>b[1]-a[1])
+
+    .slice(0,10)
+
+    .forEach(item=>{
+
+        list.innerHTML += `
+
+<li class="list-group-item d-flex justify-content-between">
+
+<span>${item[0]}</span>
+
+<span class="badge bg-danger">
+
+${item[1]}
+
+</span>
+
+</li>
+
+`;
+
+    });
+
+}
+
+
+
+// ======================================================
+// SOUND
+// ======================================================
+
+function playSound(severity){
+
+    if(
+
+        severity === "Critical"
+
+        ||
+
+        severity === "High"
+
+    ){
+
+        notificationAudio.play()
+
+        .catch(()=>{});
+
+    }
+
+}
+// ======================================================
+// SEARCH
+// ======================================================
+
+const searchInput =
+document.getElementById("searchAlert");
+
+if(searchInput){
+
+    searchInput.addEventListener(
+
+        "keyup",
+
+        function(){
+
+            const value =
+            this.value.toLowerCase();
+
+            document
+            .querySelectorAll("#alert-table tr")
+            .forEach(row=>{
+
+                row.style.display =
+
+                row.innerText
+                .toLowerCase()
+                .includes(value)
+
+                ?
+
+                ""
+
+                :
+
+                "none";
+
+            });
+
+        }
+
+    );
+
+}
+
+
+
+// ======================================================
+// SEVERITY FILTER
+// ======================================================
+
+const severityFilter =
+document.getElementById("severityFilter");
+
+if(severityFilter){
+
+    severityFilter.addEventListener(
+
+        "change",
+
+        function(){
+
+            const value =
+            this.value.toLowerCase();
+
+            document
+            .querySelectorAll("#alert-table tr")
+            .forEach(row=>{
+
+                if(value===""){
+
+                    row.style.display="";
+
+                    return;
+
+                }
+
+                row.style.display =
+
+                row.innerText
+                .toLowerCase()
+                .includes(value)
+
+                ?
+
+                ""
+
+                :
+
+                "none";
+
+            });
+
+        }
+
+    );
+
+}
+
+
+
+// ======================================================
+// DATE FILTER
+// ======================================================
+
+const dateFilter =
+document.getElementById("dateFilter");
+
+if(dateFilter){
+
+    dateFilter.addEventListener(
+
+        "change",
+
+        function(){
+
+            const rows =
+            document.querySelectorAll(
+                "#alert-table tr"
+            );
+
+            const now =
+            new Date();
+
+            rows.forEach(row=>{
+
+                const cell =
+                row.cells[0];
+
+                if(!cell){
+
+                    return;
+
+                }
+
+                const text =
+                cell.innerText.trim();
+
+                const rowDate =
+                new Date(text);
+
+                if(isNaN(rowDate)){
+
+                    row.style.display="";
+
+                    return;
+
+                }
+
+                let show=true;
+
+                switch(this.value){
+
+                    case "Last Hour":
+
+                        show=
+                        (
+                            now-rowDate
+                        )
+                        <=
+                        3600000;
+
+                        break;
+
+                    case "24 Hours":
+
+                        show=
+                        (
+                            now-rowDate
+                        )
+                        <=
+                        86400000;
+
+                        break;
+
+                    case "7 Days":
+
+                        show=
+                        (
+                            now-rowDate
+                        )
+                        <=
+                        604800000;
+
+                        break;
+
+                    default:
+
+                        show=true;
+
+                }
+
+                row.style.display=
+                show
+                ?
+                ""
+                :
+                "none";
+
+            });
+
+        }
+
+    );
+
+}
+
+
+
+// ======================================================
+// CARD ANIMATION
+// ======================================================
+
+function animateCard(id){
+
+    const card =
+    document
+    .getElementById(id);
+
+    if(!card)
+        return;
+
+    card.classList.add(
+        "stat-update"
+    );
+
+    setTimeout(
+
+        ()=>{
+
+            card.classList.remove(
+                "stat-update"
+            );
+
+        },
+
+        500
+
+    );
+
+}
+
+
+
+// ======================================================
+// UPDATE COUNTERS ANIMATION
+// ======================================================
+
+const originalUpdateCounters =
+updateCounters;
+
+updateCounters=function(data){
+
+    originalUpdateCounters(data);
+
+    animateCard("totalCount");
+    animateCard("criticalCount");
+    animateCard("highCount");
+    animateCard("mediumCount");
+
+};
+
+
+
+// ======================================================
+// AUTO SCROLL ACTIVITY FEED
+// ======================================================
+
+const feed =
+document.getElementById(
+"activityFeed"
+);
+
+if(feed){
+
+    feed.scrollTop=0;
+
+}
+
+</script>
+{% endblock %}

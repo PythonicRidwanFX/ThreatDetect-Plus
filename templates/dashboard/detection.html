@@ -1,0 +1,4585 @@
+{% extends 'dashboard/base_dashboard.html' %}
+
+{% block page_title %}
+Threat Detection
+{% endblock %}
+
+
+{% block content %}
+<style>
+    /*=========================================================
+        THREATDETECT+ SOC DETECTION DASHBOARD
+                    PART 1
+==========================================================*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+
+/*=========================================================
+                    ROOT
+==========================================================*/
+
+:root{
+
+    --bg:#050b16;
+
+    --bg2:#0b1626;
+
+    --card:#101b2d;
+
+    --card2:#16243a;
+
+    --border:rgba(255,255,255,.08);
+
+    --text:#f5f8ff;
+
+    --muted:#90a4c6;
+
+    --primary:#3b82f6;
+
+    --info:#00d9ff;
+
+    --success:#22c55e;
+
+    --warning:#f59e0b;
+
+    --danger:#ef4444;
+
+    --critical:#ff1744;
+
+    --purple:#8b5cf6;
+
+    --shadow:
+        0 20px 45px rgba(0,0,0,.45);
+
+}
+
+
+/*=========================================================
+                    BODY
+==========================================================*/
+
+body{
+
+    font-family:'Inter',sans-serif;
+
+    background:
+
+        radial-gradient(circle at top left,#16345c 0%,transparent 35%),
+
+        radial-gradient(circle at top right,#091321 0%,transparent 40%),
+
+        linear-gradient(180deg,#050b16,#08101c);
+
+    color:var(--text);
+
+    min-height:100vh;
+
+}
+
+
+/*=========================================================
+                CONTAINER
+==========================================================*/
+
+.container-fluid{
+
+    padding:32px;
+
+}
+
+
+/*=========================================================
+                PAGE TITLE
+==========================================================*/
+
+h2{
+
+    font-weight:800;
+
+    color:white;
+
+    letter-spacing:.5px;
+
+}
+
+h2 i{
+
+    color:var(--danger);
+
+    margin-right:10px;
+
+    text-shadow:
+
+        0 0 20px rgba(239,68,68,.5);
+
+}
+
+.text-muted{
+
+    color:#8fa5c4!important;
+
+}
+
+
+/*=========================================================
+                LIVE CLOCK
+==========================================================*/
+
+#liveClock{
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+}
+
+#lastDetection{
+
+    color:var(--info);
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+                    CARD
+==========================================================*/
+
+.card{
+
+    background:
+
+        linear-gradient(
+
+        145deg,
+
+        rgba(18,30,48,.98),
+
+        rgba(11,19,34,.98));
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    box-shadow:var(--shadow);
+
+    transition:.35s;
+
+    position:relative;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+}
+
+
+/*=========================================================
+                CARD BORDER GLOW
+==========================================================*/
+
+.card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:20px;
+
+    padding:1px;
+
+    background:
+
+        linear-gradient(
+
+        135deg,
+
+        rgba(255,255,255,.12),
+
+        transparent);
+
+    -webkit-mask:
+
+        linear-gradient(#fff 0 0) content-box,
+
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+            mask-composite:exclude;
+
+}
+
+
+/*=========================================================
+                CARD HEADER
+==========================================================*/
+
+.card-header{
+
+    background:
+
+        linear-gradient(
+
+        180deg,
+
+        rgba(24,37,58,.95),
+
+        rgba(15,24,40,.95))!important;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    padding:20px 25px;
+
+}
+
+.card-header h5{
+
+    color:white;
+
+    font-weight:700;
+
+}
+
+.card-header i{
+
+    margin-right:8px;
+
+}
+
+
+/*=========================================================
+                CARD BODY
+==========================================================*/
+
+.card-body{
+
+    padding:26px;
+
+}
+
+
+/*=========================================================
+            ENGINE STATUS CARD
+==========================================================*/
+
+#engineStatus{
+
+    background:rgba(34,197,94,.15)!important;
+
+    color:#4ade80;
+
+    border:1px solid rgba(34,197,94,.4);
+
+    border-radius:30px;
+
+    padding:10px 20px;
+
+    font-weight:700;
+
+    animation:enginePulse 2s infinite;
+
+}
+
+
+/*=========================================================
+            RANDOM FOREST BADGE
+==========================================================*/
+
+.badge.bg-primary{
+
+    background:rgba(59,130,246,.18)!important;
+
+    color:#6db5ff;
+
+    border:1px solid rgba(59,130,246,.4);
+
+}
+
+
+/*=========================================================
+                KPI CARDS
+==========================================================*/
+
+.stat-card{
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    min-height:165px;
+
+}
+
+.stat-card:hover{
+
+    transform:
+
+        translateY(-10px)
+
+        scale(1.03);
+
+}
+
+.stat-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:230px;
+
+    height:230px;
+
+    right:-120px;
+
+    top:-110px;
+
+    border-radius:50%;
+
+    background:
+
+        rgba(255,255,255,.04);
+
+}
+
+
+/*=========================================================
+                STAT LABEL
+==========================================================*/
+
+.stat-card small{
+
+    text-transform:uppercase;
+
+    font-size:.74rem;
+
+    letter-spacing:1.5px;
+
+    font-weight:700;
+
+    color:#8ea6c7!important;
+
+}
+
+
+/*=========================================================
+                STAT NUMBER
+==========================================================*/
+
+.stat-card h2{
+
+    margin-top:18px;
+
+    font-size:2.4rem;
+
+    font-weight:800;
+
+    line-height:1;
+
+}
+
+
+/*=========================================================
+            TOTAL THREATS
+==========================================================*/
+
+.stat-card:nth-child(1){
+
+    border-left:4px solid var(--danger);
+
+}
+
+.stat-card:nth-child(1):hover{
+
+    box-shadow:
+
+        0 0 35px rgba(239,68,68,.3);
+
+}
+
+
+/*=========================================================
+            CRITICAL
+==========================================================*/
+
+.stat-card:nth-child(2){
+
+    border-left:4px solid var(--critical);
+
+}
+
+.stat-card:nth-child(2):hover{
+
+    box-shadow:
+
+        0 0 35px rgba(255,23,68,.35);
+
+}
+
+
+/*=========================================================
+            HIGH
+==========================================================*/
+
+.stat-card:nth-child(3){
+
+    border-left:4px solid var(--warning);
+
+}
+
+.stat-card:nth-child(3):hover{
+
+    box-shadow:
+
+        0 0 35px rgba(245,158,11,.3);
+
+}
+
+
+/*=========================================================
+            MEDIUM
+==========================================================*/
+
+.stat-card:nth-child(4){
+
+    border-left:4px solid var(--primary);
+
+}
+
+.stat-card:nth-child(4):hover{
+
+    box-shadow:
+
+        0 0 35px rgba(59,130,246,.3);
+
+}
+
+
+/*=========================================================
+            LOW
+==========================================================*/
+
+.stat-card:nth-child(5){
+
+    border-left:4px solid var(--success);
+
+}
+
+.stat-card:nth-child(5):hover{
+
+    box-shadow:
+
+        0 0 35px rgba(34,197,94,.3);
+
+}
+
+
+/*=========================================================
+            CARD ANIMATION
+==========================================================*/
+
+.stat-card{
+
+    animation:floatCard 6s ease-in-out infinite;
+
+}
+
+.stat-card:nth-child(2){
+
+    animation-delay:.15s;
+
+}
+
+.stat-card:nth-child(3){
+
+    animation-delay:.30s;
+
+}
+
+.stat-card:nth-child(4){
+
+    animation-delay:.45s;
+
+}
+
+.stat-card:nth-child(5){
+
+    animation-delay:.60s;
+
+}
+
+
+/*=========================================================
+                BADGES
+==========================================================*/
+
+.badge{
+
+    border-radius:30px;
+
+    padding:8px 18px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+}
+
+
+/*=========================================================
+                ANIMATIONS
+==========================================================*/
+
+@keyframes enginePulse{
+
+    0%{
+
+        box-shadow:0 0 0 0 rgba(34,197,94,.5);
+
+    }
+
+    70%{
+
+        box-shadow:0 0 0 16px rgba(34,197,94,0);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 0 rgba(34,197,94,0);
+
+    }
+
+}
+
+@keyframes floatCard{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-5px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(30px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.card{
+
+    animation:fadeUp .6s ease;
+
+}
+
+
+/*=========================================================
+                SCROLLBAR
+==========================================================*/
+
+::-webkit-scrollbar{
+
+    width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#07111f;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#274a79;
+
+    border-radius:20px;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+    background:#3b82f6;
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.container-fluid{
+
+    padding:20px;
+
+}
+
+#liveClock{
+
+    font-size:22px;
+
+}
+
+.stat-card h2{
+
+    font-size:2rem;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.container-fluid{
+
+    padding:15px;
+
+}
+
+h2{
+
+    font-size:1.6rem;
+
+}
+
+.card-body{
+
+    padding:20px;
+
+}
+
+}
+    /*=========================================================
+        DETECTION DASHBOARD
+                PART 2
+AI ENGINE • THREAT LEVEL • SUMMARY CARDS
+==========================================================*/
+
+
+/*=========================================================
+            MACHINE LEARNING ENGINE
+==========================================================*/
+
+.ml-engine-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.ml-engine-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:320px;
+
+    height:320px;
+
+    right:-140px;
+
+    top:-140px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(0,217,255,.12),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                AI METRICS
+==========================================================*/
+
+.card-body .row.text-center .col-md-3{
+
+    padding:25px 15px;
+
+    border-right:1px solid rgba(255,255,255,.06);
+
+    transition:.35s;
+
+}
+
+.card-body .row.text-center .col-md-3:last-child{
+
+    border-right:none;
+
+}
+
+.card-body .row.text-center .col-md-3:hover{
+
+    background:rgba(255,255,255,.03);
+
+    border-radius:15px;
+
+}
+
+
+/*=========================================================
+            METRIC VALUE
+==========================================================*/
+
+.card-body .row.text-center h3{
+
+    font-size:2rem;
+
+    font-weight:800;
+
+    margin-bottom:10px;
+
+}
+
+.card-body .row.text-center h4{
+
+    font-weight:700;
+
+    color:white;
+
+}
+
+.card-body .row.text-center small{
+
+    color:#8ea7c6;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+}
+
+
+/*=========================================================
+            AI COLORS
+==========================================================*/
+
+.text-success{
+
+    color:#22c55e!important;
+
+}
+
+.text-primary{
+
+    color:#3b82f6!important;
+
+}
+
+.text-warning{
+
+    color:#f59e0b!important;
+
+}
+
+.text-danger{
+
+    color:#ef4444!important;
+
+}
+
+
+/*=========================================================
+                THREAT LEVEL CARD
+==========================================================*/
+
+#threatIndicator{
+
+    font-size:5.5rem;
+
+    margin-top:15px;
+
+    margin-bottom:20px;
+
+    animation:threatPulse 2s infinite;
+
+}
+
+#threatLevel{
+
+    font-size:2.3rem;
+
+    font-weight:800;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+}
+
+
+/*=========================================================
+            THREAT GLOW
+==========================================================*/
+
+#threatIndicator::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+
+    height:180px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    border-radius:50%;
+
+    background:
+
+        radial-gradient(
+
+        rgba(239,68,68,.15),
+
+        transparent 70%);
+
+    z-index:-1;
+
+}
+
+
+/*=========================================================
+            THREAT PULSE
+==========================================================*/
+
+@keyframes threatPulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.08);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+/*=========================================================
+            QUICK SUMMARY CARDS
+==========================================================*/
+
+.row.mb-4 .col-md-3 .card{
+
+    min-height:150px;
+
+    transition:.35s;
+
+    overflow:hidden;
+
+}
+
+.row.mb-4 .col-md-3 .card:hover{
+
+    transform:
+
+        translateY(-8px)
+
+        scale(1.03);
+
+}
+
+
+/*=========================================================
+            SUMMARY CARD TITLE
+==========================================================*/
+
+.row.mb-4 .col-md-3 small{
+
+    text-transform:uppercase;
+
+    font-size:.75rem;
+
+    font-weight:700;
+
+    letter-spacing:1.3px;
+
+    color:#91a8c8!important;
+
+}
+
+
+/*=========================================================
+            SUMMARY VALUE
+==========================================================*/
+
+.row.mb-4 .col-md-3 h3{
+
+    font-size:2.3rem;
+
+    margin-top:18px;
+
+    font-weight:800;
+
+}
+
+
+/*=========================================================
+            CARD COLORS
+==========================================================*/
+
+#todayThreats{
+
+    color:#ef4444;
+
+}
+
+#aiAlerts{
+
+    color:#f59e0b;
+
+}
+
+
+/*=========================================================
+            BORDER COLORS
+==========================================================*/
+
+.row.mb-4 .col-md-3:nth-child(1) .card{
+
+    border-left:4px solid #ef4444;
+
+}
+
+.row.mb-4 .col-md-3:nth-child(2) .card{
+
+    border-left:4px solid #f59e0b;
+
+}
+
+.row.mb-4 .col-md-3:nth-child(3) .card{
+
+    border-left:4px solid #3b82f6;
+
+}
+
+.row.mb-4 .col-md-3:nth-child(4) .card{
+
+    border-left:4px solid #22c55e;
+
+}
+
+
+/*=========================================================
+            SUMMARY HOVER GLOW
+==========================================================*/
+
+.row.mb-4 .col-md-3:nth-child(1) .card:hover{
+
+    box-shadow:
+
+        0 0 30px rgba(239,68,68,.25);
+
+}
+
+.row.mb-4 .col-md-3:nth-child(2) .card:hover{
+
+    box-shadow:
+
+        0 0 30px rgba(245,158,11,.25);
+
+}
+
+.row.mb-4 .col-md-3:nth-child(3) .card:hover{
+
+    box-shadow:
+
+        0 0 30px rgba(59,130,246,.25);
+
+}
+
+.row.mb-4 .col-md-3:nth-child(4) .card:hover{
+
+    box-shadow:
+
+        0 0 30px rgba(34,197,94,.25);
+
+}
+
+
+/*=========================================================
+                PROGRESS
+==========================================================*/
+
+.progress{
+
+    height:12px;
+
+    border-radius:30px;
+
+    background:#0d1728;
+
+    overflow:hidden;
+
+}
+
+.progress-bar{
+
+    border-radius:30px;
+
+    transition:width .6s ease;
+
+}
+
+
+/*=========================================================
+            AI CONFIDENCE NUMBER
+==========================================================*/
+
+#confidenceLevel{
+
+    color:#00d9ff;
+
+    text-shadow:
+
+        0 0 20px rgba(0,217,255,.35);
+
+}
+
+
+/*=========================================================
+            PREDICTION COUNTER
+==========================================================*/
+
+#predictionCount{
+
+    color:#ffffff;
+
+}
+
+
+/*=========================================================
+            ANIMATED ENTRY
+==========================================================*/
+
+.ml-engine-card,
+
+.row.mb-4 .card{
+
+    animation:fadeSummary .8s ease;
+
+}
+
+@keyframes fadeSummary{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(30px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+            RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.card-body .row.text-center .col-md-3{
+
+    border-right:none;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+.card-body .row.text-center .col-md-3:last-child{
+
+    border-bottom:none;
+
+}
+
+}
+
+@media(max-width:768px){
+
+#threatIndicator{
+
+    font-size:4rem;
+
+}
+
+#threatLevel{
+
+    font-size:1.8rem;
+
+}
+
+.row.mb-4 .col-md-3 h3{
+
+    font-size:1.8rem;
+
+}
+
+}
+    /*=========================================================
+            DETECTION DASHBOARD
+                    PART 3
+        CHARTS • ANALYTICS • VISUALIZATION
+==========================================================*/
+
+
+/*=========================================================
+                    CHART CARDS
+==========================================================*/
+
+.chart-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(17,29,47,.98),
+            rgba(11,19,34,.98)
+        );
+
+    border:1px solid rgba(255,255,255,.06);
+
+    transition:.35s;
+
+}
+
+.chart-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.40);
+
+}
+
+
+/*=========================================================
+            CHART GLOW
+==========================================================*/
+
+.chart-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:280px;
+
+    height:280px;
+
+    right:-120px;
+
+    top:-120px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(59,130,246,.12),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+            CHART HEADER
+==========================================================*/
+
+.chart-card .card-header{
+
+    background:
+
+        linear-gradient(
+
+        180deg,
+
+        rgba(25,38,60,.96),
+
+        rgba(16,25,41,.96)
+
+        ) !important;
+
+    padding:22px 25px;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+}
+
+.chart-card .card-header h5{
+
+    color:#fff;
+
+    font-weight:700;
+
+}
+
+.chart-card .card-header i{
+
+    margin-right:8px;
+
+}
+
+
+/*=========================================================
+                LIVE BADGE
+==========================================================*/
+
+.live-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    background:rgba(239,68,68,.15);
+
+    color:#ff7070;
+
+    border:1px solid rgba(239,68,68,.4);
+
+    font-weight:700;
+
+    animation:livePulse 2s infinite;
+
+}
+
+@keyframes livePulse{
+
+    0%{
+
+        box-shadow:0 0 0 0 rgba(239,68,68,.45);
+
+    }
+
+    70%{
+
+        box-shadow:0 0 0 16px rgba(239,68,68,0);
+
+    }
+
+    100%{
+
+        box-shadow:0 0 0 0 rgba(239,68,68,0);
+
+    }
+
+}
+
+
+/*=========================================================
+                CHART BODY
+==========================================================*/
+
+.chart-card .card-body{
+
+    padding:25px;
+
+}
+
+
+/*=========================================================
+                CHART CANVAS
+==========================================================*/
+
+.chart-card canvas{
+
+    width:100%!important;
+
+    height:100%!important;
+
+}
+
+
+/*=========================================================
+            THREAT TIMELINE
+==========================================================*/
+
+#threatTimelineChart{
+
+    animation:fadeChart .8s ease;
+
+}
+
+
+/*=========================================================
+            SEVERITY CHART
+==========================================================*/
+
+#severityChart{
+
+    animation:fadeChart 1s ease;
+
+}
+
+
+/*=========================================================
+            ATTACK CATEGORY
+==========================================================*/
+
+#attackCategoryChart{
+
+    animation:fadeChart 1.2s ease;
+
+}
+
+
+/*=========================================================
+            DETECTION TREND
+==========================================================*/
+
+#trendChart{
+
+    animation:fadeChart 1.4s ease;
+
+}
+
+
+/*=========================================================
+                ANIMATION
+==========================================================*/
+
+@keyframes fadeChart{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(35px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                CHART TITLES
+==========================================================*/
+
+.card-header h5{
+
+    letter-spacing:.5px;
+
+}
+
+
+/*=========================================================
+            CHART CONTAINER
+==========================================================*/
+
+.card-body[style*="350px"]{
+
+    position:relative;
+
+}
+
+
+/*=========================================================
+            GRID SPACING
+==========================================================*/
+
+.row.mb-4{
+
+    row-gap:12px;
+
+}
+
+
+/*=========================================================
+            CHART HOVER
+==========================================================*/
+
+.chart-card:hover canvas{
+
+    transform:scale(1.01);
+
+    transition:.4s;
+
+}
+
+
+/*=========================================================
+            CHART SHADOW
+==========================================================*/
+
+.chart-card{
+
+    box-shadow:
+
+        0 18px 40px rgba(0,0,0,.35);
+
+}
+
+
+/*=========================================================
+            ICON COLORS
+==========================================================*/
+
+.bi-graph-up-arrow{
+
+    color:#3b82f6!important;
+
+}
+
+.bi-pie-chart-fill{
+
+    color:#f59e0b!important;
+
+}
+
+.bi-bar-chart-fill{
+
+    color:#22c55e!important;
+
+}
+
+.bi-activity{
+
+    color:#ef4444!important;
+
+}
+
+
+/*=========================================================
+            CHART BORDER
+==========================================================*/
+
+.chart-card::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    border-radius:20px;
+
+    padding:1px;
+
+    background:
+
+        linear-gradient(
+
+            145deg,
+
+            rgba(255,255,255,.08),
+
+            transparent
+
+        );
+
+    -webkit-mask:
+
+        linear-gradient(#fff 0 0) content-box,
+
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite:xor;
+
+            mask-composite:exclude;
+
+}
+
+
+/*=========================================================
+            RESPONSIVE
+==========================================================*/
+
+@media(max-width:1200px){
+
+.chart-card .card-body{
+
+    height:320px!important;
+
+}
+
+}
+
+@media(max-width:992px){
+
+.chart-card{
+
+    margin-bottom:20px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.chart-card .card-header{
+
+    padding:18px;
+
+}
+
+.chart-card .card-body{
+
+    padding:18px;
+
+    height:280px!important;
+
+}
+
+.live-badge{
+
+    font-size:.75rem;
+
+    padding:6px 14px;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.chart-card .card-body{
+
+    height:240px!important;
+
+}
+
+.card-header h5{
+
+    font-size:1rem;
+
+}
+
+}
+    /*=========================================================
+            DETECTION DASHBOARD
+                    PART 4
+        LIVE FEED • ATTACK SOURCES
+            SEARCH & FILTERS
+==========================================================*/
+
+
+/*=========================================================
+                ATTACK SOURCE CARD
+==========================================================*/
+
+.attack-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.attack-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+
+    height:260px;
+
+    right:-120px;
+
+    top:-120px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(239,68,68,.10),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+            LIVE DETECTION CARD
+==========================================================*/
+
+.feed-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.feed-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+
+    height:300px;
+
+    right:-140px;
+
+    top:-140px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            rgba(59,130,246,.12),
+            transparent 70%
+        );
+
+}
+
+
+/*=========================================================
+                LIVE FEED
+==========================================================*/
+
+#liveFeed{
+
+    padding:18px;
+
+    overflow-y:auto;
+
+    scrollbar-width:thin;
+
+}
+
+
+/*=========================================================
+            LIVE FEED ITEM
+==========================================================*/
+
+#liveFeed .border-bottom{
+
+    border-color:rgba(255,255,255,.06)!important;
+
+    padding:18px 10px!important;
+
+    transition:.3s;
+
+    border-radius:10px;
+
+}
+
+#liveFeed .border-bottom:hover{
+
+    background:rgba(59,130,246,.06);
+
+    transform:translateX(6px);
+
+}
+
+#liveFeed strong{
+
+    color:#ff5b5b!important;
+
+    font-size:.95rem;
+
+}
+
+#liveFeed small{
+
+    color:#8fa6c5;
+
+}
+
+
+/*=========================================================
+            TOP ATTACKERS
+==========================================================*/
+
+.card-body .d-flex.justify-content-between{
+
+    padding:14px 10px;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    transition:.3s;
+
+}
+
+.card-body .d-flex.justify-content-between:hover{
+
+    background:rgba(239,68,68,.06);
+
+    border-radius:10px;
+
+}
+
+.card-body strong{
+
+    color:#fff;
+
+    font-weight:600;
+
+    letter-spacing:.3px;
+
+}
+
+
+/*=========================================================
+            ATTACK COUNT
+==========================================================*/
+
+.badge.bg-danger{
+
+    background:rgba(239,68,68,.18)!important;
+
+    color:#ff8080;
+
+    border:1px solid rgba(239,68,68,.4);
+
+}
+
+
+/*=========================================================
+                FILTER CARD
+==========================================================*/
+
+.filter-card{
+
+    border-radius:20px;
+
+}
+
+
+/*=========================================================
+            FILTER LABELS
+==========================================================*/
+
+.form-label{
+
+    color:#dbe8ff;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+.form-label i{
+
+    margin-right:6px;
+
+}
+
+
+/*=========================================================
+            INPUT
+==========================================================*/
+
+.form-control{
+
+    background:#15233b;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    color:#fff;
+
+    border-radius:12px;
+
+    height:50px;
+
+    transition:.35s;
+
+}
+
+.form-control::placeholder{
+
+    color:#8198b8;
+
+}
+
+.form-control:focus{
+
+    background:#182a45;
+
+    color:#fff;
+
+    border-color:#3b82f6;
+
+    box-shadow:
+
+        0 0 0 3px rgba(59,130,246,.15);
+
+}
+
+
+/*=========================================================
+            SELECT
+==========================================================*/
+
+.form-select{
+
+    background:#15233b;
+
+    color:#fff;
+
+    border-radius:12px;
+
+    height:50px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.form-select:focus{
+
+    border-color:#00d9ff;
+
+    box-shadow:
+
+        0 0 0 3px rgba(0,217,255,.12);
+
+}
+
+.form-select option{
+
+    background:#0d1728;
+
+    color:white;
+
+}
+
+
+/*=========================================================
+            RESET BUTTON
+==========================================================*/
+
+.btn-danger{
+
+    border-radius:12px;
+
+    font-weight:700;
+
+    letter-spacing:.4px;
+
+    transition:.3s;
+
+}
+
+.btn-danger:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+        0 15px 30px rgba(239,68,68,.30);
+
+}
+
+
+/*=========================================================
+            LIVE SEARCH BADGE
+==========================================================*/
+
+.badge.bg-primary{
+
+    background:rgba(59,130,246,.18)!important;
+
+    border:1px solid rgba(59,130,246,.35);
+
+}
+
+
+/*=========================================================
+            SCROLLBAR
+==========================================================*/
+
+#liveFeed::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+#liveFeed::-webkit-scrollbar-track{
+
+    background:#0b1626;
+
+}
+
+#liveFeed::-webkit-scrollbar-thumb{
+
+    background:#2c5da8;
+
+    border-radius:20px;
+
+}
+
+
+/*=========================================================
+            ENTRY ANIMATION
+==========================================================*/
+
+#liveFeed .border-bottom{
+
+    animation:feedSlide .45s ease;
+
+}
+
+@keyframes feedSlide{
+
+    from{
+
+        opacity:0;
+
+        transform:translateX(-25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateX(0);
+
+    }
+
+}
+
+
+/*=========================================================
+            RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+#liveFeed{
+
+    height:300px!important;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.form-control,
+
+.form-select{
+
+    height:46px;
+
+}
+
+.form-label{
+
+    font-size:.9rem;
+
+}
+
+}
+
+@media(max-width:576px){
+
+#liveFeed{
+
+    height:250px!important;
+
+}
+
+}
+    /*=========================================================
+            DETECTION DASHBOARD
+                    PART 5
+        THREAT TABLE • EXPORTS • FOOTER
+==========================================================*/
+
+
+/*=========================================================
+                    TABLE CARD
+==========================================================*/
+
+.table-card{
+    position:relative;
+    overflow:hidden;
+}
+
+.table-card::before{
+    content:"";
+    position:absolute;
+    width:320px;
+    height:320px;
+    right:-150px;
+    top:-150px;
+    border-radius:50%;
+    background:radial-gradient(
+        rgba(59,130,246,.08),
+        transparent 70%);
+}
+
+
+/*=========================================================
+                    TABLE
+==========================================================*/
+
+.table{
+    color:#dbe8ff;
+    margin-bottom:0;
+}
+
+.table thead{
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.table thead th{
+
+    background:#16253d!important;
+
+    color:white;
+
+    border:none;
+
+    padding:18px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-size:.78rem;
+
+    font-weight:700;
+
+}
+
+.table tbody td{
+
+    border-color:rgba(255,255,255,.05);
+
+    padding:18px;
+
+    vertical-align:middle;
+
+    transition:.3s;
+
+}
+
+.table-hover tbody tr:hover{
+
+    background:rgba(59,130,246,.07);
+
+    transform:scale(1.003);
+
+}
+
+.table tbody tr:nth-child(even){
+
+    background:rgba(255,255,255,.015);
+
+}
+
+
+/*=========================================================
+                CONFIDENCE BAR
+==========================================================*/
+
+.progress{
+
+    height:10px;
+
+    border-radius:30px;
+
+    background:#0c1728;
+
+}
+
+.progress-bar{
+
+    border-radius:30px;
+
+}
+
+
+/*=========================================================
+                SEVERITY BADGES
+==========================================================*/
+
+.badge{
+
+    padding:8px 16px;
+
+    border-radius:30px;
+
+    font-weight:700;
+
+    letter-spacing:.5px;
+
+}
+
+/* Critical */
+
+.badge.bg-dark{
+
+    background:#32000b!important;
+
+    color:#ff4d6d;
+
+    border:1px solid #ff1744;
+
+}
+
+/* High */
+
+.badge.bg-danger{
+
+    background:rgba(239,68,68,.15)!important;
+
+    color:#ff6f6f;
+
+    border:1px solid rgba(239,68,68,.45);
+
+}
+
+/* Medium */
+
+.badge.bg-warning{
+
+    background:rgba(245,158,11,.18)!important;
+
+    color:#ffd27d;
+
+    border:1px solid rgba(245,158,11,.45);
+
+}
+
+/* Low */
+
+.badge.bg-success{
+
+    background:rgba(34,197,94,.15)!important;
+
+    color:#4ade80;
+
+    border:1px solid rgba(34,197,94,.45);
+
+}
+
+
+/*=========================================================
+                STATUS BADGES
+==========================================================*/
+
+.badge.bg-primary{
+
+    background:rgba(59,130,246,.15)!important;
+
+    color:#73b5ff;
+
+    border:1px solid rgba(59,130,246,.35);
+
+}
+
+
+/*=========================================================
+                ACTION BUTTONS
+==========================================================*/
+
+.btn{
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.btn-success:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 25px rgba(34,197,94,.30);
+
+}
+
+.btn-danger:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 25px rgba(239,68,68,.30);
+
+}
+
+.btn-primary:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 15px 25px rgba(59,130,246,.30);
+
+}
+
+
+/*=========================================================
+                EXPORT BUTTONS
+==========================================================*/
+
+.export-buttons{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+
+/*=========================================================
+                FOOTER SUMMARY
+==========================================================*/
+
+.summary-footer{
+
+    margin-top:25px;
+
+}
+
+.summary-box{
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(18,30,49,.96),
+            rgba(10,18,31,.96)
+        );
+
+    border-radius:18px;
+
+    padding:20px;
+
+    border:1px solid rgba(255,255,255,.05);
+
+    transition:.35s;
+
+}
+
+.summary-box:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.30);
+
+}
+
+.summary-box h4{
+
+    font-size:2rem;
+
+    font-weight:800;
+
+    color:#fff;
+
+}
+
+.summary-box small{
+
+    color:#8ea6c6;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+}
+
+
+/*=========================================================
+                EMPTY STATE
+==========================================================*/
+
+.empty-state{
+
+    text-align:center;
+
+    padding:80px 20px;
+
+    color:#8ea6c6;
+
+}
+
+.empty-state i{
+
+    font-size:4rem;
+
+    color:#3b82f6;
+
+    margin-bottom:20px;
+
+}
+
+
+/*=========================================================
+                SHIMMER EFFECT
+==========================================================*/
+
+.loading{
+
+    position:relative;
+
+    overflow:hidden;
+
+}
+
+.loading::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:-150%;
+
+    width:60%;
+
+    height:100%;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.08),
+            transparent);
+
+    animation:shimmer 2s infinite;
+
+}
+
+@keyframes shimmer{
+
+    100%{
+
+        left:150%;
+
+    }
+
+}
+
+
+/*=========================================================
+                TABLE ANIMATION
+==========================================================*/
+
+.table tbody tr{
+
+    animation:fadeTable .45s ease;
+
+}
+
+@keyframes fadeTable{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(15px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+                RESPONSIVE
+==========================================================*/
+
+@media(max-width:992px){
+
+.table thead{
+
+    display:none;
+
+}
+
+.table tbody tr{
+
+    display:block;
+
+    margin-bottom:20px;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+}
+
+.table tbody td{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    border:none;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+.table tbody td:last-child{
+
+    border-bottom:none;
+
+}
+
+}
+
+@media(max-width:768px){
+
+.summary-box{
+
+    margin-bottom:15px;
+
+}
+
+.export-buttons{
+
+    flex-direction:column;
+
+}
+
+.btn{
+
+    width:100%;
+
+}
+
+}
+
+@media(max-width:576px){
+
+.summary-box h4{
+
+    font-size:1.6rem;
+
+}
+
+}
+
+
+/*=========================================================
+                END OF FILE
+==========================================================*/
+</style>
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+
+                <i class="bi bi-shield-lock-fill text-danger"></i>
+
+                AI Threat Detection Engine
+
+            </h2>
+
+            <small class="text-muted">
+
+                Real-time Network Intrusion Detection & Machine Learning Analysis
+
+            </small>
+
+        </div>
+
+        <div class="text-end">
+
+            <div
+                id="liveClock"
+                class="fw-bold fs-5">
+
+            </div>
+
+            <small class="text-muted">
+
+                Last Detection
+
+                <span id="lastDetection">
+
+                    --
+
+                </span>
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <!-- =======================================
+                ENGINE STATUS
+    ======================================== -->
+
+    <div class="card shadow border-0 mb-4">
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                <div class="col-lg-8">
+
+                    <h5 class="mb-2">
+
+                        Detection Engine
+
+                    </h5>
+
+                    <span
+                        id="engineStatus"
+                        class="badge bg-success px-3 py-2">
+
+                        ONLINE
+
+                    </span>
+
+                    <span class="ms-3 text-muted">
+
+                        Monitoring network traffic using Machine Learning
+
+                    </span>
+
+                </div>
+
+                <div class="col-lg-4 text-end">
+
+                    <span class="badge bg-primary">
+
+                        Random Forest AI
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =======================================
+                LIVE STATISTICS
+    ======================================== -->
+
+    <div class="row g-3 mb-4">
+
+    <!-- Total -->
+    <div class="col-xl col-lg-4 col-md-6">
+        <div class="card border-0 shadow stat-card">
+            <div class="card-body">
+                <small class="text-muted">Total Threats</small>
+                <h2 class="fw-bold text-danger">
+                    {{ total_threats }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Critical -->
+    <div class="col-xl col-lg-4 col-md-6">
+        <div class="card border-0 shadow stat-card">
+            <div class="card-body">
+                <small class="text-muted">Critical</small>
+                <h2 class="fw-bold text-danger">
+                    {{ critical_count }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- High -->
+    <div class="col-xl col-lg-4 col-md-6">
+        <div class="card border-0 shadow stat-card">
+            <div class="card-body">
+                <small class="text-muted">High</small>
+                <h2 class="fw-bold text-warning">
+                    {{ high_count }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medium -->
+    <div class="col-xl col-lg-4 col-md-6">
+        <div class="card border-0 shadow stat-card">
+            <div class="card-body">
+                <small class="text-muted">Medium</small>
+                <h2 class="fw-bold text-primary">
+                    {{ medium_count }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low -->
+    <div class="col-xl col-lg-4 col-md-6">
+        <div class="card border-0 shadow stat-card">
+            <div class="card-body">
+                <small class="text-muted">Low</small>
+                <h2 class="fw-bold text-success">
+                    {{ low_count }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <!-- =======================================
+            AI INFORMATION
+    ======================================== -->
+
+    <div class="row mb-4">
+
+    <!-- Machine Learning Engine -->
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+                    <i class="bi bi-cpu-fill text-primary"></i>
+                    Machine Learning Engine
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <div class="row text-center">
+
+                    <div class="col-md-3">
+
+                        <h3 class="text-success">
+                            {{ confidence_level }}%
+                        </h3>
+
+                        <small>Accuracy</small>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <h3 id="predictionCount">
+                            {{ prediction_count }}
+                        </h3>
+
+                        <small>Predictions</small>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <h4 class="fw-bold">
+                            {{ model_name }}
+                        </h4>
+
+                        <small>AI Model</small>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <h3 id="confidenceLevel">
+                            {{ confidence_level }}%
+                        </h3>
+
+                        <small>Confidence</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Current Threat Level -->
+    <div class="col-lg-4">
+
+        <div class="card border-0 shadow h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+                    Current Threat Level
+                </h5>
+
+            </div>
+
+            <div class="card-body text-center">
+
+                <div
+                    id="threatIndicator"
+                    style="font-size:70px;">
+                    {{ threat_icon }}
+                </div>
+
+                <h2
+                    id="threatLevel"
+                    class="text-{{ threat_color }}">
+                    {{ threat_level }}
+                </h2>
+
+                <small class="text-muted">
+                    Network Security Status
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- =======================================
+            QUICK SUMMARY
+    ======================================== -->
+
+    <div class="row mb-4">
+
+    <!-- Today's Attacks -->
+    <div class="col-md-3">
+
+        <div class="card shadow border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Today's Attacks
+                </small>
+
+                <h3 id="todayThreats" class="fw-bold text-danger">
+                    {{ today_threats }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- AI Alerts -->
+    <div class="col-md-3">
+
+        <div class="card shadow border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    AI Alerts
+                </small>
+
+                <h3 id="aiAlerts" class="fw-bold text-warning">
+                    {{ ai_alerts }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Active Rules -->
+    <div class="col-md-3">
+
+        <div class="card shadow border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Active Rules
+                </small>
+
+                <h3 class="fw-bold text-primary">
+                    {{ active_rules }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Detection Rate -->
+    <div class="col-md-3">
+
+        <div class="card shadow border-0">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Detection Rate
+                </small>
+
+                <h3 class="fw-bold text-success">
+                    {{ detection_rate }}%
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================
+        ANALYTICS & LIVE VISUALIZATION
+======================================= -->
+{{ timeline_labels|json_script:"timeline-labels" }}
+{{ timeline_data|json_script:"timeline-data" }}
+
+{{ severity_labels|json_script:"severity-labels" }}
+{{ severity_data|json_script:"severity-data" }}
+
+{{ trend_labels|json_script:"trend-labels" }}
+{{ trend_values|json_script:"trend-values" }}
+
+{{ attack_labels|json_script:"attack-labels" }}
+{{ attack_values|json_script:"attack-values" }}
+<div class="row mb-4">
+
+
+    <!-- Threat Timeline -->
+
+    <div class="col-xl-8 mb-4">
+
+        <div class="card shadow border-0 h-100">
+
+
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-graph-up-arrow text-primary"></i>
+
+                    Threat Timeline
+
+                </h5>
+
+
+                <span class="badge bg-danger">
+
+                    LIVE
+
+                </span>
+
+
+            </div>
+
+
+            <div class="card-body"
+                 style="height:350px;">
+
+
+                <canvas
+                    id="threatTimelineChart">
+                </canvas>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- Severity Distribution -->
+
+    <div class="col-xl-4 mb-4">
+
+
+        <div class="card shadow border-0 h-100">
+
+
+            <div class="card-header bg-white">
+
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-pie-chart-fill text-warning"></i>
+
+                    Severity Distribution
+
+
+                </h5>
+
+
+            </div>
+
+
+
+            <div class="card-body"
+                 style="height:350px;">
+
+
+                <canvas
+                    id="severityChart">
+                </canvas>
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+<!-- =======================================
+        ATTACK ANALYTICS
+======================================= -->
+<div class="row mb-4">
+
+
+    <!-- Attack Categories -->
+
+
+    <div class="col-lg-6 mb-4">
+
+
+        <div class="card shadow border-0 h-100">
+
+
+            <div class="card-header bg-white">
+
+
+                <h5 class="mb-0">
+
+
+                    <i class="bi bi-bar-chart-fill text-success"></i>
+
+
+                    Attack Categories
+
+
+                </h5>
+
+
+            </div>
+
+
+
+            <div class="card-body"
+                 style="height:350px;">
+
+
+                <canvas
+                    id="attackCategoryChart">
+                </canvas>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+    <!-- Detection Trend -->
+
+
+    <div class="col-lg-6 mb-4">
+
+
+        <div class="card shadow border-0 h-100">
+
+
+            <div class="card-header bg-white">
+
+
+                <h5 class="mb-0">
+
+
+                    <i class="bi bi-activity text-danger"></i>
+
+
+                    Detection Trend
+
+
+                </h5>
+
+
+            </div>
+
+
+
+            <div class="card-body"
+                 style="height:350px;">
+
+
+                <canvas
+                    id="trendChart">
+                </canvas>
+
+
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+<!-- =======================================
+        LIVE ATTACK FEED
+======================================= -->
+
+<div class="row mb-4">
+
+    <!-- Top Attackers -->
+
+    <div class="col-lg-4">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-globe text-danger"></i>
+
+                    Top Attack Sources
+
+                </h5>
+
+            </div>
+
+            <div
+                class="card-body"
+                style="height:350px;overflow-y:auto;">
+
+            {% for ip, count in top_attackers %}
+
+            <div class="d-flex justify-content-between border-bottom py-2">
+
+                <div>
+
+                    <strong>{{ ip }}</strong>
+
+                </div>
+
+                <span class="badge bg-danger">
+
+                    {{ count }}
+
+                </span>
+
+            </div>
+
+            {% empty %}
+
+            <div class="text-center text-muted mt-5">
+
+            No attack sources found.
+
+            </div>
+
+            {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Live Detection Feed -->
+
+    <div class="col-lg-8">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+
+                <h5 class="mb-0">
+
+                    <i class="bi bi-broadcast text-danger"></i>
+
+                    Live Detection Feed
+
+                </h5>
+
+                <span class="badge bg-success">
+
+                    REAL TIME
+
+                </span>
+
+            </div>
+
+            <div
+                id="liveFeed"
+                class="card-body"
+                style="height:350px;overflow-y:auto;">
+
+                {% for threat in threats|slice:":20" %}
+
+                <div class="border-bottom py-2">
+
+                <strong class="text-danger">
+
+                {{ threat.threat_name }}
+
+                </strong>
+
+                <br>
+
+                <small>
+
+                {{ threat.detected_at|date:"H:i:s" }}
+
+                {% if threat.packet %}
+
+                | {{ threat.packet.source_ip }}
+
+                {% endif %}
+
+                </small>
+
+                </div>
+
+                {% empty %}
+
+                <div class="text-center text-muted mt-5">
+
+                No live detections.
+
+                </div>
+
+                {% endfor %}
+
+                </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================
+        SEARCH & FILTER
+======================================= -->
+
+<div class="card shadow border-0 mb-4">
+
+    <div class="card-header bg-white">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+                <i class="bi bi-funnel-fill text-primary"></i>
+                Threat Filters
+            </h5>
+
+            <span class="badge bg-primary">
+                Live Search
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="row g-3">
+
+            <!-- Search -->
+
+            <div class="col-lg-4 col-md-6">
+
+                <label class="form-label fw-semibold">
+
+                    <i class="bi bi-search"></i>
+
+                    Search Threat
+
+                </label>
+
+                <input
+                    type="text"
+                    id="searchThreat"
+                    class="form-control"
+                    placeholder="Search threat, IP, description...">
+
+            </div>
+
+            <!-- Severity -->
+
+            <div class="col-lg-3 col-md-6">
+
+                <label class="form-label fw-semibold">
+
+                    <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+
+                    Severity
+
+                </label>
+
+                <select
+                    id="severityFilter"
+                    class="form-select">
+
+                    <option value="">
+                        All Severity
+                    </option>
+
+                    <option value="critical">
+                        🔴 Critical
+                    </option>
+
+                    <option value="high">
+                        🟠 High
+                    </option>
+
+                    <option value="medium">
+                        🟡 Medium
+                    </option>
+
+                    <option value="low">
+                        🟢 Low
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- Attack Type -->
+
+            <div class="col-lg-3 col-md-6">
+
+                <label class="form-label fw-semibold">
+
+                    <i class="bi bi-shield-fill"></i>
+
+                    Attack Type
+
+                </label>
+
+                <select
+                    id="attackFilter"
+                    class="form-select">
+
+                    <option value="">
+                        All Attack Types
+                    </option>
+
+                    {% for attack in attack_types %}
+
+                    <option value="{{ attack|lower }}">
+                        {{ attack }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <!-- Clear -->
+
+            <div class="col-lg-2 col-md-6 d-flex align-items-end">
+
+                <button
+                    type="button"
+                    id="clearThreats"
+                    class="btn btn-danger w-100">
+
+                    <i class="bi bi-arrow-clockwise"></i>
+
+                    Reset
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+ <!-- =======================================
+        THREAT INCIDENT TABLE
+======================================= -->
+
+<div class="card shadow border-0">
+
+    <div class="card-header bg-white">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <h5 class="mb-0">
+
+                <i class="bi bi-shield-exclamation text-danger"></i>
+
+                Live Threat Incidents
+
+            </h5>
+
+            <div>
+
+                <span class="badge bg-primary">
+
+                    AI Powered
+
+                </span>
+
+                <span class="badge bg-success">
+
+                    Live Detection
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+    <table
+        class="table table-hover align-middle"
+        id="threatTable">
+
+        <thead class="table-dark">
+
+            <tr>
+
+                <th width="90">
+                    Time
+                </th>
+
+                <th>
+                    Threat
+                </th>
+
+                <th width="120">
+                    Severity
+                </th>
+
+                <th>
+                    Source IP
+                </th>
+
+                <th>
+                    Description
+                </th>
+
+                <th width="110">
+                    Confidence
+                </th>
+
+                <th width="90">
+                    Status
+                </th>
+
+                <th width="120">
+                    Detection
+                </th>
+
+                <th style="display:none;">
+                    Attack Type
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="threat-table">
+
+        {% for threat in threats %}
+
+        <tr>
+
+            <td>
+                {{ threat.detected_at|date:"H:i:s" }}
+            </td>
+
+            <td>
+                <strong>
+                    {{ threat.threat_name }}
+                </strong>
+            </td>
+
+            <td>
+
+                {% if threat.severity == "Critical" %}
+
+                    <span class="badge bg-danger">
+                        Critical
+                    </span>
+
+                {% elif threat.severity == "High" %}
+
+                    <span class="badge bg-warning text-dark">
+                        High
+                    </span>
+
+                {% elif threat.severity == "Medium" %}
+
+                    <span class="badge bg-primary">
+                        Medium
+                    </span>
+
+                {% else %}
+
+                    <span class="badge bg-success">
+                        Low
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if threat.packet %}
+
+                    <code>
+                        {{ threat.packet.source_ip }}
+                    </code>
+
+                {% else %}
+
+                    Unknown
+
+                {% endif %}
+
+            </td>
+
+            <td>
+                {{ threat.description }}
+            </td>
+
+            <td>
+
+                    <div class="progress shadow-sm" style="height:24px; border-radius:12px; background:#e9ecef;">
+
+                        <div
+                            class="progress-bar progress-bar-striped progress-bar-animated
+                            {% if threat.confidence >= 90 %}
+                                bg-danger
+                            {% elif threat.confidence >= 70 %}
+                                bg-warning text-dark
+                            {% elif threat.confidence >= 50 %}
+                                bg-primary
+                            {% else %}
+                                bg-success
+                            {% endif %}"
+                            role="progressbar"
+                            style="
+                                width:{{ threat.confidence }}%;
+                                border-radius:12px;
+                                font-weight:600;
+                                transition:width .6s ease;
+                            "
+                            aria-valuenow="{{ threat.confidence }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100">
+
+                            {{ threat.confidence }}%
+
+                        </div>
+
+                    </div>
+
+            </td>
+
+            <td>
+
+                <span class="badge bg-danger">
+                    Active
+                </span>
+
+            </td>
+
+            <td>
+
+                <span class="badge bg-primary">
+                    AI Engine
+                </span>
+
+            </td>
+
+            <td style="display:none;">
+
+                {{ threat.threat_name }}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr id="emptyThreat">
+
+            <td colspan="9" class="text-center py-5">
+
+                <i class="bi bi-shield-check display-4 text-success"></i>
+
+                <h5 class="mt-3">
+                    No Threats Detected
+                </h5>
+
+                <small class="text-muted">
+                    Your network is currently secure.
+                </small>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+    </div>
+
+</div>
+
+<!-- =======================================
+        FOOTER SUMMARY
+======================================= -->
+
+<div class="row mt-4">
+
+    <div class="col-lg-3">
+
+        <div class="card border-0 shadow">
+
+            <div class="card-body text-center">
+
+                <h5>
+
+                    Critical
+
+                </h5>
+
+                <h2
+                    class="text-danger"
+                    id="criticalCount">
+
+                 {{ critical_count }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="card border-0 shadow">
+
+            <div class="card-body text-center">
+
+                <h5>
+
+                    High
+
+                </h5>
+
+                <h2
+                    class="text-warning"
+                    id="highCount">
+
+                    {{ high_count }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="card border-0 shadow">
+
+            <div class="card-body text-center">
+
+                <h5>
+
+                    Medium
+
+                </h5>
+
+                <h2
+                    class="text-primary"
+                    id="mediumCount">
+
+                    {{ medium_count }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-lg-3">
+
+        <div class="card border-0 shadow">
+
+            <div class="card-body text-center">
+
+                <h5>
+
+                   Low
+
+                </h5>
+
+                <h2
+                    class="text-success"
+                    id="lowCount">
+
+                    {{ low_count }}
+
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================
+        EXPORT BUTTONS
+======================================= -->
+
+<div class="d-flex justify-content-end mt-4">
+
+    <a
+        href="{% url 'threat_report_pdf' %}"
+        class="btn btn-danger me-2">
+
+        <i class="bi bi-file-earmark-pdf"></i>
+
+        Export PDF
+
+    </a>
+
+    <a
+        href="{% url 'threat_report_excel' %}"
+        class="btn btn-success">
+
+        <i class="bi bi-file-earmark-excel"></i>
+
+        Export Excel
+
+    </a>
+
+</div>
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+
+console.log("Detection Dashboard Loaded");
+
+
+
+// ======================================================
+// SAFE JSON LOADER
+// ======================================================
+
+
+function getJSON(id){
+
+
+    let element =
+    document.getElementById(id);
+
+
+
+    if(!element){
+
+        console.error(
+            "Missing JSON element:",
+            id
+        );
+
+        return [];
+
+    }
+
+
+
+    try{
+
+        return JSON.parse(
+            element.textContent
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "JSON Error:",
+            id,
+            error
+        );
+
+        return [];
+
+    }
+
+
+}
+
+
+
+
+
+// ======================================================
+// LOAD CHART DATA
+// ======================================================
+
+
+const timelineLabels =
+getJSON("timeline-labels");
+
+
+const timelineData =
+getJSON("timeline-data");
+
+
+const severityLabels =
+getJSON("severity-labels");
+
+
+const severityData =
+getJSON("severity-data");
+
+
+const trendLabels =
+getJSON("trend-labels");
+
+
+const trendValues =
+getJSON("trend-values");
+
+
+const attackLabels =
+getJSON("attack-labels");
+
+
+const attackValues =
+getJSON("attack-values");
+
+
+
+
+
+console.log(
+"Timeline:",
+timelineLabels,
+timelineData
+);
+
+
+
+
+
+// ======================================================
+// CHART CHECK
+// ======================================================
+
+
+if(typeof Chart === "undefined"){
+
+
+console.error(
+"Chart.js not loaded"
+);
+
+
+return;
+
+
+}
+
+// ======================================================
+// THREAT TIMELINE CHART
+// ======================================================
+
+
+let timelineChart = null;
+
+
+let timelineCanvas =
+document.getElementById(
+"threatTimelineChart"
+);
+
+
+
+if(timelineCanvas){
+
+
+timelineChart =
+new Chart(
+timelineCanvas,
+{
+
+type:"line",
+
+
+data:{
+
+
+labels:timelineLabels,
+
+
+datasets:[{
+
+
+label:"Threat Detection",
+
+
+data:timelineData,
+
+
+borderWidth:3,
+
+
+tension:0.4,
+
+
+fill:true
+
+
+}]
+
+
+},
+
+
+options:{
+
+
+responsive:true,
+
+
+maintainAspectRatio:false,
+
+
+scales:{
+
+
+y:{
+
+
+beginAtZero:true,
+
+
+ticks:{
+precision:0
+}
+
+
+}
+
+
+}
+
+
+}
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+// ======================================================
+// SEVERITY CHART
+// ======================================================
+
+
+let severityChart=null;
+
+
+let severityCanvas =
+document.getElementById(
+"severityChart"
+);
+
+
+
+if(severityCanvas){
+
+
+severityChart =
+new Chart(
+severityCanvas,
+{
+
+
+type:"doughnut",
+
+
+data:{
+
+
+labels:severityLabels,
+
+
+datasets:[{
+
+
+label:"Severity",
+
+
+data:severityData
+
+
+}]
+
+
+},
+
+
+options:{
+
+
+responsive:true,
+
+
+maintainAspectRatio:false,
+
+
+plugins:{
+
+
+legend:{
+
+
+position:"bottom"
+
+
+}
+
+
+}
+
+
+}
+
+
+});
+
+
+}
+
+// ======================================================
+// ATTACK CATEGORY CHART
+// ======================================================
+
+
+let attackChart=null;
+
+
+let attackCanvas =
+document.getElementById(
+"attackCategoryChart"
+);
+
+
+
+if(attackCanvas){
+
+
+attackChart =
+new Chart(
+attackCanvas,
+{
+
+
+type:"bar",
+
+
+data:{
+
+
+labels:attackLabels,
+
+
+datasets:[{
+
+
+label:"Attack Count",
+
+
+data:attackValues
+
+
+}]
+
+
+},
+
+
+options:{
+
+
+responsive:true,
+
+
+maintainAspectRatio:false
+
+
+}
+
+
+});
+
+
+}
+// ======================================================
+// TREND CHART
+// ======================================================
+
+
+let trendChart=null;
+
+
+let trendCanvas =
+document.getElementById(
+"trendChart"
+);
+
+
+
+if(trendCanvas){
+
+
+trendChart =
+new Chart(
+trendCanvas,
+{
+
+
+type:"line",
+
+
+data:{
+
+
+labels:trendLabels,
+
+
+datasets:[{
+
+
+label:"Threat Trend",
+
+
+data:trendValues,
+
+
+borderWidth:3,
+
+
+tension:0.4
+
+
+}]
+
+
+},
+
+
+options:{
+
+
+responsive:true,
+
+
+maintainAspectRatio:false
+
+
+}
+
+
+});
+
+
+}
+
+// ======================================================
+// LIVE WEBSOCKET
+// ======================================================
+
+
+let threatSocket;
+function connectThreatSocket(){
+let protocol =
+window.location.protocol === "https:"
+?
+"wss://"
+:
+"ws://";
+
+
+
+threatSocket =
+new WebSocket(
+
+protocol +
+window.location.host +
+"/ws/dashboard/"
+
+);
+
+
+
+
+
+threatSocket.onopen=function(){
+
+
+console.log(
+"Threat websocket connected"
+);
+
+
+};
+threatSocket.onmessage=function(event){
+let data =
+JSON.parse(
+event.data
+);
+if(
+data.event !== "threat_detected"
+)
+
+return;
+let currentTime =
+data.time ||
+new Date().toLocaleTimeString();
+timelineLabels.push(
+currentTime
+);
+timelineData.push(
+1
+);
+if(timelineChart){
+timelineChart.update();
+}
+trendLabels.push(
+currentTime
+);
+trendValues.push(
+1
+);
+
+if(trendChart){
+
+trendChart.data.labels =
+trendLabels;
+
+
+trendChart.data.datasets[0].data =
+trendValues;
+
+
+trendChart.update();
+
+
+}
+
+
+
+
+};
+
+
+
+
+
+
+threatSocket.onclose=function(){
+
+
+console.log(
+"Websocket reconnecting..."
+);
+
+
+
+setTimeout(
+connectThreatSocket,
+3000
+);
+
+
+};
+
+
+
+}
+
+
+
+connectThreatSocket();
+
+
+
+
+
+
+
+
+
+// ======================================================
+// LIVE CLOCK
+// ======================================================
+
+
+function updateClock(){
+
+
+
+let clock =
+document.getElementById(
+"liveClock"
+);
+
+
+
+if(clock){
+
+
+clock.innerHTML =
+new Date().toLocaleTimeString();
+
+
+}
+
+
+
+}
+
+
+
+setInterval(
+updateClock,
+1000
+);
+
+
+
+updateClock();
+
+// ======================================================
+// THREAT SEARCH + FILTER
+// ======================================================
+
+const searchThreat = document.getElementById("searchThreat");
+const severityFilter = document.getElementById("severityFilter");
+const attackFilter = document.getElementById("attackFilter");
+const clearThreats = document.getElementById("clearThreats");
+
+function filterThreats() {
+
+    const rows = document.querySelectorAll("#threatTable tbody tr");
+
+    const searchValue = searchThreat.value.toLowerCase().trim();
+    const severityValue = severityFilter.value.toLowerCase().trim();
+    const attackValue = attackFilter.value.toLowerCase().trim();
+
+    let visibleCount = 0;
+
+    rows.forEach(function(row) {
+
+        if (row.id === "emptyThreat") {
+            return;
+        }
+
+        const cells = row.querySelectorAll("td");
+
+        if (cells.length < 8) {
+            return;
+        }
+
+        // ==========================
+        // TABLE DATA
+        // ==========================
+
+        const threatName = cells[1].innerText.trim().toLowerCase();
+
+        const severity = cells[2].innerText
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
+
+        const sourceIP = cells[3].innerText.trim().toLowerCase();
+
+        const description = cells[4].innerText.trim().toLowerCase();
+
+        // Attack type is the threat name
+        const attackType = threatName;
+
+        // ==========================
+        // MATCHES
+        // ==========================
+
+        const searchMatch =
+            searchValue === "" ||
+            threatName.includes(searchValue) ||
+            sourceIP.includes(searchValue) ||
+            description.includes(searchValue);
+
+        const severityMatch =
+            severityValue === "" ||
+            severity === severityValue;
+
+        const attackMatch =
+            attackValue === "" ||
+            attackType.includes(attackValue);
+
+        // ==========================
+        // SHOW / HIDE
+        // ==========================
+
+        if (searchMatch && severityMatch && attackMatch) {
+
+            row.style.display = "";
+            visibleCount++;
+
+        } else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+    // ==========================
+    // EMPTY ROW
+    // ==========================
+
+    const emptyRow = document.getElementById("emptyThreat");
+
+    if (emptyRow) {
+
+        emptyRow.style.display = (visibleCount === 0) ? "" : "none";
+
+    }
+
+}
+
+// ==========================
+// EVENTS
+// ==========================
+
+if (searchThreat) {
+    searchThreat.addEventListener("keyup", filterThreats);
+}
+
+if (severityFilter) {
+    severityFilter.addEventListener("change", filterThreats);
+}
+
+if (attackFilter) {
+    attackFilter.addEventListener("change", filterThreats);
+}
+
+if (clearThreats) {
+
+    clearThreats.addEventListener("click", function() {
+
+        searchThreat.value = "";
+        severityFilter.value = "";
+        attackFilter.value = "";
+
+        filterThreats();
+
+    });
+
+}
+
+// ======================================================
+// CLEAR BUTTON
+// ======================================================
+
+
+if(clearThreats){
+
+
+clearThreats.addEventListener(
+"click",
+function(){
+
+
+
+searchThreat.value="";
+
+
+severityFilter.value="";
+
+
+attackFilter.value="";
+
+
+
+filterThreats();
+
+
+
+});
+
+}
+
+
+
+});
+</script>
+
+{% endblock %}

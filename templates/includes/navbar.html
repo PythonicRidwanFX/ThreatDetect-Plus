@@ -1,0 +1,69 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar">
+
+    <div class="container">
+
+        <!-- Logo -->
+        <a class="navbar-brand d-flex align-items-center fw-bold" href="{% url 'home' %}">
+            <i class="bi bi-shield-lock-fill text-info fs-3 me-2"></i>
+            <span class="logo-text">ThreatDetect+</span>
+        </a>
+
+        <!-- Mobile Toggle -->
+        <button
+            class="navbar-toggler border-0 shadow-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarMenu"
+            aria-controls="navbarMenu"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+        <!-- Navigation Menu -->
+        <div class="collapse navbar-collapse" id="navbarMenu">
+
+            <!-- Center Navigation -->
+            <ul class="navbar-nav mx-auto text-center">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="#home">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#features">Features</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#workflow">Workflow</a>
+                </li>
+
+            </ul>
+
+            <!-- Administrator Login -->
+            <div class="d-flex justify-content-center">
+
+                <button
+                    type="button"
+                    class="btn btn-login"
+                    data-bs-toggle="modal"
+                    data-bs-target="#loginModal">
+
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Administrator Login
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</nav>
