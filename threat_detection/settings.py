@@ -32,7 +32,7 @@ ALLOWED_HOSTS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
+    "https://threatdetect-plus.onrender.com",
 ]
 
 # ==================================================
