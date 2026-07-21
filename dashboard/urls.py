@@ -71,5 +71,9 @@ urlpatterns = [
         views.packet_report_excel,
         name='packet_report_excel'
     ),
-    path("database-status/",database_status,name="database_status"),
+    path(
+        "database-status/",
+        views.database_status,
+        name="database_status"
+    ),
 ]
