@@ -1,78 +1,51 @@
+import os
 import threading
 
 from django.apps import AppConfig
 
 
-# Prevent duplicate sniffer threads
-sniffer_started = False
-
-
 class MonitoringConfig(AppConfig):
 
     default_auto_field = "django.db.models.BigAutoField"
-
     name = "monitoring"
 
 
     def ready(self):
 
-        global sniffer_started
-
-
-        # Avoid starting twice
-        if sniffer_started:
+        # Do not run packet sniffer on Render
+        if os.environ.get("RENDER"):
+            print(
+                "Render detected - skipping Scapy sniffer"
+            )
             return
 
 
-        sniffer_started = True
+        from monitoring.services.packet_sniffer import start_sniffer
 
 
+        def run_sniffer():
 
-        try:
+            try:
 
-            from monitoring.services.packet_sniffer import start_sniffer
+                print(
+                    "Starting Network Packet Sniffer..."
+                )
 
-
-            def run_sniffer():
-
-                try:
-
-                    print("=" * 40)
-                    print("Starting Network Packet Sniffer...")
-                    print("=" * 40)
+                start_sniffer()
 
 
-                    start_sniffer()
+            except Exception as e:
+
+                print(
+                    "Sniffer Error:",
+                    e
+                )
 
 
-
-                except Exception as e:
-
-
-                    print(
-                        "Sniffer Error:",
-                        e
-                    )
+        thread = threading.Thread(
+            target=run_sniffer,
+            daemon=True
+        )
 
 
-
-            thread = threading.Thread(
-
-                target=run_sniffer,
-
-                daemon=True
-
-            )
-
-
-            thread.start()
-
-
-
-        except Exception as e:
-
-
-            print(
-                "Failed to start sniffer:",
-                e
-            )
+        thread.start()
