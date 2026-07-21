@@ -2153,3 +2153,17 @@ def packet_report_excel(request):
     workbook.save(response)
 
     return response
+
+
+from django.http import JsonResponse
+from monitoring.models import PacketLog, Threat, Alert
+
+
+@login_required(login_url="login")
+def database_status(request):
+
+    return JsonResponse({
+        "packets": PacketLog.objects.count(),
+        "threats": Threat.objects.count(),
+        "alerts": Alert.objects.count(),
+    })
