@@ -34,7 +34,9 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://threatdetect-plus.onrender.com",
 ]
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
+SESSION_COOKIE_SECURE = False
 # ==================================================
 # Installed Apps
 # ==================================================
