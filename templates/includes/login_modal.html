@@ -141,110 +141,47 @@ LOGIN MODAL
 
                 {% endif %}
 
-                <form method="POST"
-                      action="{% url 'login' %}"
-                      autocomplete="off">
+                <form method="POST" action="{% url 'login' %}">
 
                     {% csrf_token %}
 
-                    <!-- Username -->
+                    {% if messages %}
+                        {% for message in messages %}
 
-                    <div class="mb-3">
+                        <div class="alert alert-danger alert-dismissible fade show">
 
-                        <label class="form-label fw-semibold">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
 
-                            Username
-
-                        </label>
-
-                        <div class="input-group">
-
-                            <span class="input-group-text">
-
-                                <i class="bi bi-person-fill"></i>
-
-                            </span>
-
-                            <input
-                                type="text"
-                                name="username"
-                                class="form-control"
-                                placeholder="Enter Username"
-                                required>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Password -->
-
-                    <div class="mb-3">
-
-                        <label class="form-label fw-semibold">
-
-                            Password
-
-                        </label>
-
-                        <div class="input-group">
-
-                            <span class="input-group-text">
-
-                                <i class="bi bi-lock-fill"></i>
-
-                            </span>
-
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="form-control"
-                                placeholder="Enter Password"
-                                required>
+                            {{ message }}
 
                             <button
-                                class="btn btn-outline-secondary"
                                 type="button"
-                                id="togglePassword">
-
-                                <i class="bi bi-eye-fill"></i>
-
+                                class="btn-close"
+                                data-bs-dismiss="alert">
                             </button>
 
                         </div>
 
-                    </div>
+                        {% endfor %}
+                    {% endif %}
 
-                    <!-- Remember -->
+                    <input
+                        class="form-control mb-3"
+                        type="text"
+                        name="username"
+                        value="{{ username|default:'' }}"
+                        placeholder="Username"
+                        required>
 
-                    <div class="form-check mb-4">
+                    <input
+                        class="form-control mb-3"
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        required>
 
-                        <input
-                            class="form-check-input"
-                            type="checkbox"
-                            id="remember">
-
-                        <label
-                            class="form-check-label"
-                            for="remember">
-
-                            Remember me
-
-                        </label>
-
-                    </div>
-
-                    <!-- Login -->
-
-                    <button
-                        id="loginBtn"
-                        type="submit"
-                        class="btn btn-primary w-100 py-2 fw-bold">
-
-                        <i class="bi bi-box-arrow-in-right me-2"></i>
-
-                        Login to Dashboard
-
+                    <button class="btn btn-primary w-100">
+                        Login
                     </button>
 
                 </form>
@@ -271,55 +208,58 @@ LOGIN MODAL
 
 </div>
 
-<!-- ==========================================================
-PASSWORD TOGGLE
-=========================================================== -->
+{% if messages %}
+    {% for message in messages %}
 
+    <div class="alert alert-danger">
+
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+        {{ message }}
+
+    </div>
+
+    {% endfor %}
+{% endif %}
 <script>
 
-const password = document.getElementById("password");
+document.addEventListener("DOMContentLoaded", function () {
 
-const toggle = document.getElementById("togglePassword");
+    const password = document.getElementById("password");
+    const toggle = document.getElementById("togglePassword");
 
-toggle.addEventListener("click", function () {
+    if (password && toggle) {
 
-    if(password.type==="password"){
+        toggle.addEventListener("click", function () {
 
-        password.type="text";
+            if (password.type === "password") {
 
-        this.innerHTML='<i class="bi bi-eye-slash-fill"></i>';
+                password.type = "text";
+                this.innerHTML = '<i class="bi bi-eye-slash-fill"></i>';
+
+            } else {
+
+                password.type = "password";
+                this.innerHTML = '<i class="bi bi-eye-fill"></i>';
+
+            }
+
+        });
 
     }
 
-    else{
+    {% if show_login_modal %}
 
-        password.type="password";
+    const modalElement = document.getElementById("loginModal");
 
-        this.innerHTML='<i class="bi bi-eye-fill"></i>';
+    if (modalElement) {
+
+        const loginModal = new bootstrap.Modal(modalElement);
+        loginModal.show();
 
     }
 
-});
-
-</script>
-
-<!-- ==========================================================
-LOGIN LOADING BUTTON
-=========================================================== -->
-
-<script>
-
-document.querySelector("#loginModal form")
-.addEventListener("submit",function(){
-
-    const btn=document.getElementById("loginBtn");
-
-    btn.disabled=true;
-
-    btn.innerHTML=`
-    <span class="spinner-border spinner-border-sm me-2"></span>
-    Authenticating...
-    `;
+    {% endif %}
 
 });
 

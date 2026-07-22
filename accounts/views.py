@@ -6,28 +6,69 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     return render(request, "landing/home.html")
 
-from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
-def user_login(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
 
-        user = authenticate(
+def home(request):
+    return render(request, "landing/home.html")
+
+
+def user_login(request):
+
+    # Only accept POST requests
+    if request.method != "POST":
+        return redirect("home")
+
+    username = request.POST.get("username", "").strip()
+    password = request.POST.get("password", "")
+
+    user = authenticate(
+        request,
+        username=username,
+        password=password,
+    )
+
+    if user is not None:
+
+        login(request, user)
+
+        messages.success(
             request,
-            username=username,
-            password=password
+            f"Welcome back, {user.username}!"
         )
 
-        if user is not None:
-            login(request, user)
-            return redirect("dashboard")
+        return redirect("dashboard")
 
-        messages.error(request, "Invalid username or password.")
+    # Login failed
+    messages.error(
+        request,
+        "Incorrect username or password."
+    )
 
-    return render(request, "accounts/login.html")
+    return render(
+        request,
+        "landing/home.html",
+        {
+            "show_login_modal": True,
+            "username": username,
+        },
+    )
+
+
+def logout_view(request):
+
+    logout(request)
+
+    messages.success(
+        request,
+        "You have been logged out successfully."
+    )
+
+    return redirect("home")
+
+
 
 def logout_view(request):
     logout(request)
