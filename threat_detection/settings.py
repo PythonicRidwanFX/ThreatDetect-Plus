@@ -194,9 +194,6 @@ LOGOUT_REDIRECT_URL = "home"
 # ==================================================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://threatdetect-plus.onrender.com",
-]
 
 SECURE_PROXY_SSL_HEADER = (
     "HTTP_X_FORWARDED_PROTO",
@@ -205,6 +202,5 @@ SECURE_PROXY_SSL_HEADER = (
 
 USE_X_FORWARDED_HOST = True
 
-SESSION_COOKIE_SECURE = True
-
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG

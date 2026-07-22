@@ -1,77 +1,326 @@
+<style>
+    /* ==========================================
+LOGIN MODAL
+========================================== */
+
+#loginModal .modal-content{
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+}
+
+#loginModal .modal-header{
+
+    padding:30px;
+
+}
+
+#loginModal .modal-body{
+
+    background:#fff;
+
+}
+
+#loginModal .input-group-text{
+
+    background:#f8f9fa;
+
+    border-right:0;
+
+}
+
+#loginModal .form-control{
+
+    border-left:0;
+
+    height:50px;
+
+}
+
+#loginModal .form-control:focus{
+
+    box-shadow:none;
+
+}
+
+#loginModal .btn-primary{
+
+    height:50px;
+
+    font-size:17px;
+
+    border-radius:10px;
+
+}
+
+#loginModal .btn-outline-secondary{
+
+    border-left:0;
+
+}
+
+#loginModal .modal-footer{
+
+    padding:15px;
+
+}
+</style>
+
+<!-- ==========================================================
+     LOGIN MODAL
+=========================================================== -->
+
 <div class="modal fade"
+     id="loginModal"
+     tabindex="-1"
+     aria-labelledby="loginModalLabel"
+     aria-hidden="true">
 
-id="loginModal">
+    <div class="modal-dialog modal-dialog-centered">
 
-<div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
 
-<div class="modal-content">
+            <!-- Header -->
 
-<div class="modal-header">
+            <div class="modal-header bg-primary text-white">
 
-<h5>
+                <div class="w-100 text-center">
 
-Administrator Login
+                    <div class="mb-2">
 
-</h5>
+                        <i class="bi bi-shield-lock-fill"
+                           style="font-size:50px;"></i>
 
-<button
+                    </div>
 
-class="btn-close"
+                    <h4 class="mb-0 fw-bold"
+                        id="loginModalLabel">
 
-data-bs-dismiss="modal">
+                        ThreatDetect+
 
-</button>
+                    </h4>
+
+                    <small class="text-light">
+
+                        Security Operations Center
+
+                    </small>
+
+                </div>
+
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- Body -->
+
+            <div class="modal-body p-4">
+
+                {% if messages %}
+
+                    {% for message in messages %}
+
+                    <div class="alert alert-danger alert-dismissible fade show">
+
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                        {{ message }}
+
+                        <button class="btn-close"
+                                data-bs-dismiss="alert">
+                        </button>
+
+                    </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+                <form method="POST"
+                      action="{% url 'login' %}"
+                      autocomplete="off">
+
+                    {% csrf_token %}
+
+                    <!-- Username -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Username
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-person-fill"></i>
+
+                            </span>
+
+                            <input
+                                type="text"
+                                name="username"
+                                class="form-control"
+                                placeholder="Enter Username"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Password -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label fw-semibold">
+
+                            Password
+
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-lock-fill"></i>
+
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Enter Password"
+                                required>
+
+                            <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                id="togglePassword">
+
+                                <i class="bi bi-eye-fill"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Remember -->
+
+                    <div class="form-check mb-4">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="remember">
+
+                        <label
+                            class="form-check-label"
+                            for="remember">
+
+                            Remember me
+
+                        </label>
+
+                    </div>
+
+                    <!-- Login -->
+
+                    <button
+                        id="loginBtn"
+                        type="submit"
+                        class="btn btn-primary w-100 py-2 fw-bold">
+
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                        Login to Dashboard
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- Footer -->
+
+            <div class="modal-footer justify-content-center bg-light">
+
+                <small class="text-muted">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    Authorized Administrators Only
+
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div class="modal-body">
+<!-- ==========================================================
+PASSWORD TOGGLE
+=========================================================== -->
 
-<form
+<script>
 
-method="POST"
+const password = document.getElementById("password");
 
-action="{% url 'login' %}">
+const toggle = document.getElementById("togglePassword");
 
-{% csrf_token %}
+toggle.addEventListener("click", function () {
 
-<input
+    if(password.type==="password"){
 
-class="form-control mb-3"
+        password.type="text";
 
-type="text"
+        this.innerHTML='<i class="bi bi-eye-slash-fill"></i>';
 
-name="username"
+    }
 
-placeholder="Username"
+    else{
 
->
+        password.type="password";
 
-<input
+        this.innerHTML='<i class="bi bi-eye-fill"></i>';
 
-class="form-control mb-3"
+    }
 
-type="password"
+});
 
-name="password"
+</script>
 
-placeholder="Password"
+<!-- ==========================================================
+LOGIN LOADING BUTTON
+=========================================================== -->
 
->
+<script>
 
-<button
+document.querySelector("#loginModal form")
+.addEventListener("submit",function(){
 
-class="btn btn-primary w-100">
+    const btn=document.getElementById("loginBtn");
 
-Login
+    btn.disabled=true;
 
-</button>
+    btn.innerHTML=`
+    <span class="spinner-border spinner-border-sm me-2"></span>
+    Authenticating...
+    `;
 
-</form>
+});
 
-</div>
-
-</div>
-
-</div>
-
-</div>
+</script>
