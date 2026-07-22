@@ -1,7 +1,11 @@
+import os
 import sys
 import threading
 
 from django.apps import AppConfig
+
+
+sniffer_started = False
 
 
 class MonitoringConfig(AppConfig):
@@ -12,12 +16,14 @@ class MonitoringConfig(AppConfig):
 
     def ready(self):
 
-        # Prevent duplicate sniffer when Django autoreloader runs
-        if "runserver" in sys.argv and "--noreload" not in sys.argv:
+        global sniffer_started
+
+
+        if sniffer_started:
             return
 
 
-        # Don't start sniffer during management commands
+        # Skip management commands
         skip_commands = [
             "makemigrations",
             "migrate",
@@ -32,11 +38,11 @@ class MonitoringConfig(AppConfig):
         ]
 
 
-        if any(
-            command in sys.argv
-            for command in skip_commands
-        ):
+        if any(cmd in sys.argv for cmd in skip_commands):
             return
+
+
+        sniffer_started = True
 
 
         from monitoring.services.packet_sniffer import start_sniffer
@@ -44,26 +50,39 @@ class MonitoringConfig(AppConfig):
 
         def run_sniffer():
 
-            try:
+            print("========================================")
+            print(" Network Packet Sniffer Started")
+            print("========================================")
 
-                print("========================================")
-                print(" Network Packet Sniffer Started")
-                print("========================================")
+
+            try:
 
                 start_sniffer()
 
 
+            except PermissionError:
+
+                if os.environ.get("RENDER"):
+
+                    print(
+                        "Render does not allow packet capture. "
+                        "Sniffer disabled."
+                    )
+
+                else:
+
+                    raise
+
+
             except Exception as e:
 
-                print("========================================")
-                print(" Sniffer Error:", e)
-                print("========================================")
+                print(
+                    "Sniffer Error:",
+                    e
+                )
 
 
-        sniffer_thread = threading.Thread(
+        threading.Thread(
             target=run_sniffer,
             daemon=True
-        )
-
-
-        sniffer_thread.start()
+        ).start()
