@@ -67,16 +67,29 @@ def model_status():
 # ==========================================================
 
 def preprocess(features):
+    """
+    Convert extracted flow features into the exact format
+    used during model training.
+    """
 
     df = pd.DataFrame([features])
 
+    # Keep exactly the training columns
     df = df.reindex(
         columns=feature_columns,
         fill_value=0,
     )
 
-    return scaler.transform(df)
+    print("\n" + "=" * 70)
+    print("FEATURE VECTOR SENT TO RANDOM FOREST")
+    print("=" * 70)
 
+    for column in feature_columns:
+        print(f"{column:<35} {df.iloc[0][column]}")
+
+    print("=" * 70)
+
+    return scaler.transform(df)
 # ==========================================================
 # PREDICT
 # ==========================================================
@@ -96,11 +109,36 @@ def predict(features):
 
     try:
 
-        scaled = preprocess(features)
+        # =====================================================
+        # SHOW TOP INPUT FEATURES
+        # =====================================================
 
-        prediction = model.predict(scaled)[0]
+        print("\nTop Input Features")
+        print("=" * 60)
 
-        probabilities = model.predict_proba(scaled)[0]
+        for name, value in sorted(
+            features.items(),
+            key=lambda x: abs(float(x[1])) if isinstance(x[1], (int, float)) else 0,
+            reverse=True
+        )[:10]:
+
+            print(f"{name:<35} {value}")
+
+        print("=" * 60)
+
+        # =====================================================
+        # PREPROCESS
+        # =====================================================
+
+        X = preprocess(features)
+
+        # =====================================================
+        # PREDICTION
+        # =====================================================
+
+        prediction = model.predict(X)[0]
+
+        probabilities = model.predict_proba(X)[0]
 
         confidence = round(float(max(probabilities) * 100), 2)
 
@@ -118,10 +156,38 @@ def predict(features):
                 2,
             )
 
+        # =====================================================
+        # SHOW PROBABILITIES
+        # =====================================================
+
+        print("\nPrediction Probabilities")
+        print("=" * 60)
+
+        for cls, prob in zip(
+            encoder.classes_,
+            probabilities,
+        ):
+
+            print(f"{cls:<30} {prob * 100:.2f}%")
+
+        print("=" * 60)
+
+        # =====================================================
+        # FINAL RESULT
+        # =====================================================
+
         attack = (
             label != "BENIGN"
             and confidence >= ATTACK_THRESHOLD
         )
+
+        print("\nPrediction Result")
+        print("=" * 60)
+        print("Label      :", label)
+        print("Confidence :", confidence)
+        print("Attack     :", attack)
+        print("Threshold  :", ATTACK_THRESHOLD)
+        print("=" * 60)
 
         return {
 
@@ -160,7 +226,6 @@ def predict(features):
             "error": str(e),
 
         }
-
 # ==========================================================
 # HEALTH CHECK
 # ==========================================================

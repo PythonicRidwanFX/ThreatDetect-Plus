@@ -3,11 +3,14 @@ from datetime import datetime, timedelta
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-
+from monitoring.models import Threat, Alert, Prediction
 from monitoring.models import Threat, Alert
 from monitoring.services.feature_extractor import extract_features
 from monitoring.services.ml_detector import predict
-
+from monitoring.services.feature_extractor import (
+    extract_features,
+    flows,
+)
 
 connection_cache = defaultdict(list)
 icmp_cache = defaultdict(list)
@@ -251,7 +254,6 @@ def detect_port_scan(packet):
 
         connection_cache[packet.source_ip].clear()
 
-
 def detect_machine_learning(packet):
     """
     Detect attacks using Random Forest model.
@@ -259,70 +261,95 @@ def detect_machine_learning(packet):
 
     try:
 
+        print("=" * 70)
+        print("ML DETECTOR")
+        print(
+            f"{packet.source_ip}:{packet.source_port} "
+            f"-> "
+            f"{packet.destination_ip}:{packet.destination_port}"
+        )
+
+        print("Protocol:", packet.protocol)
+        print("Flows Before:", len(flows))
+
         features = extract_features(packet)
 
+        print("Flows After :", len(flows))
+
+        print(
+            "Forward:",
+            features["Total Fwd Packets"],
+            "Backward:",
+            features["Total Backward Packets"],
+        )
 
         result = predict(features)
 
+        print("\n" + "=" * 60)
+        print("Prediction Probabilities")
+        print("=" * 60)
+
+        for attack, score in sorted(
+                result["probabilities"].items(),
+                key=lambda x: x[1],
+                reverse=True
+        ):
+            print(f"{attack:30} {score:.2f}%")
+
+        print("=" * 70)
+
+        print("\n")
+        print("=" * 70)
+        print("ML RESULT")
+        print("=" * 70)
+        print(f"Prediction : {result['label']}")
+        print(f"Confidence : {result['confidence']:.2f}%")
+        print(f"Attack     : {result['attack']}")
+        print("=" * 70)
+
+        Prediction.objects.create(
+            packet=packet,
+            attack_type=result["label"],
+            is_attack=result["attack"],
+            confidence=result["confidence"],
+            model_name="Random Forest",
+        )
 
         if result["attack"]:
 
-
             attack_name = result["label"]
-
             confidence = result["confidence"]
 
-
-
-            # Determine severity
-
-            if attack_name in [
+            if attack_name in (
                 "DDoS",
                 "DoS Hulk",
                 "DoS GoldenEye",
                 "Infiltration",
-            ]:
-
+            ):
                 severity = "Critical"
 
-
-            elif attack_name in [
+            elif attack_name in (
                 "PortScan",
                 "Bot",
                 "FTP-Patator",
                 "SSH-Patator",
-            ]:
-
+            ):
                 severity = "High"
 
-
             else:
-
                 severity = "Medium"
-
-
 
             create_threat(
                 packet,
-
                 attack_name,
-
                 severity,
-
-                (
-                    f"Machine Learning detected "
-                    f"{attack_name}. "
-                    f"Confidence: {confidence:.2f}%"
-                ),
+                f"Machine Learning detected {attack_name}. Confidence: {confidence:.2f}%"
             )
 
-
     except Exception as e:
-
-        print(
-            "ML Detection Error:",
-            e
-        )
+        print("=" * 70)
+        print("ML Detection Error")
+        print(e)
 
 def detect(packet):
 

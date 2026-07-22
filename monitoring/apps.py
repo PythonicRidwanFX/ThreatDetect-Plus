@@ -1,51 +1,50 @@
 import os
+import sys
 import threading
 
 from django.apps import AppConfig
 
 
 class MonitoringConfig(AppConfig):
-
     default_auto_field = "django.db.models.BigAutoField"
     name = "monitoring"
 
-
     def ready(self):
 
-        # Do not run packet sniffer on Render
+        # Don't run on Render
         if os.environ.get("RENDER"):
-            print(
-                "Render detected - skipping Scapy sniffer"
-            )
+            print("Render detected - skipping Scapy sniffer")
             return
 
+        # Don't run during management commands
+        skip_commands = [
+            "makemigrations",
+            "migrate",
+            "collectstatic",
+            "flush",
+            "createsuperuser",
+            "shell",
+            "dbshell",
+            "check",
+            "test",
+            "showmigrations",
+        ]
+
+        if any(cmd in sys.argv for cmd in skip_commands):
+            return
 
         from monitoring.services.packet_sniffer import start_sniffer
 
-
         def run_sniffer():
-
             try:
-
-                print(
-                    "Starting Network Packet Sniffer..."
-                )
-
+                print("========================================")
+                print(" Network Packet Sniffer Started")
+                print("========================================")
                 start_sniffer()
-
-
             except Exception as e:
+                print("Sniffer Error:", e)
 
-                print(
-                    "Sniffer Error:",
-                    e
-                )
-
-
-        thread = threading.Thread(
+        threading.Thread(
             target=run_sniffer,
             daemon=True
-        )
-
-
-        thread.start()
+        ).start()
