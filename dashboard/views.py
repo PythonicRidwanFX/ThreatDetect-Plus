@@ -150,11 +150,11 @@ def dashboard(request):
     # =====================================================
 
     normal_predictions = Prediction.objects.filter(
-        status="Normal"
+        is_attack=False
     ).count()
 
-    attack_predictions = Prediction.objects.exclude(
-        status="Normal"
+    attack_predictions = Prediction.objects.filter(
+        is_attack=True
     ).count()
 
     average_confidence = (
